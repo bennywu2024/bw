@@ -90,21 +90,21 @@
             margin-top: 0.75rem;
             margin-bottom: 0.5rem;
         }
-        .view-tab-button {
+        .view-tab-button, .sub-tab-button {
             padding: 0.5rem 1rem;
             border-radius: 0.375rem; /* rounded-md */
             font-weight: 500;
             transition: background-color 0.3s ease, color 0.3s ease;
         }
-        .view-tab-button.selected-tab {
+        .view-tab-button.selected-tab, .sub-tab-button.selected-sub-tab {
             background-color: #3b82f6; /* blue-500 */
             color: white;
         }
-        .view-tab-button:not(.selected-tab) {
+        .view-tab-button:not(.selected-tab), .sub-tab-button:not(.selected-sub-tab) {
             background-color: #e5e7eb; /* gray-200 */
             color: #374151; /* gray-700 */
         }
-         .view-tab-button:not(.selected-tab):hover {
+         .view-tab-button:not(.selected-tab):hover, .sub-tab-button:not(.selected-sub-tab):hover {
             background-color: #d1d5db; /* gray-300 */
         }
         .view-section {
@@ -124,6 +124,9 @@
             background-color: #f3f4f6; /* gray-100 */
             font-weight: 600;
         }
+        .timetable-route-section {
+            /* Styles for individual route sections within timetable view */
+        }
     </style>
 </head>
 <body class="bg-gradient-to-br from-blue-100 to-indigo-200 min-h-screen">
@@ -142,7 +145,7 @@
 
         <div id="etaView" class="view-section">
             <section class="mb-6 bg-white p-5 rounded-xl shadow-lg">
-                <h2 class="text-xl font-semibold mb-3 text-gray-800">位置:</h2>
+                <h2 class="text-xl font-semibold mb-3 text-gray-800">現在位置:</h2>
                 <div id="locationSelector" class="flex flex-wrap gap-2 justify-center">
                 </div>
                 <p id="geolocationMessage" class="text-sm text-gray-500"></p>
@@ -180,7 +183,12 @@
         </div>
 
         <div id="timetableView" class="view-section hidden bg-white p-5 rounded-xl shadow-lg">
-            <div class="mb-8">
+            <div id="timetableSubSwitcher" class="mb-6 flex justify-center space-x-2 sm:space-x-4">
+                <button id="nr762SubTabButton" class="sub-tab-button selected-sub-tab">NR762</button>
+                <button id="nr762aSubTabButton" class="sub-tab-button">NR762A</button>
+            </div>
+
+            <div id="timetableContentNR762" class="timetable-route-section">
                 <h3 class="text-xl font-semibold text-indigo-600 mb-3 text-center">NR762: 豫豐花園 ↔ 兆康站</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
@@ -194,7 +202,7 @@
                 </div>
             </div>
             
-            <div>
+            <div id="timetableContentNR762A" class="timetable-route-section hidden">
                 <h3 class="text-xl font-semibold text-teal-600 mb-3 text-center">NR762A: 豫豐花園 ↔ 屯門市中心</h3>
                  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
@@ -227,7 +235,7 @@
             },
             "NR762A": {
                 "豫豐花園_to_屯門市中心": { 7: [30], 8: [0, 30], 9: [0, 15, 30, 45], 10: [0, 30], 11: [0, 30], 12: [0, 15, 30, 45], 13: [0, 15, 30, 45], 14: [0, 30], 15: [0, 30], 16: [0, 15, 30, 45], 17: [0, 15, 30, 45], 18: [0], 19: [30], 20: [0, 15, 30, 45], 21: [0, 30], 22: [0, 15, 30, 45], 23: [0, 15] },
-                "屯門市中心_to_豫豐花園": { 7: [40], 8: [10, 40], 9: [10, 25, 40, 55], 10: [10, 40], 11: [10, 40], 12: [10, 25, 40, 55], 13: [10, 25, 40, 55], 14: [10, 40], 15: [10, 40], 16: [10, 25, 40, 55], 17: [10, 25, 40, 55], 18: [8, 23, 38, 48, 58], 19: [40, 55], 20: [10, 25, 40, 55], 21: [10, 40], 22: [10, 25, 40, 55], 23: [10, 30] }
+                "屯門市中心_to_豫豐花園": { 7: [40], 8: [10, 40], 9: [10, 25, 40, 55], 10: [10, 40], 11: [10, 40], 12: [10, 25, 40, 55], 13: [10, 25, 40, 55], 14: [10, 40], 15: [10, 40], 16: [10, 25, 40, 55], 17: [10, 25, 40, 55], 18: [10], 19: [40, 55], 20: [10, 25, 40, 55], 21: [10, 40], 22: [10, 25, 40, 55], 23: [10, 30] } // Corrected 18:00 departure
             }
         };
 
@@ -477,8 +485,25 @@
                     clearInterval(countdownIntervalId);
                     countdownIntervalId = null;
                 }
+                showTimetableSubView('timetableContentNR762');
             }
         }
+        
+        function showTimetableSubView(subViewId) {
+            document.getElementById('timetableContentNR762').classList.add('hidden');
+            document.getElementById('timetableContentNR762A').classList.add('hidden');
+            document.getElementById(subViewId).classList.remove('hidden');
+
+            document.getElementById('nr762SubTabButton').classList.remove('selected-sub-tab');
+            document.getElementById('nr762aSubTabButton').classList.remove('selected-sub-tab');
+
+            if (subViewId === 'timetableContentNR762') {
+                document.getElementById('nr762SubTabButton').classList.add('selected-sub-tab');
+            } else if (subViewId === 'timetableContentNR762A') {
+                document.getElementById('nr762aSubTabButton').classList.add('selected-sub-tab');
+            }
+        }
+
 
         // --- Full Timetable Rendering Logic ---
         function formatMinutesArray(minutesArray) {
@@ -488,16 +513,10 @@
 
         function generateTimetableTableHTML(scheduleData) {
             let tableHTML = '<table class="timetable-table"><thead><tr><th>小時</th><th>分鐘</th></tr></thead><tbody>';
-            let hasAnyDeparture = false;
-            for (let hour = 0; hour < 24; hour++) {
-                const minutes = scheduleData[hour];
-                if (minutes && minutes.length > 0) {
-                    hasAnyDeparture = true;
-                    tableHTML += `<tr><td>${String(hour).padStart(2, '0')}</td><td>${formatMinutesArray(minutes)}</td></tr>`;
-                }
-            }
-            if (!hasAnyDeparture) { 
-                tableHTML += '<tr><td colspan="2" class="text-center py-4">此方向今日暫無班次</td></tr>';
+            // Loop from hour 7 (07:00) to 23 (23:00)
+            for (let hour = 7; hour < 24; hour++) { 
+                const minutes = scheduleData[hour]; 
+                tableHTML += `<tr><td>${String(hour).padStart(2, '0')}</td><td>${formatMinutesArray(minutes)}</td></tr>`;
             }
             tableHTML += '</tbody></table>';
             return tableHTML;
@@ -554,6 +573,9 @@
 
             document.getElementById('etaTabButton').addEventListener('click', () => showView('etaView'));
             document.getElementById('timetableTabButton').addEventListener('click', () => showView('timetableView'));
+            document.getElementById('nr762SubTabButton').addEventListener('click', () => showTimetableSubView('timetableContentNR762'));
+            document.getElementById('nr762aSubTabButton').addEventListener('click', () => showTimetableSubView('timetableContentNR762A'));
+
 
             updateCurrentTimeDisplay(); 
             setInterval(updateCurrentTimeDisplay, 1000); 
