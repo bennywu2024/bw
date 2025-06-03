@@ -11,8 +11,8 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="theme-color" content="#3B82F6">
 
-    <link rel="icon" href="data:image/svg+xml,%3Csvg viewBox='0 0 64 64' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='10' y='25' width='44' height='22' rx='4' ry='4' fill='%233B82F6'/%3E%3Crect x='14' y='15' width='36' height='12' fill='%23A5B4FC'/%3E%3Cpath d='M12 47 L12 52 Q12 54 10 54 L10 54 Q8 54 8 52 L8 47 Z' fill='%23374151'/%3E%3Cpath d='M52 47 L52 52 Q52 54 54 54 L54 54 Q56 54 56 52 L56 47 Z' fill='%23374151'/%3E%3Ccircle cx='18' cy='51' r='5' fill='%23374151'/%3E%3Ccircle cx='46' cy='51' r='5' fill='%23374151'/%3E%3Crect x='24' y='17' width='6' height='8' fill='%23FFFFFF'/%3E%3Crect x='34' y='17' width='6' height='8' fill='%23FFFFFF'/%3E%3C/svg%3E">
-    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg viewBox='0 0 64 64' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='10' y='25' width='44' height='22' rx='4' ry='4' fill='%233B82F6'/%3E%3Crect x='14' y='15' width='36' height='12' fill='%23A5B4FC'/%3E%3Cpath d='M12 47 L12 52 Q12 54 10 54 L10 54 Q8 54 8 52 L8 47 Z' fill='%23374151'/%3E%3Cpath d='M52 47 L52 52 Q52 54 54 54 L54 54 Q56 54 56 52 L56 47 Z' fill='%23374151'/%3E%3Ccircle cx='18' cy='51' r='5' fill='%23374151'/%3E%3Ccircle cx='46' cy='51' r='5' fill='%23374151'/%3E%3Crect x='24' y='17' width='6' height='8' fill='%23FFFFFF'/%3E%3Crect x='34' y='17' width='6' height='8' fill='%23FFFFFF'/%3E%3C/svg%3E">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg width='180' height='180' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='24' height='24' rx='3' fill='%233B82F6'/%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' stroke='white' fill='none' d='M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.125-.504 1.125-1.125V14.25m-17.25 4.5h14.25m-14.25 0V6.75A2.25 2.25 0 0 1 5.625 4.5h12.75a2.25 2.25 0 0 1 2.25 2.25v7.5m-16.5-7.5h16.5' /%3E%3C/svg%3E">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg width='180' height='180' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='24' height='24' rx='3' fill='%233B82F6'/%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' stroke='white' fill='none' d='M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.125-.504 1.125-1.125V14.25m-17.25 4.5h14.25m-14.25 0V6.75A2.25 2.25 0 0 1 5.625 4.5h12.75a2.25 2.25 0 0 1 2.25 2.25v7.5m-16.5-7.5h16.5' /%3E%3C/svg%3E">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -61,7 +61,7 @@
             color: #dc2626; /* red-600 */
             font-weight: 500;
         }
-        #currentTimeDisplayWrapper { 
+        #currentTimeDisplayWrapper, #currentTimeDisplayWrapperTimetable { 
             font-size: 1.25rem; /* text-xl */
             font-weight: 600; 
             color: #374151; /* gray-700 */
@@ -77,7 +77,7 @@
             margin-bottom: 0.5rem; 
             color: #3b82f6; /* Tailwind blue-500 */
         }
-        .next-departure-highlight {
+        .next-departure-highlight { /* For ETA list items */
             background-color: #eff6ff !important; 
             border: 2px solid #3b82f6; /* Tailwind blue-500 */
             font-weight: 700; 
@@ -126,6 +126,17 @@
         }
         .timetable-route-section {
             /* Styles for individual route sections within timetable view */
+        }
+        .timetable-highlight-hour {
+            background-color: #dcfce7; /* Tailwind green-100 for hour cell */
+            font-weight: bold;
+        }
+        .timetable-highlight-minute {
+            background-color: #a7f3d0; /* Tailwind green-200 for specific minute */
+            color: #047857; /* Tailwind green-700 */
+            font-weight: bold;
+            padding: 0.125rem 0.25rem;
+            border-radius: 0.25rem;
         }
     </style>
 </head>
@@ -183,6 +194,9 @@
         </div>
 
         <div id="timetableView" class="view-section hidden bg-white p-5 rounded-xl shadow-lg">
+            <div id="currentTimeDisplayWrapperTimetable" class="mb-6"> 
+                <p id="currentTimeDisplayTimetable">現在時間: --:--:--</p>
+            </div>
             <div id="timetableSubSwitcher" class="mb-6 flex justify-center space-x-2 sm:space-x-4">
                 <button id="nr762SubTabButton" class="sub-tab-button selected-sub-tab">NR762</button>
                 <button id="nr762aSubTabButton" class="sub-tab-button">NR762A</button>
@@ -235,7 +249,7 @@
             },
             "NR762A": {
                 "豫豐花園_to_屯門市中心": { 7: [30], 8: [0, 30], 9: [0, 15, 30, 45], 10: [0, 30], 11: [0, 30], 12: [0, 15, 30, 45], 13: [0, 15, 30, 45], 14: [0, 30], 15: [0, 30], 16: [0, 15, 30, 45], 17: [0, 15, 30, 45], 18: [0], 19: [30], 20: [0, 15, 30, 45], 21: [0, 30], 22: [0, 15, 30, 45], 23: [0, 15] },
-                "屯門市中心_to_豫豐花園": { 7: [40], 8: [10, 40], 9: [10, 25, 40, 55], 10: [10, 40], 11: [10, 40], 12: [10, 25, 40, 55], 13: [10, 25, 40, 55], 14: [10, 40], 15: [10, 40], 16: [10, 25, 40, 55], 17: [10, 25, 40, 55], 18: [10], 19: [40, 55], 20: [10, 25, 40, 55], 21: [10, 40], 22: [10, 25, 40, 55], 23: [10, 30] } // Corrected 18:00 departure
+                "屯門市中心_to_豫豐花園": { 7: [40], 8: [10, 40], 9: [10, 25, 40, 55], 10: [10, 40], 11: [10, 40], 12: [10, 25, 40, 55], 13: [10, 25, 40, 55], 14: [10, 40], 15: [10, 40], 16: [10, 25, 40, 55], 17: [10, 25, 40, 55], 18: [10], 19: [40, 55], 20: [10, 25, 40, 55], 21: [10, 40], 22: [10, 25, 40, 55], 23: [10, 30] }
             }
         };
 
@@ -254,6 +268,8 @@
         const plusCodeMapping = { "豫豐花園": "CX9P+P5", "兆康站": "CX7H+6P", "屯門市中心": "9XVG+74" };
 
         let countdownIntervalId = null; 
+        let currentHktHour = 0;
+        let currentHktMinute = 0;
 
         // --- Utility Functions ---
         function formatTime(date) {
@@ -265,9 +281,18 @@
         }
 
         function updateCurrentTimeDisplay() {
-            const currentTimeDisplay = document.getElementById('currentTimeDisplay');
             const now = new Date();
-            currentTimeDisplay.textContent = `現在時間: ${formatTime(now)}`;
+            const hktTimeString = formatTime(now);
+            document.getElementById('currentTimeDisplay').textContent = `現在時間: ${hktTimeString}`;
+            document.getElementById('currentTimeDisplayTimetable').textContent = `現在時間: ${hktTimeString}`;
+            
+            const hktTimeParts = hktTimeString.split(':');
+            currentHktHour = parseInt(hktTimeParts[0], 10);
+            currentHktMinute = parseInt(hktTimeParts[1], 10);
+
+            if (document.getElementById('timetableView').classList.contains('hidden') === false) {
+                renderFullTimetables();
+            }
         }
 
         // --- Countdown Logic ---
@@ -330,11 +355,6 @@
             const selectedLocationName = document.querySelector('input[name="location"]:checked')?.value;
             if (!selectedLocationName) return;
 
-            const now = new Date();
-            const hktTimeParts = now.toLocaleTimeString('en-GB', { timeZone: 'Asia/Hong_Kong', hour12: false }).split(':');
-            const currentHour = parseInt(hktTimeParts[0], 10);
-            const currentMinute = parseInt(hktTimeParts[1], 10);
-
             const sections = [
                 { id: "NR762", elSection: document.getElementById('nr762Section'), elRoute: document.getElementById('nr762Route'), elDepartures: document.getElementById('nr762Departures'), elMessage: document.getElementById('nr762Message'), elPlusCode: document.getElementById('nr762PlusCodeInfo'), styleClass: 'bg-indigo-50' },
                 { id: "NR762A", elSection: document.getElementById('nr762aSection'), elRoute: document.getElementById('nr762aRoute'), elDepartures: document.getElementById('nr762aDepartures'), elMessage: document.getElementById('nr762aMessage'), elPlusCode: document.getElementById('nr762aPlusCodeInfo'), styleClass: 'bg-teal-50' }
@@ -359,7 +379,7 @@
                     bus.elRoute.textContent = `由 ${selectedLocationName} 開往 ${destName}`;
 
                     if (schedule) {
-                        const departures = getUpcomingDepartures(schedule, currentHour, currentMinute, 5);
+                        const departures = getUpcomingDepartures(schedule, currentHktHour, currentHktMinute, 5);
                         if (departures.length > 0) {
                             departures.forEach((dep, index) => { 
                                 const li = document.createElement('li');
@@ -485,6 +505,7 @@
                     clearInterval(countdownIntervalId);
                     countdownIntervalId = null;
                 }
+                renderFullTimetables(); 
                 showTimetableSubView('timetableContentNR762');
             }
         }
@@ -504,19 +525,55 @@
             }
         }
 
-
         // --- Full Timetable Rendering Logic ---
-        function formatMinutesArray(minutesArray) {
+        function findNextGlobalDeparture(scheduleData, currentHour, currentMinute) {
+            let nextDep = null;
+            if (scheduleData[currentHour]) {
+                for (const minute of scheduleData[currentHour]) {
+                    if (minute >= currentMinute) {
+                        nextDep = { hour: currentHour, minute: minute };
+                        break;
+                    }
+                }
+            }
+            if (!nextDep) {
+                for (let h = currentHour + 1; h < 24; h++) {
+                    if (scheduleData[h] && scheduleData[h].length > 0) {
+                        nextDep = { hour: h, minute: scheduleData[h][0] };
+                        break;
+                    }
+                }
+            }
+            return nextDep;
+        }
+
+        function formatMinutesArray(minutesArray, highlightMinute = -1) {
             if (!minutesArray || minutesArray.length === 0) return '-';
-            return minutesArray.map(min => String(min).padStart(2, '0')).join(', ');
+            return minutesArray.map(min => {
+                const formattedMin = String(min).padStart(2, '0');
+                if (min === highlightMinute) {
+                    return `<span class="timetable-highlight-minute">${formattedMin}</span>`;
+                }
+                return formattedMin;
+            }).join(', ');
         }
 
         function generateTimetableTableHTML(scheduleData) {
             let tableHTML = '<table class="timetable-table"><thead><tr><th>小時</th><th>分鐘</th></tr></thead><tbody>';
-            // Loop from hour 7 (07:00) to 23 (23:00)
+            const nextGlobalDep = findNextGlobalDeparture(scheduleData, currentHktHour, currentHktMinute);
+
             for (let hour = 7; hour < 24; hour++) { 
                 const minutes = scheduleData[hour]; 
-                tableHTML += `<tr><td>${String(hour).padStart(2, '0')}</td><td>${formatMinutesArray(minutes)}</td></tr>`;
+                const hourStr = String(hour).padStart(2, '0');
+                let hourClass = '';
+                let minuteToHighlight = -1;
+
+                if (nextGlobalDep && hour === nextGlobalDep.hour) {
+                    hourClass = 'timetable-highlight-hour';
+                    minuteToHighlight = nextGlobalDep.minute;
+                }
+                
+                tableHTML += `<tr><td class="${hourClass}">${hourStr}</td><td>${formatMinutesArray(minutes, minuteToHighlight)}</td></tr>`;
             }
             tableHTML += '</tbody></table>';
             return tableHTML;
@@ -569,13 +626,15 @@
                  if (document.getElementById('etaView').classList.contains('hidden') === false) {
                     displayDepartures(); 
                 }
+                 if (document.getElementById('timetableView').classList.contains('hidden') === false) {
+                    renderFullTimetables(); 
+                }
             });
 
             document.getElementById('etaTabButton').addEventListener('click', () => showView('etaView'));
             document.getElementById('timetableTabButton').addEventListener('click', () => showView('timetableView'));
             document.getElementById('nr762SubTabButton').addEventListener('click', () => showTimetableSubView('timetableContentNR762'));
             document.getElementById('nr762aSubTabButton').addEventListener('click', () => showTimetableSubView('timetableContentNR762A'));
-
 
             updateCurrentTimeDisplay(); 
             setInterval(updateCurrentTimeDisplay, 1000); 
