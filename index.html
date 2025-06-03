@@ -37,6 +37,9 @@
         }
         .location-button {
             transition: all 0.3s ease;
+            padding: 0.375rem 0.75rem; /* py-1.5 px-3 */
+            font-size: 0.875rem; /* text-sm */
+            white-space: nowrap; /* Prevent text wrapping inside button */
         }
         .location-button.selected {
             background-color: #3b82f6; /* blue-500 */
@@ -87,53 +90,125 @@
             margin-top: 0.75rem;
             margin-bottom: 0.5rem;
         }
+        .view-tab-button {
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem; /* rounded-md */
+            font-weight: 500;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .view-tab-button.selected-tab {
+            background-color: #3b82f6; /* blue-500 */
+            color: white;
+        }
+        .view-tab-button:not(.selected-tab) {
+            background-color: #e5e7eb; /* gray-200 */
+            color: #374151; /* gray-700 */
+        }
+         .view-tab-button:not(.selected-tab):hover {
+            background-color: #d1d5db; /* gray-300 */
+        }
+        .view-section {
+            /* Common styling for views if needed */
+        }
+        .timetable-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1.5rem; /* mb-6 */
+        }
+        .timetable-table th, .timetable-table td {
+            border: 1px solid #d1d5db; /* gray-300 */
+            padding: 0.5rem; /* p-2 */
+            text-align: left;
+        }
+        .timetable-table th {
+            background-color: #f3f4f6; /* gray-100 */
+            font-weight: 600;
+        }
     </style>
 </head>
 <body class="bg-gradient-to-br from-blue-100 to-indigo-200 min-h-screen">
     <div class="container mx-auto p-4 sm:p-6 lg:p-8 max-w-3xl">
         
-        <div class="flex items-center mb-4">
+        <div class="flex justify-center items-center mb-4">
             <svg class="bus-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.125-.504 1.125-1.125V14.25m-17.25 4.5h14.25m-14.25 0V6.75A2.25 2.25 0 0 1 5.625 4.5h12.75a2.25 2.25 0 0 1 2.25 2.25v7.5m-16.5-7.5h16.5" />
             </svg>
         </div>
 
-        <section class="mb-6 bg-white p-5 rounded-xl shadow-lg">
-            <h2 class="text-xl font-semibold mb-3 text-gray-800">選擇你現在的位置:</h2>
-            <div id="locationSelector" class="flex flex-col sm:flex-row flex-wrap gap-3">
-            </div>
-            <p id="geolocationMessage" class="text-sm text-gray-500"></p>
-        </section>
+        <div id="viewSwitcher" class="mb-6 flex justify-center space-x-2 sm:space-x-4">
+            <button id="etaTabButton" class="view-tab-button selected-tab">到站時間 (ETA)</button>
+            <button id="timetableTabButton" class="view-tab-button">時間表 (Timetable)</button>
+        </div>
 
-        <section class="mb-6">
-            <div id="currentTimeDisplayWrapper"> 
-                <p id="currentTimeDisplay">現在時間: --:--:--</p>
-            </div>
-        </section>
-
-        <section id="departuresDisplay" class="space-y-6">
-            <div id="nr762Section" class="bg-white p-5 rounded-xl shadow-lg hidden">
-                <div class="flex justify-between items-center mb-2">
-                    <h3 class="text-2xl font-bold text-indigo-600">NR762</h3>
-                    <span class="text-sm text-indigo-500 font-medium plus-code-info" id="nr762PlusCodeInfo"></span>
+        <div id="etaView" class="view-section">
+            <section class="mb-6 bg-white p-5 rounded-xl shadow-lg">
+                <h2 class="text-xl font-semibold mb-3 text-gray-800">位置:</h2>
+                <div id="locationSelector" class="flex flex-wrap gap-2 justify-center">
                 </div>
-                <p id="nr762Route" class="text-md text-gray-700 font-medium mb-3"></p>
-                <ul id="nr762Departures" class="space-y-2 text-gray-800">
-                </ul>
-                <p id="nr762Message" class="text-gray-600 mt-3 text-sm"></p>
-            </div>
+                <p id="geolocationMessage" class="text-sm text-gray-500"></p>
+            </section>
 
-            <div id="nr762aSection" class="bg-white p-5 rounded-xl shadow-lg hidden">
-                 <div class="flex justify-between items-center mb-2">
-                    <h3 class="text-2xl font-bold text-teal-600">NR762A</h3>
-                    <span class="text-sm text-teal-500 font-medium plus-code-info" id="nr762aPlusCodeInfo"></span>
+            <section class="mb-6">
+                <div id="currentTimeDisplayWrapper"> 
+                    <p id="currentTimeDisplay">現在時間: --:--:--</p>
                 </div>
-                <p id="nr762aRoute" class="text-md text-gray-700 font-medium mb-3"></p>
-                <ul id="nr762aDepartures" class="space-y-2 text-gray-800">
-                </ul>
-                <p id="nr762aMessage" class="text-gray-600 mt-3 text-sm"></p>
+            </section>
+
+            <section id="departuresDisplay" class="space-y-6">
+                <div id="nr762Section" class="bg-white p-5 rounded-xl shadow-lg hidden">
+                    <div class="flex justify-between items-center mb-2">
+                        <h3 class="text-2xl font-bold text-indigo-600">NR762</h3>
+                        <span class="text-sm text-indigo-500 font-medium plus-code-info" id="nr762PlusCodeInfo"></span>
+                    </div>
+                    <p id="nr762Route" class="text-md text-gray-700 font-medium mb-3"></p>
+                    <ul id="nr762Departures" class="space-y-2 text-gray-800">
+                    </ul>
+                    <p id="nr762Message" class="text-gray-600 mt-3 text-sm"></p>
+                </div>
+
+                <div id="nr762aSection" class="bg-white p-5 rounded-xl shadow-lg hidden">
+                     <div class="flex justify-between items-center mb-2">
+                        <h3 class="text-2xl font-bold text-teal-600">NR762A</h3>
+                        <span class="text-sm text-teal-500 font-medium plus-code-info" id="nr762aPlusCodeInfo"></span>
+                    </div>
+                    <p id="nr762aRoute" class="text-md text-gray-700 font-medium mb-3"></p>
+                    <ul id="nr762aDepartures" class="space-y-2 text-gray-800">
+                    </ul>
+                    <p id="nr762aMessage" class="text-gray-600 mt-3 text-sm"></p>
+                </div>
+            </section>
+        </div>
+
+        <div id="timetableView" class="view-section hidden bg-white p-5 rounded-xl shadow-lg">
+            <div class="mb-8">
+                <h3 class="text-xl font-semibold text-indigo-600 mb-3 text-center">NR762: 豫豐花園 ↔ 兆康站</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="text-lg font-medium text-gray-700 mb-2 text-center">由 豫豐花園 開出</h4>
+                        <div id="nr762_richwood_timetable_container"></div>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-medium text-gray-700 mb-2 text-center">由 兆康站 開出</h4>
+                        <div id="nr762_siuhong_timetable_container"></div>
+                    </div>
+                </div>
             </div>
-        </section>
+            
+            <div>
+                <h3 class="text-xl font-semibold text-teal-600 mb-3 text-center">NR762A: 豫豐花園 ↔ 屯門市中心</h3>
+                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="text-lg font-medium text-gray-700 mb-2 text-center">由 豫豐花園 開出</h4>
+                        <div id="nr762a_richwood_timetable_container"></div>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-medium text-gray-700 mb-2 text-center">由 屯門市中心 開出</h4>
+                        <div id="nr762a_tuenmun_timetable_container"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
 
         <footer class="mt-8 text-center text-sm text-gray-500">
             <button id="refreshButton" class="mb-4 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75 shadow-md transition-colors">
@@ -152,7 +227,7 @@
             },
             "NR762A": {
                 "豫豐花園_to_屯門市中心": { 7: [30], 8: [0, 30], 9: [0, 15, 30, 45], 10: [0, 30], 11: [0, 30], 12: [0, 15, 30, 45], 13: [0, 15, 30, 45], 14: [0, 30], 15: [0, 30], 16: [0, 15, 30, 45], 17: [0, 15, 30, 45], 18: [0], 19: [30], 20: [0, 15, 30, 45], 21: [0, 30], 22: [0, 15, 30, 45], 23: [0, 15] },
-                "屯門市中心_to_豫豐花園": { 7: [40], 8: [10, 40], 9: [10, 25, 40, 55], 10: [10, 40], 11: [10, 40], 12: [10, 25, 40, 55], 13: [10, 25, 40, 55], 14: [10, 40], 15: [10, 40], 16: [10, 25, 40, 55], 17: [10, 25, 40, 55], 19: [40, 55], 20: [10, 25, 40, 55], 21: [10, 40], 22: [10, 25, 40, 55], 23: [10, 30] }
+                "屯門市中心_to_豫豐花園": { 7: [40], 8: [10, 40], 9: [10, 25, 40, 55], 10: [10, 40], 11: [10, 40], 12: [10, 25, 40, 55], 13: [10, 25, 40, 55], 14: [10, 40], 15: [10, 40], 16: [10, 25, 40, 55], 17: [10, 25, 40, 55], 18: [8, 23, 38, 48, 58], 19: [40, 55], 20: [10, 25, 40, 55], 21: [10, 40], 22: [10, 25, 40, 55], 23: [10, 30] }
             }
         };
 
@@ -213,7 +288,7 @@
             });
         }
         
-        // --- Core Logic Functions ---
+        // --- Core Logic Functions (ETA View) ---
         function getUpcomingDepartures(schedule, currentHour, currentMinute, count = 5) {
             if (!schedule) return [];
             const upcoming = [];
@@ -243,7 +318,7 @@
             return upcoming;
         }
 
-        function displayDepartures() {
+        function displayDepartures() { 
             const selectedLocationName = document.querySelector('input[name="location"]:checked')?.value;
             if (!selectedLocationName) return;
 
@@ -287,7 +362,7 @@
                                 li.dataset.departureTime = dep.date.toISOString(); 
 
                                 const timeText = document.createElement('span');
-                                timeText.textContent = `下一班: ${formatDepartureTime(dep.hour, dep.minute)}`;
+                                timeText.textContent = `${formatDepartureTime(dep.hour, dep.minute)}`;
                                 
                                 const countdownSpan = document.createElement('span');
                                 countdownSpan.className = 'countdown-text ml-2'; 
@@ -306,7 +381,7 @@
             });
             
             updateAllCountdowns(); 
-            if (document.querySelector('li[data-departure-time]')) { 
+            if (document.querySelector('#etaView li[data-departure-time]')) { 
                 countdownIntervalId = setInterval(updateAllCountdowns, 1000); 
             }
         }
@@ -382,6 +457,60 @@
             }
         }
 
+        // --- View Switching Logic ---
+        function showView(viewId) {
+            document.getElementById('etaView').classList.add('hidden');
+            document.getElementById('timetableView').classList.add('hidden');
+            document.getElementById(viewId).classList.remove('hidden');
+
+            document.getElementById('etaTabButton').classList.remove('selected-tab');
+            document.getElementById('timetableTabButton').classList.remove('selected-tab');
+
+            if (viewId === 'etaView') {
+                document.getElementById('etaTabButton').classList.add('selected-tab');
+                const selectedLocationName = document.querySelector('input[name="location"]:checked')?.value;
+                if(selectedLocationName) displayDepartures(); else handleDetectLocation();
+
+            } else if (viewId === 'timetableView') {
+                document.getElementById('timetableTabButton').classList.add('selected-tab');
+                if (countdownIntervalId) { 
+                    clearInterval(countdownIntervalId);
+                    countdownIntervalId = null;
+                }
+            }
+        }
+
+        // --- Full Timetable Rendering Logic ---
+        function formatMinutesArray(minutesArray) {
+            if (!minutesArray || minutesArray.length === 0) return '-';
+            return minutesArray.map(min => String(min).padStart(2, '0')).join(', ');
+        }
+
+        function generateTimetableTableHTML(scheduleData) {
+            let tableHTML = '<table class="timetable-table"><thead><tr><th>小時</th><th>分鐘</th></tr></thead><tbody>';
+            let hasAnyDeparture = false;
+            for (let hour = 0; hour < 24; hour++) {
+                const minutes = scheduleData[hour];
+                if (minutes && minutes.length > 0) {
+                    hasAnyDeparture = true;
+                    tableHTML += `<tr><td>${String(hour).padStart(2, '0')}</td><td>${formatMinutesArray(minutes)}</td></tr>`;
+                }
+            }
+            if (!hasAnyDeparture) { 
+                tableHTML += '<tr><td colspan="2" class="text-center py-4">此方向今日暫無班次</td></tr>';
+            }
+            tableHTML += '</tbody></table>';
+            return tableHTML;
+        }
+
+        function renderFullTimetables() {
+            document.getElementById('nr762_richwood_timetable_container').innerHTML = generateTimetableTableHTML(allSchedules.NR762["豫豐花園_to_兆康站"]);
+            document.getElementById('nr762_siuhong_timetable_container').innerHTML = generateTimetableTableHTML(allSchedules.NR762["兆康站_to_豫豐花園"]);
+            document.getElementById('nr762a_richwood_timetable_container').innerHTML = generateTimetableTableHTML(allSchedules.NR762A["豫豐花園_to_屯門市中心"]);
+            document.getElementById('nr762a_tuenmun_timetable_container').innerHTML = generateTimetableTableHTML(allSchedules.NR762A["屯門市中心_to_豫豐花園"]);
+        }
+
+
         // --- Initialization ---
         function init() {
             const locationSelector = document.getElementById('locationSelector');
@@ -390,7 +519,7 @@
                 button.type = 'button';
                 button.value = loc.name;
                 button.textContent = loc.name;
-                button.className = 'location-button flex-grow sm:flex-none px-4 py-2 border border-gray-300 rounded-md text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-400';
+                button.className = 'location-button rounded-md';
                 
                 button.addEventListener('click', () => {
                     document.querySelectorAll('.location-button').forEach(btn => btn.classList.remove('selected'));
@@ -409,19 +538,27 @@
                     radioInput.checked = true;
                     
                     document.getElementById('geolocationMessage').textContent = ""; 
-                    displayDepartures();
+                    if (document.getElementById('etaView').classList.contains('hidden') === false) {
+                        displayDepartures(); 
+                    }
                 });
                 locationSelector.appendChild(button);
             });
             
             document.getElementById('refreshButton').addEventListener('click', () => {
                 document.getElementById('geolocationMessage').textContent = ""; 
-                displayDepartures();
+                 if (document.getElementById('etaView').classList.contains('hidden') === false) {
+                    displayDepartures(); 
+                }
             });
+
+            document.getElementById('etaTabButton').addEventListener('click', () => showView('etaView'));
+            document.getElementById('timetableTabButton').addEventListener('click', () => showView('timetableView'));
 
             updateCurrentTimeDisplay(); 
             setInterval(updateCurrentTimeDisplay, 1000); 
 
+            renderFullTimetables(); 
             handleDetectLocation(); 
         }
 
