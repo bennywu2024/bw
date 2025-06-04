@@ -101,9 +101,11 @@
             color: #15803d; 
         }
         #geolocationMessage {
-            min-height: 1.25rem; 
-            margin-top: 0.75rem;
-            margin-bottom: 0.5rem;
+            font-size: 0.75rem; /* text-xs */
+            color: #4b5563; /* gray-600 */
+            min-height: 1.125rem; /* Adjusted for text-xs */
+            margin-top: 0.5rem; /* Reduced margin */
+            margin-bottom: 0.25rem; /* Reduced margin */
         }
         .view-tab-button, .sub-tab-button {
             padding: 0.5rem 1rem;
@@ -167,6 +169,9 @@
         #expandableMenu button:last-child {
             margin-bottom: 0;
         }
+        .location-section {
+            padding: 1rem; 
+        }
     </style>
 </head>
 <body class="bg-gradient-to-br from-blue-100 to-indigo-200 min-h-screen">
@@ -191,11 +196,11 @@
 
     <div class="container mx-auto p-4 sm:p-6 lg:p-8 max-w-3xl">
         <div id="etaView" class="view-section">
-            <section class="mb-6 bg-white p-5 rounded-xl shadow-lg">
+            <section class="location-section mb-6 bg-white rounded-xl shadow-lg">
                 <h2 class="text-xl font-semibold mb-3 text-gray-800">現在位置:</h2>
                 <div id="locationSelector" class="flex flex-wrap gap-2 justify-center">
                 </div>
-                <p id="geolocationMessage" class="text-sm text-gray-500"></p>
+                <p id="geolocationMessage" class="text-gray-700"></p>
             </section>
 
             <section id="departuresDisplay" class="space-y-6">
@@ -479,7 +484,7 @@
                         });
 
                         if (nearestLocation) {
-                            geoMsgEl.textContent = `已偵測到最近車站: ${nearestLocation.name} (距離約 ${shortestDistance.toFixed(2)} km)`;
+                            geoMsgEl.textContent = `位置距離: ${nearestLocation.name} (約 ${shortestDistance.toFixed(2)} km)`;
                             const buttons = document.querySelectorAll('#locationSelector .location-button');
                             buttons.forEach(btn => {
                                 if (btn.value === nearestLocation.name) {
@@ -642,7 +647,7 @@
                     radioInput.checked = true;
                     
                     const geoMsgEl = document.getElementById('geolocationMessage');
-                    if (geoMsgEl.textContent.includes("距離約")) { // Clear distance message on manual select
+                    if (geoMsgEl.textContent.includes("距離約")) { 
                         geoMsgEl.textContent = "";
                     }
 
