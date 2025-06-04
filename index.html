@@ -626,7 +626,7 @@
             let tableHTML = '<table class="timetable-table"><thead><tr><th>小時</th><th>分鐘</th></tr></thead><tbody>';
             const nextGlobalDep = findNextGlobalDeparture(scheduleData, currentHktHour, currentHktMinute);
 
-            for (let hour = 7; hour < 24; hour++) { 
+            for (let hour = 6; hour < 24; hour++) { 
                 const minutes = scheduleData[hour]; 
                 const hourStr = String(hour).padStart(2, '0');
                 let hourClass = '';
