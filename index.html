@@ -11,8 +11,10 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="theme-color" content="#3B82F6">
 
-    <link rel="icon" href="data:image/svg+xml,%3Csvg width='180' height='180' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='24' height='24' rx='3' fill='%233B82F6'/%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' stroke='white' fill='none' d='M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.125-.504 1.125-1.125V14.25m-17.25 4.5h14.25m-14.25 0V6.75A2.25 2.25 0 0 1 5.625 4.5h12.75a2.25 2.25 0 0 1 2.25 2.25v7.5m-16.5-7.5h16.5' /%3E%3C/svg%3E">
-    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg width='180' height='180' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='24' height='24' rx='3' fill='%233B82F6'/%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' stroke='white' fill='none' d='M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.125-.504 1.125-1.125V14.25m-17.25 4.5h14.25m-14.25 0V6.75A2.25 2.25 0 0 1 5.625 4.5h12.75a2.25 2.25 0 0 1 2.25 2.25v7.5m-16.5-7.5h16.5' /%3E%3C/svg%3E">
+    {/* Favicon (for browser tabs) - can be more complex */}
+    <link rel="icon" href="data:image/svg+xml,%3Csvg width='64' height='64' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='24' height='24' rx='3' fill='%233B82F6'/%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' stroke='white' fill='none' d='M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.125-.504 1.125-1.125V14.25m-17.25 4.5h14.25m-14.25 0V6.75A2.25 2.25 0 0 1 5.625 4.5h12.75a2.25 2.25 0 0 1 2.25 2.25v7.5m-16.5-7.5h16.5' /%3E%3C/svg%3E">
+    {/* Apple Touch Icon (for Home Screen) - simpler SVG */}
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='36' fill='%233B82F6'/%3E%3Ctext x='50%25' y='50%25' dy='.1em' font-size='80' font-family='Arial, Helvetica, sans-serif' fill='white' text-anchor='middle' dominant-baseline='middle'%3ESB%3C/text%3E%3C/svg%3E">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -174,16 +176,16 @@
         }
         #pullToRefreshIndicator {
             position: fixed;
-            top: 60px; /* Below fixed header */
+            top: 60px; 
             left: 0;
             right: 0;
-            height: 0; /* Initially hidden, height controlled by JS */
+            height: 0; 
             display: flex;
             align-items: center;
             justify-content: center;
-            background-color: rgba(220, 230, 255, 0.7); /* Light blueish, semi-transparent */
-            color: #374151; /* gray-700 */
-            z-index: 50; /* Below header and menu */
+            background-color: rgba(220, 230, 255, 0.7); 
+            color: #374151; 
+            z-index: 50; 
             overflow: hidden;
             transition: height 0.2s ease-out, opacity 0.2s ease-out;
             opacity: 0;
@@ -654,15 +656,15 @@
         const ptrIndicator = document.getElementById('pullToRefreshIndicator');
         const ptrArrow = document.getElementById('pullRefreshArrow');
         const ptrSpinner = document.getElementById('pullRefreshSpinner');
-        const ptrTextEl = document.getElementById('pullRefreshText'); // Assuming you might add text later
+        const ptrTextEl = document.getElementById('pullRefreshText'); 
         let ptrTouchStartY = 0;
         let ptrIsRefreshing = false;
-        const ptrThreshold = 80; // Pixels to pull to trigger refresh
+        const ptrThreshold = 80; 
 
         document.body.addEventListener('touchstart', (e) => {
             if (window.scrollY === 0 && !ptrIsRefreshing) {
                 ptrTouchStartY = e.touches[0].clientY;
-                ptrIndicator.style.transition = 'none'; // Allow direct manipulation during pull
+                ptrIndicator.style.transition = 'none'; 
             }
         }, { passive: true });
 
@@ -672,44 +674,42 @@
             const currentY = e.touches[0].clientY;
             let deltaY = currentY - ptrTouchStartY;
 
-            if (deltaY > 0) { // Only on pulling down
-                // e.preventDefault(); // Be cautious with this, might block other scroll/touch behaviors
+            if (deltaY > 0) { 
                 ptrIndicator.style.opacity = '1';
-                ptrIndicator.style.height = Math.min(deltaY * 0.7, ptrThreshold + 20) + 'px'; // Control height
+                ptrIndicator.style.height = Math.min(deltaY * 0.7, ptrThreshold + 20) + 'px'; 
                 
                 ptrArrow.classList.remove('hidden');
                 ptrSpinner.classList.add('hidden');
 
                 if (deltaY > ptrThreshold) {
-                    ptrArrow.style.transform = 'rotate(180deg)'; // Arrow up
+                    ptrArrow.style.transform = 'rotate(180deg)'; 
                     if(ptrTextEl) ptrTextEl.textContent = "釋放以更新";
                 } else {
-                    ptrArrow.style.transform = 'rotate(0deg)'; // Arrow down
+                    ptrArrow.style.transform = 'rotate(0deg)'; 
                      if(ptrTextEl) ptrTextEl.textContent = "下拉以更新";
                 }
-            } else { // Pulling up or not enough pull
+            } else { 
                  ptrIndicator.style.height = '0px';
                  ptrIndicator.style.opacity = '0';
             }
-        }, { passive: false }); // passive: false if preventDefault is used
+        }, { passive: false }); 
 
-        document.body.addEventListener('touchend', () => {
+        document.body.addEventListener('touchend', (e) => { // Changed event to e
             if (ptrIsRefreshing || ptrTouchStartY === 0) return;
 
-            const deltaY = event.changedTouches[0].clientY - ptrTouchStartY;
+            const deltaY = e.changedTouches[0].clientY - ptrTouchStartY; // Use e here
 
-            ptrIndicator.style.transition = 'height 0.2s ease-out, opacity 0.2s ease-out'; // Re-enable transition
+            ptrIndicator.style.transition = 'height 0.2s ease-out, opacity 0.2s ease-out'; 
 
             if (deltaY > ptrThreshold) {
                 ptrIsRefreshing = true;
-                ptrIndicator.style.height = '60px'; // Keep indicator visible during refresh
+                ptrIndicator.style.height = '60px'; 
                 ptrIndicator.style.opacity = '1';
                 ptrArrow.classList.add('hidden');
                 ptrSpinner.classList.remove('hidden');
                 if(ptrTextEl) ptrTextEl.textContent = "更新中...";
 
-                // Perform refresh action
-                document.getElementById('geolocationMessage').textContent = ""; 
+                document.getElementById('geolocationMessage').classList.add('hidden'); 
                 if (!document.getElementById('etaView').classList.contains('hidden')) {
                     displayDepartures(); 
                 }
@@ -724,12 +724,12 @@
                     ptrSpinner.classList.add('hidden');
                     if(ptrTextEl) ptrTextEl.textContent = "";
                     ptrIsRefreshing = false;
-                }, 1500); // Hide after 1.5s
+                }, 1500); 
             } else {
                 ptrIndicator.style.height = '0px';
                 ptrIndicator.style.opacity = '0';
             }
-            ptrTouchStartY = 0; // Reset
+            ptrTouchStartY = 0; 
         });
 
 
@@ -761,7 +761,7 @@
                     
                     const geoMsgEl = document.getElementById('geolocationMessage');
                     if (geoMsgEl.textContent.includes("距離約")) { 
-                        geoMsgEl.classList.add('hidden'); // Hide if user manually selects
+                        geoMsgEl.classList.add('hidden'); 
                     }
 
                     if (document.getElementById('etaView').classList.contains('hidden') === false) {
