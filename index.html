@@ -68,10 +68,10 @@
         }
         .countdown-text {
             font-weight: 500;
-            color: #16a34a;
+            color: #16a34a; /* Green for countdown */
         }
         .departed-text {
-            color: #dc2626;
+            color: #dc2626; /* Red for departed */
             font-weight: 500;
         }
         #topBarCurrentTime { 
@@ -93,12 +93,17 @@
             cursor: pointer;
         }
         .next-departure-highlight { 
-            background-color: #eff6ff !important; 
-            border: 2px solid #3b82f6; 
+            background-color: #eff6ff !important; /* blue-50 */
+            border: 2px solid #3b82f6; /* blue-500 */
             font-weight: 700; 
         }
         .next-departure-highlight .countdown-text {
-            color: #15803d; 
+            color: #15803d; /* darker green */
+        }
+        /* Added for KMB highlight */
+        .next-departure-highlight-green {
+            background-color: #f0fdf4 !important; /* green-50 */
+            border: 2px solid #22c55e !important; /* green-500 */
         }
         #geolocationMessage {
             font-size: 0.75rem; 
@@ -252,6 +257,17 @@
                     </ul>
                     <p id="nr762aMessage" class="text-gray-600 mt-3 text-sm"></p>
                 </div>
+
+                <!-- KMB Section Added Here -->
+                <div id="kmbSection" class="bg-white p-5 rounded-xl shadow-lg hidden">
+                    <div class="flex justify-between items-center mb-2">
+                        <h3 class="text-2xl font-bold text-green-600">九巴路線</h3>
+                    </div>
+                    <p class="text-md text-gray-700 font-medium mb-3">由 屯門大會堂 開往 藍地</p>
+                    <ul id="kmbDepartures" class="space-y-2 text-gray-800"></ul>
+                    <p id="kmbMessage" class="text-gray-600 mt-3 text-sm"></p>
+                </div>
+
             </section>
         </div>
 
@@ -325,6 +341,11 @@
         };
         
         const plusCodeMapping = { "豫豐花園": "CX9P+P5", "兆康站": "CX7H+6P", "屯門市中心": "9XVG+74" };
+        
+        // --- KMB API Config ---
+        const kmbStopId = 'F26CC0CB9587F2F9';
+        const kmbTargetRoutes = ['63X', '68A', '960P'];
+        const kmbApiUrl = `https://data.etabus.gov.hk/v1/transport/kmb/stop-eta/${kmbStopId}`;
 
         let countdownIntervalId = null; 
         let currentHktHour = 0;
@@ -371,7 +392,7 @@
                     } else { 
                         const displayMinutes = Math.floor(totalSeconds / 60);
                         const displaySeconds = totalSeconds % 60;
-                        countdownSpan.textContent = `(${String(displayMinutes).padStart(2, '0')} 分 ${String(displaySeconds).padStart(2, '0')} 秒)`;
+                        countdownSpan.innerHTML = `(${String(displayMinutes).padStart(2, '0')} 分 ${String(displaySeconds).padStart(2, '0')} 秒)`;
                         countdownSpan.classList.remove('departed-text'); 
                         countdownSpan.classList.add('countdown-text'); 
                     }
@@ -408,6 +429,57 @@
             }
             return upcoming;
         }
+        
+        async function fetchAndDisplayKmbDepartures() {
+            const kmbSection = document.getElementById('kmbSection');
+            const kmbDeparturesList = document.getElementById('kmbDepartures');
+            const kmbMessageEl = document.getElementById('kmbMessage');
+            
+            kmbDeparturesList.innerHTML = '<li class="text-gray-500">正在載入九巴班次...</li>';
+            kmbMessageEl.textContent = '';
+            kmbSection.classList.remove('hidden');
+
+            try {
+                const response = await fetch(kmbApiUrl);
+                if (!response.ok) throw new Error(`API error: ${response.status}`);
+                const data = await response.json();
+
+                kmbDeparturesList.innerHTML = ''; // Clear loading message
+
+                const relevantDepartures = data.data
+                    .filter(bus => kmbTargetRoutes.includes(bus.route) && bus.eta)
+                    .sort((a, b) => new Date(a.eta) - new Date(b.eta));
+
+                if (relevantDepartures.length > 0) {
+                    relevantDepartures.forEach((dep, index) => {
+                        const li = document.createElement('li');
+                        li.className = 'p-3 bg-green-50 rounded-md shadow-sm flex justify-between items-center';
+                        if (index === 0) {
+                            li.classList.add('next-departure-highlight', 'next-departure-highlight-green');
+                        }
+                        li.dataset.departureTime = dep.eta;
+
+                        const timeText = document.createElement('span');
+                        // Use dest_tc for Traditional Chinese destination
+                        timeText.innerHTML = `<span class="font-bold text-lg">${dep.route}</span> <span class="text-gray-600">往 ${dep.dest_tc}</span>`;
+
+                        const countdownSpan = document.createElement('span');
+                        countdownSpan.className = 'countdown-text ml-2';
+
+                        li.appendChild(timeText);
+                        li.appendChild(countdownSpan);
+                        kmbDeparturesList.appendChild(li);
+                    });
+                } else {
+                    kmbMessageEl.textContent = '暫無九巴班次資料。';
+                }
+            } catch (error) {
+                console.error("KMB Fetch Error:", error);
+                kmbDeparturesList.innerHTML = '';
+                kmbMessageEl.textContent = '無法載入九巴班次，請稍後再試。';
+            }
+        }
+
 
         function displayDepartures() { 
             const selectedLocationName = document.querySelector('input[name="location"]:checked')?.value;
@@ -466,6 +538,14 @@
                 }
             });
             
+            // Handle KMB Section Display
+            const kmbSection = document.getElementById('kmbSection');
+            if (selectedLocationName === '屯門市中心') {
+                fetchAndDisplayKmbDepartures();
+            } else {
+                kmbSection.classList.add('hidden');
+            }
+
             updateAllCountdowns(); 
             if (document.querySelector('#etaView li[data-departure-time]')) { 
                 countdownIntervalId = setInterval(updateAllCountdowns, 1000); 
@@ -491,7 +571,6 @@
 
         function handleDetectLocation() {
             const geoMsgEl = document.getElementById('geolocationMessage');
-            // geoMsgEl.textContent = ""; // Keep this line if you want to clear previous messages before new detection attempt
 
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
