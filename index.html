@@ -233,8 +233,8 @@
     </div>
 
     <div id="expandableMenu" class="hidden">
-        <button id="etaTabButton" class="view-tab-button selected-tab">到站時間 (ETA)</button>
-        <button id="timetableTabButton" class="view-tab-button">時間表 (Timetable)</button>
+        <button id="etaTabButton" class="view-tab-button selected-tab">到站時間</button>
+        <button id="timetableTabButton" class="view-tab-button">村巴時間表</button>
     </div>
 
     <div class="container mx-auto p-4 sm:p-6 lg:p-8 max-w-3xl">
@@ -718,7 +718,8 @@
                         const activeGroup = (distanceToHome <= 0.5) ? 'out' : 'home';
                         document.getElementById(activeGroup === 'out' ? 'mainTabOut' : 'mainTabHome').click();
                         
-                        locations[activeGroup].forEach(loc => {
+                        const allLocations = [...locations.out, ...locations.home];
+                        allLocations.forEach(loc => {
                             const distance = calculateDistance(userPosition.lat, userPosition.lon, loc.lat, loc.lon);
                             if (distance < shortestDistance) {
                                 shortestDistance = distance;
@@ -848,10 +849,10 @@
 
         function renderFullTimetables() {
             updateCurrentTimeForSchedules();
-            document.getElementById('nr762_richwood_timetable_container').innerHTML = generateTimetableTableHTML(allSchedules.NR762["豫豐花園_to_兆康站"]);
-            document.getElementById('nr762_siuhong_timetable_container').innerHTML = generateTimetableTableHTML(allSchedules.NR762["兆康站_to_豫豐花園"]);
-            document.getElementById('nr762a_richwood_timetable_container').innerHTML = generateTimetableTableHTML(allSchedules.NR762A["豫豐花園_to_屯門市中心"]);
-            document.getElementById('nr762a_tuenmun_timetable_container').innerHTML = generateTimetableTableHTML(allSchedules.NR762A["屯門市中心_to_豫豐花園"]);
+            document.getElementById('nr762_richwood_timetable_container').innerHTML = generateTimetableTableHTML(allSchedules.NR762["豫豐花園_to_兆康站"], currentHktHour, currentHktMinute);
+            document.getElementById('nr762_siuhong_timetable_container').innerHTML = generateTimetableTableHTML(allSchedules.NR762["兆康站_to_豫豐花園"], currentHktHour, currentHktMinute);
+            document.getElementById('nr762a_richwood_timetable_container').innerHTML = generateTimetableTableHTML(allSchedules.NR762A["豫豐花園_to_屯門市中心"], currentHktHour, currentHktMinute);
+            document.getElementById('nr762a_tuenmun_timetable_container').innerHTML = generateTimetableTableHTML(allSchedules.NR762A["屯門市中心_to_豫豐花園"], currentHktHour, currentHktMinute);
         }
         
         // --- Pull to Refresh Logic ---
