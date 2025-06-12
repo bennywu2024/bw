@@ -353,8 +353,9 @@
         const locations = {
             "out": [
                 { name: "豫豐花園", lat: 22.4193, lon: 113.9855 },
-                { name: "藍地站 (元朗方向)", lat: 22.4184, lon: 113.9822 },
-                { name: "藍地站 (屯門方向)", lat: 22.4184, lon: 113.9822 }
+                { name: "藍地站 (屯門方向)", lat: 22.4184, lon: 113.9822 },
+                { name: "藍地站 (元朗方向)", lat: 22.4184, lon: 113.9822 }
+                
             ],
             "home": [
                 { name: "兆康站", lat: 22.4131, lon: 113.9793 },
@@ -504,7 +505,6 @@
                     .filter(bus => bus.eta)
                     .sort((a, b) => new Date(a.eta) - new Date(b.eta));
                 
-                // Special filtering for "屯公轉車站 (屯門方向)"
                 if (kmbConfig.targetRoutes) {
                     relevantDepartures = relevantDepartures.filter(bus => kmbConfig.targetRoutes.includes(bus.route));
                 }
@@ -554,7 +554,7 @@
                 const platform = data.platform_list.find(p => p.platform_id === lrtConfig.targetPlatform);
                 
                 if (platform && platform.route_list && platform.route_list.length > 0) {
-                     const relevantDepartures = platform.route_list.filter(route => route.time_ch); // Show all routes with time data
+                     const relevantDepartures = platform.route_list.filter(route => route.time_ch);
                     if (relevantDepartures.length > 0) {
                         relevantDepartures.forEach((dep, index) => {
                             const li = document.createElement('li');
@@ -571,11 +571,11 @@
                             rightDiv.className = 'flex items-center flex-shrink-0 ml-4';
 
                             const carCountSpan = document.createElement('span');
-                            carCountSpan.className = 'font-medium text-gray-600 w-14 text-center'; // Fixed width for alignment
+                            carCountSpan.className = 'font-medium text-gray-600 w-14 text-center';
                             carCountSpan.textContent = dep.train_length === 1 ? '一卡' : '兩卡';
 
                             const etaSpan = document.createElement('span');
-                            etaSpan.className = 'font-medium w-28 text-right'; // Fixed width for alignment
+                            etaSpan.className = 'font-medium w-28 text-right';
                             
                             if (dep.time_ch === "-") {
                                 etaSpan.textContent = "即將到達/已開出";
@@ -718,8 +718,8 @@
                         const activeGroup = (distanceToHome <= 0.5) ? 'out' : 'home';
                         document.getElementById(activeGroup === 'out' ? 'mainTabOut' : 'mainTabHome').click();
                         
-                        const allLocations = [...locations.out, ...locations.home];
-                        allLocations.forEach(loc => {
+                        const allLocationsInGroup = locations[activeGroup];
+                        allLocationsInGroup.forEach(loc => {
                             const distance = calculateDistance(userPosition.lat, userPosition.lon, loc.lat, loc.lon);
                             if (distance < shortestDistance) {
                                 shortestDistance = distance;
@@ -849,10 +849,10 @@
 
         function renderFullTimetables() {
             updateCurrentTimeForSchedules();
-            document.getElementById('nr762_richwood_timetable_container').innerHTML = generateTimetableTableHTML(allSchedules.NR762["豫豐花園_to_兆康站"], currentHktHour, currentHktMinute);
-            document.getElementById('nr762_siuhong_timetable_container').innerHTML = generateTimetableTableHTML(allSchedules.NR762["兆康站_to_豫豐花園"], currentHktHour, currentHktMinute);
-            document.getElementById('nr762a_richwood_timetable_container').innerHTML = generateTimetableTableHTML(allSchedules.NR762A["豫豐花園_to_屯門市中心"], currentHktHour, currentHktMinute);
-            document.getElementById('nr762a_tuenmun_timetable_container').innerHTML = generateTimetableTableHTML(allSchedules.NR762A["屯門市中心_to_豫豐花園"], currentHktHour, currentHktMinute);
+            document.getElementById('nr762_richwood_timetable_container').innerHTML = generateTimetableTableHTML(allSchedules.NR762["豫豐花園_to_兆康站"]);
+            document.getElementById('nr762_siuhong_timetable_container').innerHTML = generateTimetableTableHTML(allSchedules.NR762["兆康站_to_豫豐花園"]);
+            document.getElementById('nr762a_richwood_timetable_container').innerHTML = generateTimetableTableHTML(allSchedules.NR762A["豫豐花園_to_屯門市中心"]);
+            document.getElementById('nr762a_tuenmun_timetable_container').innerHTML = generateTimetableTableHTML(allSchedules.NR762A["屯門市中心_to_豫豐花園"]);
         }
         
         // --- Pull to Refresh Logic ---
