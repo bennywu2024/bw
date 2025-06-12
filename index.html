@@ -66,6 +66,21 @@
         .location-button:hover:not(.selected) {
             background-color: #d1d5db;
         }
+        .main-tab-button {
+             padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .main-tab-button.selected {
+            background-color: #2563eb;
+            color: white;
+            box-shadow: 0 4px 14px 0 rgb(0 118 255 / 39%);
+        }
+        .main-tab-button:not(.selected) {
+            background-color: white;
+            color: #374151;
+        }
         .countdown-text {
             font-weight: 500;
             color: #16a34a; /* Green for countdown */
@@ -225,6 +240,10 @@
     <div class="container mx-auto p-4 sm:p-6 lg:p-8 max-w-3xl">
         <div id="etaView" class="view-section">
             <section class="location-section mb-6 bg-white rounded-xl shadow-lg">
+                <div id="mainTabContainer" class="flex justify-center p-1 space-x-2 bg-blue-100 rounded-full mb-4">
+                    <button id="mainTabOut" class="main-tab-button flex-1 text-center">外出</button>
+                    <button id="mainTabHome" class="main-tab-button flex-1 text-center">回家</button>
+                </div>
                 <h2 class="text-xl font-semibold mb-3 text-gray-800">現在位置:</h2>
                 <div id="locationSelector" class="flex flex-wrap gap-2 justify-center">
                 </div>
@@ -331,14 +350,18 @@
             }
         };
 
-        const locations = [
-            { name: "豫豐花園", lat: 22.4193, lon: 113.9855 },
-            { name: "兆康站", lat: 22.4131, lon: 113.9793 },
-            { name: "屯門市中心", lat: 22.3957, lon: 113.9753 },
-            { name: "屯公轉車站 (屯門方向)", lat: 22.3585, lon: 114.0185 },
-            { name: "藍地站 (元朗方向)", lat: 22.4184, lon: 113.9822 },
-            { name: "藍地站 (屯門方向)", lat: 22.4184, lon: 113.9822 }
-        ];
+        const locations = {
+            "out": [
+                { name: "豫豐花園", lat: 22.4193, lon: 113.9855 },
+                { name: "藍地站 (元朗方向)", lat: 22.4184, lon: 113.9822 },
+                { name: "藍地站 (屯門方向)", lat: 22.4184, lon: 113.9822 }
+            ],
+            "home": [
+                { name: "兆康站", lat: 22.4131, lon: 113.9793 },
+                { name: "屯門市中心", lat: 22.3957, lon: 113.9753 },
+                { name: "屯公轉車站 (屯門方向)", lat: 22.3585, lon: 114.0185 }
+            ]
+        };
 
         const destinations = {
             "豫豐花園": { "NR762": "兆康站", "NR762A": "屯門市中心" },
@@ -349,7 +372,8 @@
         const kmbConfigs = {
             "屯門市中心": {
                 stopId: 'F26CC0CB9587F2F9',
-                subtitle: '由 屯門大會堂'
+                subtitle: '由 屯門大會堂',
+                targetRoutes: ['63X', '68A', '960P']
             },
             "屯公轉車站 (屯門方向)": {
                 stopId: '872110C8ADA14DA1',
@@ -687,8 +711,14 @@
                         
                         let nearestLocation = null;
                         let shortestDistance = Infinity;
-
-                        locations.forEach(loc => {
+                        
+                        const homeLocation = locations.out.find(l => l.name === '豫豐花園');
+                        const distanceToHome = calculateDistance(userPosition.lat, userPosition.lon, homeLocation.lat, homeLocation.lon);
+                        
+                        const activeGroup = (distanceToHome <= 0.5) ? 'out' : 'home';
+                        document.getElementById(activeGroup === 'out' ? 'mainTabOut' : 'mainTabHome').click();
+                        
+                        locations[activeGroup].forEach(loc => {
                             const distance = calculateDistance(userPosition.lat, userPosition.lon, loc.lat, loc.lon);
                             if (distance < shortestDistance) {
                                 shortestDistance = distance;
@@ -702,19 +732,21 @@
                                 buttonToClick.click();
                             }
                         } else { 
-                            const firstLocationButton = document.querySelector('#locationSelector .location-button');
+                            const firstLocationButton = document.querySelector('#locationSelector button:not(.hidden)');
                             if (firstLocationButton) firstLocationButton.click();
                         }
                     },
                     (error) => {
                         console.warn("Could not get location:", error.message);
-                        const firstLocationButton = document.querySelector('#locationSelector .location-button');
+                        document.getElementById('mainTabHome').click();
+                        const firstLocationButton = document.querySelector('#locationSelector button:not(.hidden)');
                         if (firstLocationButton) firstLocationButton.click();
                     }
                 );
             } else {
-                 const firstLocationButton = document.querySelector('#locationSelector .location-button');
-                 if (firstLocationButton) firstLocationButton.click();
+                document.getElementById('mainTabHome').click();
+                const firstLocationButton = document.querySelector('#locationSelector button:not(.hidden)');
+                if (firstLocationButton) firstLocationButton.click();
             }
         }
 
@@ -816,10 +848,10 @@
 
         function renderFullTimetables() {
             updateCurrentTimeForSchedules();
-            document.getElementById('nr762_richwood_timetable_container').innerHTML = generateTimetableTableHTML(allSchedules.NR762["豫豐花園_to_兆康站"], currentHktHour, currentHktMinute);
-            document.getElementById('nr762_siuhong_timetable_container').innerHTML = generateTimetableTableHTML(allSchedules.NR762["兆康站_to_豫豐花園"], currentHktHour, currentHktMinute);
-            document.getElementById('nr762a_richwood_timetable_container').innerHTML = generateTimetableTableHTML(allSchedules.NR762A["豫豐花園_to_屯門市中心"], currentHktHour, currentHktMinute);
-            document.getElementById('nr762a_tuenmun_timetable_container').innerHTML = generateTimetableTableHTML(allSchedules.NR762A["屯門市中心_to_豫豐花園"], currentHktHour, currentHktMinute);
+            document.getElementById('nr762_richwood_timetable_container').innerHTML = generateTimetableTableHTML(allSchedules.NR762["豫豐花園_to_兆康站"]);
+            document.getElementById('nr762_siuhong_timetable_container').innerHTML = generateTimetableTableHTML(allSchedules.NR762["兆康站_to_豫豐花園"]);
+            document.getElementById('nr762a_richwood_timetable_container').innerHTML = generateTimetableTableHTML(allSchedules.NR762A["豫豐花園_to_屯門市中心"]);
+            document.getElementById('nr762a_tuenmun_timetable_container').innerHTML = generateTimetableTableHTML(allSchedules.NR762A["屯門市中心_to_豫豐花園"]);
         }
         
         // --- Pull to Refresh Logic ---
@@ -907,45 +939,65 @@
         // --- Initialization ---
         function init() {
             const locationSelector = document.getElementById('locationSelector');
-            locations.forEach((loc) => { 
-                const button = document.createElement('button');
-                button.type = 'button';
-                button.value = loc.name;
-                button.textContent = loc.name;
-                button.className = 'location-button rounded-md';
-                
-                button.addEventListener('click', () => {
-                    document.querySelectorAll('.location-button').forEach(btn => btn.classList.remove('selected'));
-                    button.classList.add('selected');
-                    
-                    let radioInput = document.getElementById('hiddenSelectedLocation');
-                    if (!radioInput) {
-                        radioInput = document.createElement('input');
-                        radioInput.type = 'radio';
-                        radioInput.name = 'location'; 
-                        radioInput.id = 'hiddenSelectedLocation';
-                        radioInput.style.display = 'none';
-                        locationSelector.appendChild(radioInput); 
-                    }
-                    radioInput.value = loc.name;
-                    radioInput.checked = true;
-                    
-                    const geoMsgEl = document.getElementById('geolocationMessage');
-                    if (userPosition) {
-                        const distance = calculateDistance(userPosition.lat, userPosition.lon, loc.lat, loc.lon);
-                        geoMsgEl.textContent = `位置距離: ${loc.name} (約 ${distance.toFixed(2)} km)`;
-                        geoMsgEl.classList.remove('hidden');
-                    } else {
-                        geoMsgEl.classList.add('hidden');
-                    }
+            const mainTabOut = document.getElementById('mainTabOut');
+            const mainTabHome = document.getElementById('mainTabHome');
 
-                    if (!document.getElementById('etaView').classList.contains('hidden')) {
-                        displayDepartures(); 
-                    }
+            const createLocationButtons = (group) => {
+                locationSelector.innerHTML = ''; // Clear previous buttons
+                locations[group].forEach((loc) => { 
+                    const button = document.createElement('button');
+                    button.type = 'button';
+                    button.value = loc.name;
+                    button.textContent = loc.name;
+                    button.className = 'location-button rounded-md';
+                    
+                    button.addEventListener('click', () => {
+                        document.querySelectorAll('.location-button').forEach(btn => btn.classList.remove('selected'));
+                        button.classList.add('selected');
+                        
+                        let radioInput = document.getElementById('hiddenSelectedLocation');
+                        if (!radioInput) {
+                            radioInput = document.createElement('input');
+                            radioInput.type = 'radio';
+                            radioInput.name = 'location'; 
+                            radioInput.id = 'hiddenSelectedLocation';
+                            radioInput.style.display = 'none';
+                            locationSelector.appendChild(radioInput); 
+                        }
+                        radioInput.value = loc.name;
+                        radioInput.checked = true;
+                        
+                        const geoMsgEl = document.getElementById('geolocationMessage');
+                        if (userPosition) {
+                            const distance = calculateDistance(userPosition.lat, userPosition.lon, loc.lat, loc.lon);
+                            geoMsgEl.textContent = `位置距離: ${loc.name} (約 ${distance.toFixed(2)} km)`;
+                            geoMsgEl.classList.remove('hidden');
+                        } else {
+                            geoMsgEl.classList.add('hidden');
+                        }
+
+                        if (!document.getElementById('etaView').classList.contains('hidden')) {
+                            displayDepartures(); 
+                        }
+                    });
+                    locationSelector.appendChild(button);
                 });
-                locationSelector.appendChild(button);
-            });
+            };
             
+            mainTabOut.addEventListener('click', () => {
+                mainTabOut.classList.add('selected');
+                mainTabHome.classList.remove('selected');
+                createLocationButtons('out');
+                locationSelector.querySelector('button')?.click();
+            });
+
+            mainTabHome.addEventListener('click', () => {
+                mainTabHome.classList.add('selected');
+                mainTabOut.classList.remove('selected');
+                createLocationButtons('home');
+                 locationSelector.querySelector('button')?.click();
+            });
+
             document.getElementById('refreshButton').addEventListener('click', () => {
                 document.getElementById('geolocationMessage').classList.add('hidden'); 
                  if (!document.getElementById('etaView').classList.contains('hidden')) {
