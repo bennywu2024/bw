@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sherwood Bus</title>
+    <title>Sherwood Bus 7.0</title>
     
     <meta name="application-name" content="Sherwood Bus">
     <meta name="apple-mobile-web-app-title" content="Sherwood Bus">
@@ -22,20 +22,10 @@
             padding-top: 60px; 
         }
         /* Custom scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #888;
-            border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #555;
-        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: #888; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
         .fixed-header {
             position: fixed;
             top: 0;
@@ -204,6 +194,33 @@
             transition: height 0.2s ease-out, opacity 0.2s ease-out;
             opacity: 0;
         }
+        /* New styles for Traffic Status feature */
+        .traffic-status-button {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            background-color: #f3f4f6; /* gray-100 */
+            border: 1px solid #d1d5db; /* gray-300 */
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #374151; /* gray-700 */
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        .traffic-status-button:hover {
+            background-color: #e5e7eb; /* gray-200 */
+        }
+        .traffic-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+            background-color: #d1d5db; /* gray-300 as default */
+            border: 1px solid rgba(0,0,0,0.1);
+            transition: background-color 0.5s ease;
+        }
     </style>
 </head>
 <body class="bg-gradient-to-br from-blue-100 to-indigo-200 min-h-screen">
@@ -273,6 +290,10 @@
                 <div id="nr762Section" class="bg-white p-5 rounded-xl shadow-lg hidden">
                     <div class="flex justify-between items-center mb-2">
                         <h3 class="text-2xl font-bold text-indigo-600">NR762</h3>
+                        <button id="trafficBtnNR762" style="display: none;" class="traffic-status-button">
+                            <span id="trafficIndicatorNR762" class="traffic-indicator"></span>
+                            交通狀況
+                        </button>
                     </div>
                     <p id="nr762Route" class="text-md text-gray-700 font-medium mb-3"></p>
                     <ul id="nr762Departures" class="space-y-2 text-gray-800">
@@ -283,6 +304,10 @@
                 <div id="nr762aSection" class="bg-white p-5 rounded-xl shadow-lg hidden">
                      <div class="flex justify-between items-center mb-2">
                         <h3 class="text-2xl font-bold text-teal-600">NR762A</h3>
+                        <button id="trafficBtnNR762A" style="display: none;" class="traffic-status-button">
+                            <span id="trafficIndicatorNR762A" class="traffic-indicator"></span>
+                            交通狀況
+                        </button>
                     </div>
                     <p id="nr762aRoute" class="text-md text-gray-700 font-medium mb-3"></p>
                     <ul id="nr762aDepartures" class="space-y-2 text-gray-800">
@@ -336,6 +361,24 @@
             <p>巴士班次資料僅供參考，以實際營運為準。</p>
         </footer>
     </div>
+    
+    <!-- Google Map Modal -->
+    <div id="mapModal" class="fixed inset-0 bg-black bg-opacity-60 z-[200] hidden items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-4xl h-[90vh] flex flex-col">
+            <div class="flex justify-between items-center p-3 border-b">
+                <h3 class="text-lg font-semibold text-gray-800">即時交通狀況</h3>
+                <button id="closeMapModal" class="p-1 rounded-full hover:bg-gray-200 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <div class="flex-grow p-1 md:p-2">
+                <iframe id="mapFrame" src="" class="w-full h-full border-0 rounded-b-lg" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+        </div>
+    </div>
+
 
     <script>
         // --- Data Definitions ---
@@ -426,6 +469,84 @@
         function formatDepartureTime(hour, minute) {
             return `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
         }
+        
+        // --- Traffic Light & Map Modal Logic ---
+        function updateTrafficIndicators() {
+            const now = new Date();
+            ['NR762', 'NR762A'].forEach(routeId => {
+                const section = document.getElementById(`${routeId.toLowerCase()}Section`);
+                if (section.classList.contains('hidden')) return;
+
+                const indicator = document.getElementById(`trafficIndicator${routeId}`);
+                const nextDepartureLi = section.querySelector('.next-departure-highlight');
+
+                if (!indicator || !nextDepartureLi || !nextDepartureLi.dataset.departureTime) {
+                    if(indicator) indicator.className = 'traffic-indicator bg-gray-400'; // Default/no service
+                    return;
+                }
+
+                const departureTime = new Date(nextDepartureLi.dataset.departureTime);
+                const diffSeconds = (departureTime - now) / 1000;
+
+                if (diffSeconds < 0) {
+                     indicator.className = 'traffic-indicator bg-gray-400'; // Departed
+                     return;
+                }
+
+                const minutesRemaining = Math.floor(diffSeconds / 60);
+                let colorClass = 'bg-gray-400';
+
+                if (routeId === 'NR762') {
+                    if (minutesRemaining <= 7) colorClass = 'bg-green-500';
+                    else if (minutesRemaining <= 9) colorClass = 'bg-orange-400';
+                    else colorClass = 'bg-red-500';
+                } else if (routeId === 'NR762A') {
+                    if (minutesRemaining <= 10) colorClass = 'bg-green-500';
+                    else if (minutesRemaining <= 14) colorClass = 'bg-orange-400';
+                    else colorClass = 'bg-red-500';
+                }
+                indicator.className = `traffic-indicator ${colorClass}`;
+            });
+        }
+
+        function openMapModal(routeId) {
+            const selectedLocationName = document.querySelector('input[name="location"]:checked')?.value;
+            if (!selectedLocationName) return;
+
+            const mainTabIsOut = document.getElementById('mainTabOut').classList.contains('selected');
+            let origin, destination;
+            
+            // The selected location is always the origin for the map query.
+            origin = selectedLocationName;
+            
+            if (mainTabIsOut) {
+                // Going OUT from the selected location towards the bus's destination.
+                destination = destinations[selectedLocationName]?.[routeId];
+            } else { // Home tab is selected
+                // Going HOME from the selected location back to Richwood Garden.
+                destination = '豫豐花園';
+            }
+
+            if (!origin || !destination) {
+                console.error("Could not determine origin or destination for map.");
+                return; 
+            }
+            
+            const originEncoded = encodeURIComponent(origin);
+            const destinationEncoded = encodeURIComponent(destination);
+            
+            const mapUrl = `https://www.google.com/maps?saddr=${originEncoded}&daddr=${destinationEncoded}&output=embed`;
+            
+            document.getElementById('mapFrame').src = mapUrl;
+            document.getElementById('mapModal').classList.remove('hidden');
+            document.getElementById('mapModal').classList.add('flex');
+        }
+
+        function closeMapModal() {
+            document.getElementById('mapFrame').src = 'about:blank'; // Clear iframe to stop loading
+            document.getElementById('mapModal').classList.add('hidden');
+            document.getElementById('mapModal').classList.remove('flex');
+        }
 
         // --- Countdown Logic ---
         function updateAllCountdowns() {
@@ -451,6 +572,7 @@
                     }
                 }
             });
+            updateTrafficIndicators(); // Update traffic light colors in real-time
         }
         
         // --- Core Logic Functions (ETA View) ---
@@ -555,7 +677,7 @@
                 
                 if (platform && platform.route_list && platform.route_list.length > 0) {
                      const relevantDepartures = platform.route_list.filter(route => route.time_ch);
-                    if (relevantDepartures.length > 0) {
+                     if (relevantDepartures.length > 0) {
                         relevantDepartures.forEach((dep, index) => {
                             const li = document.createElement('li');
                             li.className = 'p-3 bg-yellow-50 rounded-md flex justify-between items-center';
@@ -592,9 +714,9 @@
                             li.appendChild(rightDiv);
                             lrtDeparturesList.appendChild(li);
                         });
-                    } else {
+                     } else {
                          lrtMessageEl.textContent = '暫無輕鐵班次資料。';
-                    }
+                     }
                 } else {
                     lrtMessageEl.textContent = '暫無輕鐵班次資料。';
                 }
@@ -630,15 +752,20 @@
                 const departuresEl = document.getElementById(`${routeId.toLowerCase()}Departures`);
                 const messageEl = document.getElementById(`${routeId.toLowerCase()}Message`);
                 const routeEl = document.getElementById(`${routeId.toLowerCase()}Route`);
+                const trafficBtn = document.getElementById(`trafficBtn${routeId}`);
                 
                 departuresEl.innerHTML = '';
                 messageEl.textContent = '';
                 
-                const destName = destinations[selectedLocationName]?.[routeId];
-                if (destName) {
+                const mainTabIsOut = document.getElementById('mainTabOut').classList.contains('selected');
+                const destName = mainTabIsOut ? destinations[selectedLocationName]?.[routeId] : '豫豐花園';
+                const scheduleKeyName = mainTabIsOut ? `${selectedLocationName}_to_${destName}` : `${selectedLocationName}_to_豫豐花園`;
+
+                if (destName && allSchedules[routeId][scheduleKeyName]) {
                     section.classList.remove('hidden');
+                    trafficBtn.style.display = 'inline-flex';
                     routeEl.textContent = `由 ${selectedLocationName} 開往 ${destName}`;
-                    const schedule = allSchedules[routeId][`${selectedLocationName}_to_${destName}`];
+                    const schedule = allSchedules[routeId][scheduleKeyName];
                     let hasService = false;
                     if (schedule) {
                         const departures = getUpcomingDepartures(schedule, currentHktHour, currentHktMinute, 5);
@@ -658,6 +785,8 @@
                     if (!hasService) {
                         messageEl.textContent = '今日已無班次。';
                     }
+                } else {
+                   trafficBtn.style.display = 'none';
                 }
             });
 
@@ -675,7 +804,7 @@
             // Wait for all data fetching to complete
             await Promise.all(displayPromises);
             
-            updateAllCountdowns();
+            updateAllCountdowns(); // Initial update
             if (document.querySelector('#etaView li[data-departure-time]')) {
                 countdownIntervalId = setInterval(updateAllCountdowns, 1000);
             }
@@ -699,8 +828,6 @@
         }
 
         function handleDetectLocation() {
-            const geoMsgEl = document.getElementById('geolocationMessage');
-
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
                     (position) => {
@@ -956,6 +1083,7 @@
                         document.querySelectorAll('.location-button').forEach(btn => btn.classList.remove('selected'));
                         button.classList.add('selected');
                         
+                        // Use a hidden radio input to store the value easily
                         let radioInput = document.getElementById('hiddenSelectedLocation');
                         if (!radioInput) {
                             radioInput = document.createElement('input');
@@ -968,15 +1096,6 @@
                         radioInput.value = loc.name;
                         radioInput.checked = true;
                         
-                        const geoMsgEl = document.getElementById('geolocationMessage');
-                        if (userPosition) {
-                            const distance = calculateDistance(userPosition.lat, userPosition.lon, loc.lat, loc.lon);
-                            geoMsgEl.textContent = `位置距離: ${loc.name} (約 ${distance.toFixed(2)} km)`;
-                            geoMsgEl.classList.remove('hidden');
-                        } else {
-                            geoMsgEl.classList.add('hidden');
-                        }
-
                         if (!document.getElementById('etaView').classList.contains('hidden')) {
                             displayDepartures(); 
                         }
@@ -1023,6 +1142,18 @@
                 }
             });
             
+            // --- New Event Listeners for Map Modal ---
+            const mapModal = document.getElementById('mapModal');
+            document.getElementById('closeMapModal').addEventListener('click', closeMapModal);
+            document.getElementById('trafficBtnNR762').addEventListener('click', () => openMapModal('NR762'));
+            document.getElementById('trafficBtnNR762A').addEventListener('click', () => openMapModal('NR762A'));
+            mapModal.addEventListener('click', (event) => { // Close modal on background click
+                if (event.target === mapModal) {
+                    closeMapModal();
+                }
+            });
+
+
             document.getElementById('etaTabButton').addEventListener('click', () => showView('etaView'));
             document.getElementById('timetableTabButton').addEventListener('click', () => showView('timetableView'));
             document.getElementById('nr762SubTabButton').addEventListener('click', () => showTimetableSubView('timetableContentNR762'));
