@@ -445,7 +445,7 @@
                     } else { 
                         const displayMinutes = Math.floor(totalSeconds / 60);
                         const displaySeconds = totalSeconds % 60;
-                        countdownSpan.textContent = `${String(displayMinutes).padStart(2, '0')} 分 ${String(displaySeconds).padStart(2, '0')} 秒`;
+                        countdownSpan.innerHTML = `(${String(displayMinutes).padStart(2, '0')} 分 ${String(displaySeconds).padStart(2, '0')} 秒)`;
                         countdownSpan.classList.remove('departed-text'); 
                         countdownSpan.classList.add('countdown-text'); 
                     }
@@ -572,7 +572,7 @@
 
                             const carCountSpan = document.createElement('span');
                             carCountSpan.className = 'font-medium text-gray-600 w-14 text-center';
-                            carCountSpan.textContent = dep.train_length === 1 ? '🚃' : '🚃🚃';
+                            carCountSpan.textContent = dep.train_length === 1 ? '一卡' : '兩卡';
 
                             const etaSpan = document.createElement('span');
                             etaSpan.className = 'font-medium w-28 text-right';
@@ -650,28 +650,7 @@
                                 li.className = `p-3 ${styleClass} rounded-md shadow-sm flex justify-between items-center`;
                                 if (index === 0) li.classList.add('next-departure-highlight');
                                 li.dataset.departureTime = dep.date.toISOString();
-                                
-                                const timeText = document.createElement('span');
-                                timeText.textContent = formatDepartureTime(dep.hour, dep.minute);
-                                li.appendChild(timeText);
-                                
-                                const countdownSpan = document.createElement('span');
-                                
-                                const totalSeconds = (dep.date - new Date()) / 1000;
-                                let colorClass = '';
-                                if(routeId === 'NR762'){
-                                    if(totalSeconds > 600) colorClass = 'text-red-500';
-                                    else if (totalSeconds >= 480) colorClass = 'text-orange-500';
-                                    else colorClass = 'text-green-500';
-                                } else if (routeId === 'NR762A'){
-                                     if(totalSeconds > 900) colorClass = 'text-red-500';
-                                    else if (totalSeconds >= 660) colorClass = 'text-orange-500';
-                                    else colorClass = 'text-green-500';
-                                }
-                                
-                                countdownSpan.className = `ml-2 ${colorClass}`;
-                                li.appendChild(countdownSpan);
-                                
+                                li.innerHTML = `<span>${formatDepartureTime(dep.hour, dep.minute)}</span><span class="countdown-text ml-2"></span>`;
                                 departuresEl.appendChild(li);
                             });
                         }
@@ -733,7 +712,7 @@
                         let nearestLocation = null;
                         let shortestDistance = Infinity;
                         
-                        const homeLocation = [...locations.out, ...locations.home].find(l => l.name === '豫豐花園');
+                        const homeLocation = locations.out.find(l => l.name === '豫豐花園');
                         const distanceToHome = calculateDistance(userPosition.lat, userPosition.lon, homeLocation.lat, homeLocation.lon);
                         
                         const activeGroup = (distanceToHome <= 0.5) ? 'out' : 'home';
@@ -870,10 +849,10 @@
 
         function renderFullTimetables() {
             updateCurrentTimeForSchedules();
-            document.getElementById('nr762_richwood_timetable_container').innerHTML = generateTimetableTableHTML(allSchedules.NR762["豫豐花園_to_兆康站"], currentHktHour, currentHktMinute);
-            document.getElementById('nr762_siuhong_timetable_container').innerHTML = generateTimetableTableHTML(allSchedules.NR762["兆康站_to_豫豐花園"], currentHktHour, currentHktMinute);
-            document.getElementById('nr762a_richwood_timetable_container').innerHTML = generateTimetableTableHTML(allSchedules.NR762A["豫豐花園_to_屯門市中心"], currentHktHour, currentHktMinute);
-            document.getElementById('nr762a_tuenmun_timetable_container').innerHTML = generateTimetableTableHTML(allSchedules.NR762A["屯門市中心_to_豫豐花園"], currentHktHour, currentHktMinute);
+            document.getElementById('nr762_richwood_timetable_container').innerHTML = generateTimetableTableHTML(allSchedules.NR762["豫豐花園_to_兆康站"]);
+            document.getElementById('nr762_siuhong_timetable_container').innerHTML = generateTimetableTableHTML(allSchedules.NR762["兆康站_to_豫豐花園"]);
+            document.getElementById('nr762a_richwood_timetable_container').innerHTML = generateTimetableTableHTML(allSchedules.NR762A["豫豐花園_to_屯門市中心"]);
+            document.getElementById('nr762a_tuenmun_timetable_container').innerHTML = generateTimetableTableHTML(allSchedules.NR762A["屯門市中心_to_豫豐花園"]);
         }
         
         // --- Pull to Refresh Logic ---
@@ -1043,7 +1022,7 @@
                     expandableMenu.classList.add('hidden');
                 }
             });
-            
+
 
             document.getElementById('etaTabButton').addEventListener('click', () => showView('etaView'));
             document.getElementById('timetableTabButton').addEventListener('click', () => showView('timetableView'));
