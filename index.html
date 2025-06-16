@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sherwood Bus 7.5</title>
+    <title>Sherwood Bus 7.7</title>
     
     <meta name="application-name" content="Sherwood Bus">
     <meta name="apple-mobile-web-app-title" content="Sherwood Bus">
@@ -280,6 +280,10 @@
                 <div id="kmbSection" class="bg-white p-5 rounded-xl shadow-lg hidden">
                     <div class="flex justify-between items-center mb-2">
                         <h3 class="text-2xl font-bold text-green-600">九巴路線</h3>
+                         <button id="trafficBtnKMB" style="display: none;" class="traffic-status-button">
+                            <span id="trafficIndicatorKMB" class="traffic-indicator"></span>
+                            交通狀況
+                        </button>
                     </div>
                     <p id="kmbSubtitle" class="text-md text-gray-700 font-medium mb-3"></p>
                     <ul id="kmbDepartures" class="space-y-2 text-gray-800"></ul>
@@ -360,30 +364,8 @@
         </footer>
     </div>
     
-    <!-- Google Map Modal -->
-    <div id="mapModal" class="fixed inset-0 bg-black bg-opacity-60 z-[200] hidden items-center justify-center p-4">
-        <div class="bg-white rounded-lg shadow-xl w-full max-w-4xl h-[90vh] flex flex-col">
-            <div class="flex justify-between items-center p-3 border-b">
-                <h3 class="text-lg font-semibold text-gray-800">即時交通狀況</h3>
-                <button id="closeMapModal" class="p-1 rounded-full hover:bg-gray-200 transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-            </div>
-            <div class="flex-grow p-1 md:p-2">
-                <iframe id="mapFrame" src="" class="w-full h-full border-0 rounded-b-lg" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-            </div>
-        </div>
-    </div>
-
     <script>
         // --- Data Definitions ---
-        // IMPORTANT: A valid Google Maps Platform API Key is required for the embedded map feature.
-        // The key must have the "Maps Embed API" enabled.
-        // Replace the empty string with your actual key.
-        const GOOGLE_API_KEY = ""; // <-- PASTE YOUR GOOGLE MAPS API KEY HERE
-        
         const allSchedules = {
             "NR762": {
                 "豫豐花園_to_兆康站": { 6: [15, 30, 45], 7: [0, 15, 30, 45], 8: [0, 15, 30, 45], 9: [0], 10: [5, 20, 40], 11: [0, 20, 40], 12: [0], 14: [5, 20, 40], 15: [0, 20, 40], 16: [0], 18: [15, 30, 45], 19: [0, 15, 30, 45], 21: [15, 45], 22: [0] },
@@ -473,43 +455,22 @@
         }
         
         // --- Traffic Map & Indicator Logic ---
-        function openMapModal(routeId) {
-            const selectedLocationName = document.querySelector('input[name="location"]:checked')?.value;
-            if (!selectedLocationName) return;
-
-            const mainTabIsOut = document.getElementById('mainTabOut').classList.contains('selected');
-            let origin, destination;
-            
-            origin = selectedLocationName;
-            destination = mainTabIsOut ? destinations[selectedLocationName]?.[routeId] : '豫豐花園';
-
+        function openTrafficMap(origin, destination) {
             if (!origin || !destination) {
                 console.error("Could not determine origin/destination for map.");
                 return; 
             }
-            if (!GOOGLE_API_KEY) {
-                alert("地圖功能需要 API 金鑰才能運作。");
-                return;
-            }
+            const originEncoded = encodeURIComponent(origin + ", Hong Kong");
+            const destinationEncoded = encodeURIComponent(destination + ", Hong Kong");
             
-            const originEncoded = encodeURIComponent(origin);
-            const destinationEncoded = encodeURIComponent(destination);
-            
-            const mapUrl = `https://www.google.com/maps/embed/v1/directions?key=${GOOGLE_API_KEY}&origin=${originEncoded}&destination=${destinationEncoded}&mode=driving`;
-
-            document.getElementById('mapFrame').src = mapUrl;
-            document.getElementById('mapModal').classList.add('flex');
-            document.getElementById('mapModal').classList.remove('hidden');
+            const mapUrl = `https://www.google.com/maps/dir/?api=1&origin=${originEncoded}&destination=${destinationEncoded}&travelmode=driving`;
+            window.open(mapUrl, '_blank');
         }
 
-        function closeMapModal() {
-            document.getElementById('mapFrame').src = 'about:blank';
-            document.getElementById('mapModal').classList.add('hidden');
-            document.getElementById('mapModal').classList.remove('flex');
-        }
-
-        function updateTrafficIndicators() {
+        function updateAllTrafficIndicators() {
             const now = new Date();
+            
+            // Handle NR Routes
             ['NR762', 'NR762A'].forEach(routeId => {
                 const section = document.getElementById(`${routeId.toLowerCase()}Section`);
                 if (section.classList.contains('hidden')) return;
@@ -544,6 +505,41 @@
                 }
                 indicator.className = `traffic-indicator ${colorClass}`;
             });
+
+            // Handle KMB Route
+            const kmbSection = document.getElementById('kmbSection');
+            if (kmbSection.classList.contains('hidden')) return;
+
+            const kmbIndicator = document.getElementById('trafficIndicatorKMB');
+            const nextKmbDepartureLi = kmbSection.querySelector('.next-departure-highlight');
+            const locationName = document.querySelector('input[name="location"]:checked')?.value;
+
+            if (!kmbIndicator || !nextKmbDepartureLi || !nextKmbDepartureLi.dataset.departureTime || !locationName) {
+                if(kmbIndicator) kmbIndicator.className = 'traffic-indicator bg-gray-400';
+                return;
+            }
+
+            const departureTime = new Date(nextKmbDepartureLi.dataset.departureTime);
+            const diffSeconds = (departureTime - now) / 1000;
+
+            if (diffSeconds < 0) {
+                kmbIndicator.className = 'traffic-indicator bg-gray-400';
+                return;
+            }
+
+            const minutesRemaining = Math.floor(diffSeconds / 60);
+            let colorClass = 'bg-gray-400';
+
+            if (locationName === '屯門市中心') {
+                if (minutesRemaining <= 5) colorClass = 'bg-green-500';
+                else if (minutesRemaining >= 6 && minutesRemaining <= 9) colorClass = 'bg-orange-400';
+                else if (minutesRemaining >= 10) colorClass = 'bg-red-500';
+            } else if (locationName === '屯公轉車站 (屯門方向)') {
+                if (minutesRemaining <= 10) colorClass = 'bg-green-500';
+                else if (minutesRemaining >= 11 && minutesRemaining <= 16) colorClass = 'bg-orange-400';
+                else if (minutesRemaining >= 17) colorClass = 'bg-red-500';
+            }
+            kmbIndicator.className = `traffic-indicator ${colorClass}`;
         }
 
         // --- Countdown Logic ---
@@ -570,7 +566,7 @@
                     }
                 }
             });
-            updateTrafficIndicators(); // Update traffic light colors every second
+            updateAllTrafficIndicators(); // Update all traffic light colors every second
         }
         
         // --- Core Logic Functions (ETA View) ---
@@ -608,11 +604,14 @@
             const kmbDeparturesList = document.getElementById('kmbDepartures');
             const kmbMessageEl = document.getElementById('kmbMessage');
             const kmbSubtitleEl = document.getElementById('kmbSubtitle');
+            const trafficBtnKMB = document.getElementById('trafficBtnKMB');
             
+            // Reset and hide
             kmbDeparturesList.innerHTML = '<li class="text-gray-500">正在載入九巴班次...</li>';
             kmbMessageEl.textContent = '';
             kmbSubtitleEl.textContent = kmbConfig.subtitle;
             kmbSection.classList.remove('hidden');
+            trafficBtnKMB.style.display = 'none';
             
             const apiUrl = `https://data.etabus.gov.hk/v1/transport/kmb/stop-eta/${kmbConfig.stopId}`;
 
@@ -644,6 +643,12 @@
                         li.appendChild(countdownSpan);
                         kmbDeparturesList.appendChild(li);
                     });
+                    
+                    // Show and configure KMB traffic button if applicable
+                    if (locationName === '屯門市中心' || locationName === '屯公轉車站 (屯門方向)') {
+                        trafficBtnKMB.style.display = 'inline-flex';
+                        trafficBtnKMB.onclick = () => openTrafficMap(locationName, '藍地輕鐵站');
+                    }
                 } else {
                     kmbMessageEl.textContent = '暫無九巴班次資料。';
                 }
@@ -1119,7 +1124,7 @@
                         const geoMsgEl = document.getElementById('geolocationMessage');
                         if (userPosition) {
                             const distance = calculateDistance(userPosition.lat, userPosition.lon, loc.lat, loc.lon);
-                            geoMsgEl.textContent = `最近車站："${loc.name}"，相距約 ${distance.toFixed(2)} km`;
+                            geoMsgEl.textContent = `相距約 ${distance.toFixed(2)} km`;
                             geoMsgEl.classList.remove('hidden');
                         } else {
                            if (!geoMsgEl.textContent) {
@@ -1178,16 +1183,14 @@
                 }
             });
             
-            // --- Event Listeners for Map Modal ---
-            const mapModal = document.getElementById('mapModal');
-            document.getElementById('closeMapModal').addEventListener('click', closeMapModal);
-            mapModal.addEventListener('click', (event) => { 
-                if (event.target === mapModal) {
-                    closeMapModal();
-                }
+            // --- Event Listeners for Traffic and Map ---
+            document.getElementById('trafficBtnNR762').addEventListener('click', () => openTrafficMap('NR762'));
+            document.getElementById('trafficBtnNR762A').addEventListener('click', () => openTrafficMap('NR762A'));
+            document.getElementById('trafficBtnKMB').addEventListener('click', () => {
+                 const locationName = document.querySelector('input[name="location"]:checked')?.value;
+                 if (locationName) openTrafficMap(locationName, '藍地輕鐵站');
             });
-            document.getElementById('trafficBtnNR762').addEventListener('click', () => openMapModal('NR762'));
-            document.getElementById('trafficBtnNR762A').addEventListener('click', () => openMapModal('NR762A'));
+
 
             // --- View and Tab Switching ---
             document.getElementById('etaTabButton').addEventListener('click', () => showView('etaView'));
