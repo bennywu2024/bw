@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sherwood Bus 7.0</title>
+    <title>Sherwood Bus 7.1</title>
     
     <meta name="application-name" content="Sherwood Bus">
     <meta name="apple-mobile-web-app-title" content="Sherwood Bus">
@@ -264,7 +264,7 @@
                 <h2 class="text-xl font-semibold mb-3 text-gray-800">現在位置:</h2>
                 <div id="locationSelector" class="flex flex-wrap gap-2 justify-center">
                 </div>
-                <p id="geolocationMessage" class="text-gray-700 hidden"></p>
+                <p id="geolocationMessage" class="text-center text-gray-700 hidden"></p>
             </section>
 
             <section id="departuresDisplay" class="space-y-6">
@@ -382,6 +382,8 @@
 
     <script>
         // --- Data Definitions ---
+        const GOOGLE_API_KEY = ""; // NOTE: This key is intentionally left blank. The platform is expected to provide it.
+        
         const allSchedules = {
             "NR762": {
                 "豫豐花園_to_兆康站": { 6: [15, 30, 45], 7: [0, 15, 30, 45], 8: [0, 15, 30, 45], 9: [0], 10: [5, 20, 40], 11: [0, 20, 40], 12: [0], 14: [5, 20, 40], 15: [0, 20, 40], 16: [0], 18: [15, 30, 45], 19: [0, 15, 30, 45], 21: [15, 45], 22: [0] },
@@ -471,43 +473,53 @@
         }
         
         // --- Traffic Light & Map Modal Logic ---
-        function updateTrafficIndicators() {
-            const now = new Date();
-            ['NR762', 'NR762A'].forEach(routeId => {
-                const section = document.getElementById(`${routeId.toLowerCase()}Section`);
-                if (section.classList.contains('hidden')) return;
+        /**
+         * Fetches traffic data from Google Directions API to determine traffic level.
+         * @param {string} origin - The starting point name.
+         * @param {string} destination - The ending point name.
+         * @returns {Promise<string>} 'low', 'moderate', 'heavy', or 'unknown'.
+         */
+        async function getTrafficStatus(origin, destination) {
+            if (!origin || !destination || !GOOGLE_API_KEY) {
+                if (!GOOGLE_API_KEY) console.warn("Google API Key is missing.");
+                return 'unknown';
+            }
 
-                const indicator = document.getElementById(`trafficIndicator${routeId}`);
-                const nextDepartureLi = section.querySelector('.next-departure-highlight');
+            const originEncoded = encodeURIComponent(origin + ", Hong Kong");
+            const destinationEncoded = encodeURIComponent(destination + ", Hong Kong");
+            const url = `https://maps.googleapis.com/maps/api/directions/json?origin=${originEncoded}&destination=${destinationEncoded}&departure_time=now&key=${GOOGLE_API_KEY}`;
 
-                if (!indicator || !nextDepartureLi || !nextDepartureLi.dataset.departureTime) {
-                    if(indicator) indicator.className = 'traffic-indicator bg-gray-400'; // Default/no service
-                    return;
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    console.error('Google Directions API request failed:', response.status, await response.text());
+                    return 'unknown';
+                }
+                const data = await response.json();
+
+                if (data.status !== 'OK' || !data.routes || data.routes.length === 0) {
+                    console.warn('Google Directions API returned no routes:', data.status, data.error_message);
+                    return 'unknown';
                 }
 
-                const departureTime = new Date(nextDepartureLi.dataset.departureTime);
-                const diffSeconds = (departureTime - now) / 1000;
+                const leg = data.routes[0].legs[0];
+                // duration is the time without traffic, duration_in_traffic includes current conditions
+                const duration = leg.duration.value; // in seconds
+                const durationInTraffic = leg.duration_in_traffic.value; // in seconds
 
-                if (diffSeconds < 0) {
-                     indicator.className = 'traffic-indicator bg-gray-400'; // Departed
-                     return;
+                if (durationInTraffic > duration * 1.5) {
+                    return 'heavy'; // More than 50% longer than usual
+                } else if (durationInTraffic > duration * 1.2) {
+                    return 'moderate'; // 20-50% longer than usual
+                } else {
+                    return 'low'; // Less than 20% longer
                 }
-
-                const minutesRemaining = Math.floor(diffSeconds / 60);
-                let colorClass = 'bg-gray-400';
-
-                if (routeId === 'NR762') {
-                    if (minutesRemaining <= 7) colorClass = 'bg-green-500';
-                    else if (minutesRemaining <= 9) colorClass = 'bg-orange-400';
-                    else colorClass = 'bg-red-500';
-                } else if (routeId === 'NR762A') {
-                    if (minutesRemaining <= 10) colorClass = 'bg-green-500';
-                    else if (minutesRemaining <= 14) colorClass = 'bg-orange-400';
-                    else colorClass = 'bg-red-500';
-                }
-                indicator.className = `traffic-indicator ${colorClass}`;
-            });
+            } catch (error) {
+                console.error("Error fetching traffic data:", error);
+                return 'unknown';
+            }
         }
+
 
         function openMapModal(routeId) {
             const selectedLocationName = document.querySelector('input[name="location"]:checked')?.value;
@@ -516,16 +528,8 @@
             const mainTabIsOut = document.getElementById('mainTabOut').classList.contains('selected');
             let origin, destination;
             
-            // The selected location is always the origin for the map query.
             origin = selectedLocationName;
-            
-            if (mainTabIsOut) {
-                // Going OUT from the selected location towards the bus's destination.
-                destination = destinations[selectedLocationName]?.[routeId];
-            } else { // Home tab is selected
-                // Going HOME from the selected location back to Richwood Garden.
-                destination = '豫豐花園';
-            }
+            destination = mainTabIsOut ? destinations[selectedLocationName]?.[routeId] : '豫豐花園';
 
             if (!origin || !destination) {
                 console.error("Could not determine origin or destination for map.");
@@ -543,7 +547,7 @@
         }
 
         function closeMapModal() {
-            document.getElementById('mapFrame').src = 'about:blank'; // Clear iframe to stop loading
+            document.getElementById('mapFrame').src = 'about:blank';
             document.getElementById('mapModal').classList.add('hidden');
             document.getElementById('mapModal').classList.remove('flex');
         }
@@ -572,7 +576,6 @@
                     }
                 }
             });
-            updateTrafficIndicators(); // Update traffic light colors in real-time
         }
         
         // --- Core Logic Functions (ETA View) ---
@@ -784,6 +787,18 @@
                     }
                     if (!hasService) {
                         messageEl.textContent = '今日已無班次。';
+                        trafficBtn.style.display = 'none';
+                    } else {
+                        // Fetch traffic status
+                        const indicator = document.getElementById(`trafficIndicator${routeId}`);
+                        indicator.className = 'traffic-indicator bg-gray-300 animate-pulse'; // Loading state
+                        getTrafficStatus(selectedLocationName, destName).then(status => {
+                            let colorClass = 'bg-gray-400'; // Default/unknown
+                            if (status === 'low') colorClass = 'bg-green-500';
+                            else if (status === 'moderate') colorClass = 'bg-orange-400';
+                            else if (status === 'heavy') colorClass = 'bg-red-500';
+                            indicator.className = `traffic-indicator ${colorClass}`;
+                        });
                     }
                 } else {
                    trafficBtn.style.display = 'none';
@@ -828,7 +843,11 @@
         }
 
         function handleDetectLocation() {
+            const geoMsgEl = document.getElementById('geolocationMessage');
             if (navigator.geolocation) {
+                geoMsgEl.textContent = "正在獲取您的位置...";
+                geoMsgEl.classList.remove('hidden');
+
                 navigator.geolocation.getCurrentPosition(
                     (position) => {
                         userPosition = {
@@ -836,17 +855,20 @@
                             lon: position.coords.longitude
                         };
                         
-                        let nearestLocation = null;
-                        let shortestDistance = Infinity;
-                        
                         const homeLocation = [...locations.out, ...locations.home].find(l => l.name === '豫豐花園');
                         const distanceToHome = calculateDistance(userPosition.lat, userPosition.lon, homeLocation.lat, homeLocation.lon);
                         
                         const activeGroup = (distanceToHome <= 0.5) ? 'out' : 'home';
-                        document.getElementById(activeGroup === 'out' ? 'mainTabOut' : 'mainTabHome').click();
                         
-                        const allLocationsInGroup = locations[activeGroup];
-                        allLocationsInGroup.forEach(loc => {
+                        if (activeGroup === 'out') {
+                            mainTabOut.click();
+                        } else {
+                            mainTabHome.click();
+                        }
+
+                        let nearestLocation = null;
+                        let shortestDistance = Infinity;
+                        locations[activeGroup].forEach(loc => {
                             const distance = calculateDistance(userPosition.lat, userPosition.lon, loc.lat, loc.lon);
                             if (distance < shortestDistance) {
                                 shortestDistance = distance;
@@ -856,25 +878,32 @@
 
                         if (nearestLocation) {
                             const buttonToClick = document.querySelector(`#locationSelector button[value="${nearestLocation.name}"]`);
-                            if(buttonToClick) {
-                                buttonToClick.click();
+                            if (buttonToClick) {
+                                buttonToClick.click(); 
                             }
-                        } else { 
-                            const firstLocationButton = document.querySelector('#locationSelector button:not(.hidden)');
-                            if (firstLocationButton) firstLocationButton.click();
+                        } else {
+                           geoMsgEl.textContent = "無法確定最近的車站。";
                         }
                     },
                     (error) => {
                         console.warn("Could not get location:", error.message);
-                        document.getElementById('mainTabHome').click();
-                        const firstLocationButton = document.querySelector('#locationSelector button:not(.hidden)');
-                        if (firstLocationButton) firstLocationButton.click();
-                    }
+                        geoMsgEl.textContent = "無法獲取位置，請手動選擇。";
+                        mainTabHome.click();
+                        const firstButton = document.querySelector('#locationSelector button');
+                        if (firstButton) {
+                            firstButton.click();
+                        }
+                    },
+                    { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
                 );
             } else {
-                document.getElementById('mainTabHome').click();
-                const firstLocationButton = document.querySelector('#locationSelector button:not(.hidden)');
-                if (firstLocationButton) firstLocationButton.click();
+                geoMsgEl.textContent = "您的瀏覽器不支援地理位置。";
+                geoMsgEl.classList.remove('hidden');
+                mainTabHome.click();
+                const firstButton = document.querySelector('#locationSelector button');
+                if (firstButton) {
+                    firstButton.click();
+                }
             }
         }
 
@@ -1005,6 +1034,7 @@
             let deltaY = currentY - ptrTouchStartY;
 
             if (deltaY > 0) { 
+                e.preventDefault();
                 ptrIndicator.style.opacity = '1';
                 ptrIndicator.style.height = Math.min(deltaY * 0.7, ptrThreshold + 20) + 'px'; 
                 
@@ -1083,18 +1113,26 @@
                         document.querySelectorAll('.location-button').forEach(btn => btn.classList.remove('selected'));
                         button.classList.add('selected');
                         
-                        // Use a hidden radio input to store the value easily
-                        let radioInput = document.getElementById('hiddenSelectedLocation');
+                        let radioInput = document.querySelector('input[name="location"][value="' + loc.name + '"]');
                         if (!radioInput) {
                             radioInput = document.createElement('input');
                             radioInput.type = 'radio';
-                            radioInput.name = 'location'; 
-                            radioInput.id = 'hiddenSelectedLocation';
-                            radioInput.style.display = 'none';
-                            locationSelector.appendChild(radioInput); 
+                            radioInput.name = 'location';
+                            radioInput.className = 'hidden';
+                            locationSelector.appendChild(radioInput);
                         }
                         radioInput.value = loc.name;
                         radioInput.checked = true;
+
+                        const geoMsgEl = document.getElementById('geolocationMessage');
+                        if (userPosition) {
+                            const distance = calculateDistance(userPosition.lat, userPosition.lon, loc.lat, loc.lon);
+                            geoMsgEl.textContent = `您與 "${loc.name}" 相距約 ${distance.toFixed(2)} km`;
+                            geoMsgEl.classList.remove('hidden');
+                        } else {
+                            geoMsgEl.textContent = "請手動選擇您的位置。";
+                            geoMsgEl.classList.remove('hidden');
+                        }
                         
                         if (!document.getElementById('etaView').classList.contains('hidden')) {
                             displayDepartures(); 
@@ -1108,22 +1146,24 @@
                 mainTabOut.classList.add('selected');
                 mainTabHome.classList.remove('selected');
                 createLocationButtons('out');
-                locationSelector.querySelector('button')?.click();
             });
 
             mainTabHome.addEventListener('click', () => {
                 mainTabHome.classList.add('selected');
                 mainTabOut.classList.remove('selected');
                 createLocationButtons('home');
-                 locationSelector.querySelector('button')?.click();
             });
 
             document.getElementById('refreshButton').addEventListener('click', () => {
-                document.getElementById('geolocationMessage').classList.add('hidden'); 
-                 if (!document.getElementById('etaView').classList.contains('hidden')) {
-                    displayDepartures(); 
+                if (!document.getElementById('etaView').classList.contains('hidden')) {
+                    const selectedButton = document.querySelector('#locationSelector button.selected');
+                    if (selectedButton) {
+                        displayDepartures();
+                    } else {
+                        handleDetectLocation();
+                    }
                 }
-                 if (!document.getElementById('timetableView').classList.contains('hidden')) {
+                if (!document.getElementById('timetableView').classList.contains('hidden')) {
                     updateCurrentTimeForSchedules();
                     renderFullTimetables(); 
                 }
@@ -1142,26 +1182,26 @@
                 }
             });
             
-            // --- New Event Listeners for Map Modal ---
+            // --- Event Listeners for Map Modal ---
             const mapModal = document.getElementById('mapModal');
             document.getElementById('closeMapModal').addEventListener('click', closeMapModal);
             document.getElementById('trafficBtnNR762').addEventListener('click', () => openMapModal('NR762'));
             document.getElementById('trafficBtnNR762A').addEventListener('click', () => openMapModal('NR762A'));
-            mapModal.addEventListener('click', (event) => { // Close modal on background click
+            mapModal.addEventListener('click', (event) => { 
                 if (event.target === mapModal) {
                     closeMapModal();
                 }
             });
 
-
+            // --- View and Tab Switching ---
             document.getElementById('etaTabButton').addEventListener('click', () => showView('etaView'));
             document.getElementById('timetableTabButton').addEventListener('click', () => showView('timetableView'));
             document.getElementById('nr762SubTabButton').addEventListener('click', () => showTimetableSubView('timetableContentNR762'));
             document.getElementById('nr762aSubTabButton').addEventListener('click', () => showTimetableSubView('timetableContentNR762A'));
 
+            // --- Initial Load ---
             updateCurrentTimeForSchedules();
             setInterval(updateCurrentTimeForSchedules, 60000); 
-
             handleDetectLocation(); 
         }
 
