@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sherwood Bus 7.7</title>
+    <title>Sherwood Bus 7.8</title>
     
     <meta name="application-name" content="Sherwood Bus">
     <meta name="apple-mobile-web-app-title" content="Sherwood Bus">
@@ -1184,8 +1184,20 @@
             });
             
             // --- Event Listeners for Traffic and Map ---
-            document.getElementById('trafficBtnNR762').addEventListener('click', () => openTrafficMap('NR762'));
-            document.getElementById('trafficBtnNR762A').addEventListener('click', () => openTrafficMap('NR762A'));
+            document.getElementById('trafficBtnNR762').addEventListener('click', () => {
+                const origin = document.querySelector('input[name="location"]:checked')?.value;
+                if (!origin) return;
+                const isOutbound = document.getElementById('mainTabOut').classList.contains('selected');
+                const destination = isOutbound ? destinations[origin]?.['NR762'] : '豫豐花園';
+                openTrafficMap(origin, destination);
+            });
+            document.getElementById('trafficBtnNR762A').addEventListener('click', () => {
+                 const origin = document.querySelector('input[name="location"]:checked')?.value;
+                if (!origin) return;
+                const isOutbound = document.getElementById('mainTabOut').classList.contains('selected');
+                const destination = isOutbound ? destinations[origin]?.['NR762A'] : '豫豐花園';
+                openTrafficMap(origin, destination);
+            });
             document.getElementById('trafficBtnKMB').addEventListener('click', () => {
                  const locationName = document.querySelector('input[name="location"]:checked')?.value;
                  if (locationName) openTrafficMap(locationName, '藍地輕鐵站');
