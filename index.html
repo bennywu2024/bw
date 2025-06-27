@@ -3,184 +3,181 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sherwood Bus 7.8</title>
+    <title>Sherwood Bus 9.8</title>
     
     <meta name="application-name" content="Sherwood Bus">
     <meta name="apple-mobile-web-app-title" content="Sherwood Bus">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="theme-color" content="#3B82F6">
+    <meta name="theme-color" content="#FFFFFF">
 
-    <link rel="icon" href="data:image/svg+xml,%3Csvg width='64' height='64' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='24' height='24' rx='3' fill='%233B82F6'/%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' stroke='white' fill='none' d='M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.125-.504 1.125-1.125V14.25m-17.25 4.5h14.25m-14.25 0V6.75A2.25 2.25 0 0 1 5.625 4.5h12.75a2.25 2.25 0 0 1 2.25 2.25v7.5m-16.5-7.5h16.5' /%3E%3C/svg%3E">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cpath fill='%233B82F6' d='M4 3c-1.105 0-2 .895-2 2v14c0 1.105.895 2 2 2h16c1.105 0 2-.895 2-2V5c0-1.105-.895-2-2-2H4z'/%3E%3Cpath fill='white' d='M17 16.5c0 .828-.672 1.5-1.5 1.5S14 17.328 14 16.5s.672-1.5 1.5-1.5 1.5.672 1.5 1.5zm-7 0c0 .828-.672 1.5-1.5 1.5S7 17.328 7 16.5s.672-1.5 1.5-1.5 1.5.672 1.5 1.5z'/%3E%3Cpath fill='white' d='M18 13V10.5C18 9.12 17.062 7.92 15.835 7.408L15 7H9L8.165 7.408C6.938 7.92 6 9.12 6 10.5V13h12z'/%3E%3C/g%3E%3C/svg%3E">
     <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='36' fill='%233B82F6'/%3E%3Ctext x='50%25' y='50%25' dy='.1em' font-size='80' font-family='Arial, Helvetica, sans-serif' fill='white' text-anchor='middle' dominant-baseline='middle'%3ESB%3C/text%3E%3C/svg%3E">
 
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            padding-top: 60px; 
+        /* --- Base and Scrollbar --- */
+        html, body {
+            margin: 0;
+            padding: 0;
+            min-height: 100%;
         }
-        /* Custom scrollbar */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            position: relative;
+            overflow-x: hidden;
+            background-image: url('https://storage.googleapis.com/async-sandbox.google.com/91f65f47-7381-4519-81b1-1fb37a039a41/WhatsApp%20Image%202025-06-27%20at%2013.32.52.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
         ::-webkit-scrollbar-thumb { background: #888; border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: #555; }
+
+        /* --- Liquid Glass Effect --- */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.4);
+            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(203, 213, 225, 0.7); /* More visible border */
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.05);
+        }
+
         .fixed-header {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             z-index: 100;
-            background-color: rgba(191, 219, 254, 0.8); /* Tailwind blue-200 with opacity */
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            padding: 0.5rem 1rem; 
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            background: rgba(255, 255, 255, 0.25) !important;
+            backdrop-filter: blur(15px) !important;
+            -webkit-backdrop-filter: blur(15px) !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+            box-shadow: 0 4px 30px rgba(0,0,0,0.1) !important;
+            padding: 0.75rem 1rem !important;
         }
-        .location-button {
-            transition: all 0.3s ease;
-            padding: 0.375rem 0.75rem; 
-            font-size: 0.875rem; 
-            white-space: nowrap; 
+        
+        .main-content-container {
+            padding-top: 72px;
         }
-        .location-button.selected {
-            background-color: #3b82f6;
+
+        /* --- Typography and Element Styling --- */
+        h2, h3, p, .timetable-table th { color: #1e293b; }
+        #geolocationMessage { color: #334155; font-weight: 500; }
+        .countdown-text { font-weight: 500; color: #166534; }
+        .departed-text { color: #991b1b; font-weight: 500; }
+        
+        /* --- Buttons --- */
+        .pill-button-group button, .location-button-group button {
+            background-color: rgba(229, 231, 235, 0.7);
+            color: #4b5563;
+            transition: all 0.2s ease-in-out;
+            border-radius: 9999px; /* Make them pills */
+            border: 1px solid rgba(203, 213, 225, 0.5);
+        }
+        .pill-button-group button.selected, .location-button-group button.selected {
+            background-color: #1f2937;
             color: white;
-            font-weight: 600;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-color: transparent;
         }
-        .location-button:not(.selected) {
-            background-color: #e5e7eb;
-            color: #374151;
-        }
-        .location-button:hover:not(.selected) {
-            background-color: #d1d5db;
-        }
+
         .main-tab-button {
-             padding: 0.5rem 1rem;
-            border-radius: 9999px;
-            font-weight: 600;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease-in-out;
+            color: #6b7280; /* Default gray for icon/text */
         }
         .main-tab-button.selected {
-            background-color: #2563eb;
-            color: white;
-            box-shadow: 0 4px 14px 0 rgb(0 118 255 / 39%);
+            color: #2563eb; /* Blue for selected */
         }
-        .main-tab-button:not(.selected) {
-            background-color: white;
-            color: #374151;
+        
+        #refreshButton {
+            background: rgba(255, 255, 255, 0.5);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(203, 213, 225, 0.7);
+            color: #1e3a8a; /* indigo-900 */
+            font-weight: 600;
+            transition: all 0.2s ease;
         }
-        .countdown-text {
-            font-weight: 500;
-            color: #16a34a; /* Green for countdown */
+        #refreshButton:hover {
+            background: rgba(255, 255, 255, 0.7);
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
         }
-        .departed-text {
-            color: #dc2626; /* Red for departed */
-            font-weight: 500;
-        }
-        .bus-icon-header {
-            width: 32px; 
-            height: 32px;
-            color: #3b82f6; 
-        }
-        .menu-icon {
-            width: 32px;
-            height: 32px;
-            color: #3b82f6;
-            cursor: pointer;
-        }
-        .next-departure-highlight { 
-            background-color: #eff6ff !important; /* blue-50 */
-            border: 2px solid #3b82f6; /* blue-500 */
-            font-weight: 700; 
-        }
-        .next-departure-highlight .countdown-text {
-            color: #15803d; /* darker green */
-        }
-        .next-departure-highlight-green {
-            background-color: #f0fdf4 !important; /* green-50 */
-            border: 2px solid #22c55e !important; /* green-500 */
-        }
-        .next-departure-highlight-yellow {
-            background-color: #fefce8 !important; /* yellow-50 */
-            border: 2px solid #eab308 !important; /* yellow-500 */
-        }
-        #geolocationMessage {
-            font-size: 0.875rem; 
-            color: #4b5563; 
-            min-height: 1.25rem; 
-            margin-top: 0.75rem;
-            margin-bottom: 0.25rem;
-        }
-        .view-tab-button, .sub-tab-button {
-            padding: 0.5rem 1rem;
-            border-radius: 0.375rem; 
-            font-weight: 500;
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
-        .view-tab-button.selected-tab, .sub-tab-button.selected-sub-tab {
-            background-color: #3b82f6;
-            color: white;
-        }
-        .view-tab-button:not(.selected-tab), .sub-tab-button:not(.selected-sub-tab) {
-            background-color: #e5e7eb;
-            color: #374151;
-        }
-         .view-tab-button:not(.selected-tab):hover, .sub-tab-button:not(.selected-sub-tab):hover {
-            background-color: #d1d5db;
-        }
+
+        /* --- Highlights & Icons --- */
+        .next-departure-highlight { background-color: rgba(239, 246, 255, 0.7) !important; border: 2px solid #3b82f6; font-weight: 700; }
+        .next-departure-highlight-green { background-color: rgba(220, 252, 231, 0.7) !important; border: 2px solid #16a34a !important; }
+        .next-departure-highlight-yellow { background-color: rgba(254, 252, 232, 0.7) !important; border: 2px solid #ca8a04 !important; }
+        
+        /* --- Timetable --- */
         .timetable-table {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 1.5rem; 
         }
         .timetable-table th, .timetable-table td {
-            border: 1px solid #d1d5db; 
+            border: 1px solid rgba(203, 213, 225, 0.8);
             padding: 0.5rem; 
             text-align: left;
         }
         .timetable-table th {
-            background-color: #f3f4f6; 
+            background-color: rgba(226, 232, 240, 0.4);
             font-weight: 600;
         }
         .timetable-highlight-hour {
-            background-color: #dcfce7; 
+            background-color: rgba(224, 231, 255, 0.6); /* A semi-transparent indigo */
             font-weight: bold;
         }
         .timetable-highlight-minute {
-            background-color: #a7f3d0; 
-            color: #047857; 
+            background-color: #3b82f6; /* A solid blue for contrast */
+            color: white; 
             font-weight: bold;
-            padding: 0.125rem 0.25rem;
-            border-radius: 0.25rem;
+            padding: 0.125rem 0.375rem;
+            border-radius: 9999px; /* Pill shape */
         }
-        #expandableMenu {
-            position: fixed; 
-            top: 56px; 
-            left: 1rem; 
-            background-color: white;
-            border: 1px solid #d1d5db;
-            border-radius: 0.375rem;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            z-index: 90; 
-            padding: 0.5rem;
+
+
+        /* --- Side Navigation --- */
+        #sideNavPanel {
+            transition: transform 0.3s ease-in-out;
         }
-        #expandableMenu button {
-            display: block;
-            width: 100%;
-            text-align: left;
-            margin-bottom: 0.25rem;
+        #sideNavOverlay {
+            transition: opacity 0.3s ease-in-out;
         }
-        #expandableMenu button:last-child {
-            margin-bottom: 0;
+        .side-nav-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+            color: #1e3a8a;
+            transition: background-color 0.2s;
+            cursor: pointer;
         }
-        .location-section {
-            padding: 1rem; 
+        .side-nav-item svg {
+            width: 1.5rem;
+            height: 1.5rem;
+            margin-right: 1rem;
+            color: #3b82f6;
         }
+        .side-nav-item:hover {
+            background-color: rgba(255, 255, 255, 0.4);
+        }
+        .side-nav-item.selected {
+            background-color: #3b82f6;
+            color: white;
+        }
+        .side-nav-item.selected svg {
+            color: white;
+        }
+
+        /* --- Pull To Refresh --- */
         #pullToRefreshIndicator {
             position: fixed;
-            top: 60px; 
+            top: 72px; /* Position below the header */
             left: 0;
             right: 0;
             height: 0; 
@@ -188,59 +185,53 @@
             align-items: center;
             justify-content: center;
             background-color: rgba(220, 230, 255, 0.7); 
-            color: #374151; 
+            color: #1e3a8a; 
             z-index: 50; 
             overflow: hidden;
             transition: height 0.2s ease-out, opacity 0.2s ease-out;
             opacity: 0;
         }
-        .traffic-status-button {
-            display: inline-flex;
-            align-items: center;
-            padding: 0.25rem 0.75rem;
-            border-radius: 9999px;
-            background-color: #f3f4f6;
-            border: 1px solid #d1d5db;
-            font-size: 0.875rem;
-            font-weight: 500;
-            color: #374151;
-            transition: all 0.2s ease;
-            cursor: pointer;
-        }
-        .traffic-status-button:hover {
-            background-color: #e5e7eb;
-        }
-        .traffic-indicator {
-            display: inline-block;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            margin-right: 0.5rem;
-            background-color: #d1d5db; /* gray-300 as default */
-            border: 1px solid rgba(0,0,0,0.1);
-            transition: background-color 0.5s ease;
-        }
     </style>
 </head>
-<body class="bg-gradient-to-br from-blue-100 to-indigo-200 min-h-screen">
+<body>
     <header class="fixed-header flex justify-between items-center">
-        <div>
-            <svg id="menuIcon" class="menu-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+        <div id="menuIcon" class="p-2 rounded-full glass-card cursor-pointer">
+            <svg class="h-6 w-6 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
             </svg>
         </div>
         <div class="flex-grow flex justify-center items-center">
-            <svg class="bus-icon-header" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.125-.504 1.125-1.125V14.25m-17.25 4.5h14.25m-14.25 0V6.75A2.25 2.25 0 0 1 5.625 4.5h12.75a2.25 2.25 0 0 1 2.25 2.25v7.5m-16.5-7.5h16.5" />
-            </svg>
+            <div class="p-2 rounded-full glass-card">
+                <svg class="h-6 w-6 text-blue-600" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M18 3H6C4.34315 3 3 4.34315 3 6V18C3 19.6569 4.34315 21 6 21H18C19.6569 21 21 19.6569 21 18V6C21 4.34315 19.6569 3 18 3ZM17 8H7V7H17V8ZM7 11V10H17V11H7ZM12.5 17C13.8807 17 15 15.8807 15 14.5C15 13.1193 13.8807 12 12.5 12H11.5C10.1193 12 9 13.1193 9 14.5C9 15.8807 10.1193 17 11.5 17H12.5ZM7 19H17V18H7V19Z" />
+                </svg>
+            </div>
         </div>
-        <div class="w-8 h-8"></div> <!-- Placeholder to balance header -->
-    </header>
+        <div class="w-10 h-10"></div> </header>
+    
+    <div id="sideNavOverlay" class="fixed inset-0 bg-black/40 z-[199]" style="display: none; opacity: 0;"></div>
+    <div id="sideNavPanel" class="fixed top-0 left-0 h-full w-72 glass-card p-4 z-[200]" style="transform: translateX(-100%);">
+        <div class="flex items-center space-x-3 mb-8">
+             <div class="p-2 rounded-full glass-card">
+                <svg class="h-8 w-8 text-blue-600" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M18 3H6C4.34315 3 3 4.34315 3 6V18C3 19.6569 4.34315 21 6 21H18C19.6569 21 21 19.6569 21 18V6C21 4.34315 19.6569 3 18 3ZM17 8H7V7H17V8ZM7 11V10H17V11H7ZM12.5 17C13.8807 17 15 15.8807 15 14.5C15 13.1193 13.8807 12 12.5 12H11.5C10.1193 12 9 13.1193 9 14.5C9 15.8807 10.1193 17 11.5 17H12.5ZM7 19H17V18H7V19Z" />
+               </svg>
+             </div>
+             <h2 class="text-xl font-bold text-slate-800">Sherwood Bus</h2>
+        </div>
+        <nav class="flex flex-col space-y-2">
+            <button id="sideNavEtaButton" class="side-nav-item selected">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
+                <span>到站時間</span>
+            </button>
+            <button id="sideNavTimetableButton" class="side-nav-item">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0h18M12 12.75h.008v.008H12v-.008Z" /></svg>
+                <span>村巴時間表</span>
+            </button>
+        </nav>
+    </div>
 
     <div id="pullToRefreshIndicator">
-        <svg id="pullRefreshArrow" class="h-6 w-6 transition-transform duration-200" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 13.5L12 21m0 0l-7.5-7.5M12 21V3" />
-        </svg>
         <svg id="pullRefreshSpinner" class="animate-spin h-6 w-6 hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
@@ -248,120 +239,111 @@
         <span id="pullRefreshText" class="ml-2 text-sm"></span>
     </div>
 
-    <div id="expandableMenu" class="hidden">
-        <button id="etaTabButton" class="view-tab-button selected-tab">到站時間</button>
-        <button id="timetableTabButton" class="view-tab-button">村巴時間表</button>
-    </div>
-
-    <div class="container mx-auto p-4 sm:p-6 lg:p-8 max-w-3xl">
-        <div id="etaView" class="view-section">
-            <section class="location-section mb-6 bg-white rounded-xl shadow-lg">
-                <div id="mainTabContainer" class="flex justify-center p-1 space-x-2 bg-blue-100 rounded-full mb-4">
-                    <button id="mainTabOut" class="main-tab-button flex-1 text-center">外出</button>
-                    <button id="mainTabHome" class="main-tab-button flex-1 text-center">回家</button>
-                </div>
-                <h2 class="text-xl font-semibold mb-3 text-gray-800">現在位置:</h2>
-                <div id="locationSelector" class="flex flex-wrap gap-2 justify-center">
-                </div>
-                <p id="geolocationMessage" class="text-center text-gray-700 hidden"></p>
-            </section>
-
-            <section id="departuresDisplay" class="space-y-6">
-                
-                <div id="lightRailSection" class="bg-white p-5 rounded-xl shadow-lg hidden">
-                    <div class="flex justify-between items-center mb-2">
-                        <h3 class="text-2xl font-bold text-yellow-600">輕鐵</h3>
-                    </div>
-                    <p id="lightRailSubtitle" class="text-md text-gray-700 font-medium mb-3"></p>
-                    <ul id="lightRailDepartures" class="space-y-2 text-gray-800"></ul>
-                    <p id="lightRailMessage" class="text-gray-600 mt-3 text-sm"></p>
-                </div>
-                
-                <div id="kmbSection" class="bg-white p-5 rounded-xl shadow-lg hidden">
-                    <div class="flex justify-between items-center mb-2">
-                        <h3 class="text-2xl font-bold text-green-600">九巴路線</h3>
-                         <button id="trafficBtnKMB" style="display: none;" class="traffic-status-button">
-                            <span id="trafficIndicatorKMB" class="traffic-indicator"></span>
-                            交通狀況
+    <div class="main-content-container">
+        <div class="container mx-auto p-4 sm:p-6 lg:p-8 max-w-3xl">
+            <div id="etaView" class="view-section">
+                <section class="location-section mb-6 p-4 rounded-xl glass-card">
+                    <div id="mainTabContainer" class="glass-card rounded-full flex justify-around items-center p-1 mx-auto max-w-xs mb-4">
+                        <button id="mainTabOut" class="main-tab-button flex-1 flex flex-col items-center space-y-1 p-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+                            <span class="text-xs font-medium">外出</span>
+                        </button>
+                        <button id="mainTabHome" class="main-tab-button flex-1 flex flex-col items-center space-y-1 p-2">
+                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
+                             <span class="text-xs font-medium">回家</span>
                         </button>
                     </div>
-                    <p id="kmbSubtitle" class="text-md text-gray-700 font-medium mb-3"></p>
-                    <ul id="kmbDepartures" class="space-y-2 text-gray-800"></ul>
-                    <p id="kmbMessage" class="text-gray-600 mt-3 text-sm"></p>
+                    <h2 class="text-xl font-semibold mb-3 text-center">現在位置</h2>
+                    <div id="locationSelector" class="flex flex-wrap gap-2 justify-center location-button-group p-2">
+                    </div>
+                    <p id="geolocationMessage" class="text-center mt-2 hidden"></p>
+                </section>
+
+                <section id="departuresDisplay" class="space-y-6">
+                    
+                    <div id="lightRailSection" class="p-5 rounded-xl glass-card hidden">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="text-2xl font-bold" style="color: #ca8a04;">輕鐵</h3>
+                        </div>
+                        <p id="lightRailSubtitle" class="text-md font-medium mb-3"></p>
+                        <ul id="lightRailDepartures" class="space-y-2"></ul>
+                        <p id="lightRailMessage" class="mt-3 text-sm"></p>
+                    </div>
+                    
+                    <div id="kmbSection" class="p-5 rounded-xl glass-card hidden">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="text-2xl font-bold" style="color: #16a34a;">九巴路線</h3>
+                        </div>
+                        <p id="kmbSubtitle" class="text-md font-medium mb-3"></p>
+                        <ul id="kmbDepartures" class="space-y-2"></ul>
+                        <p id="kmbMessage" class="mt-3 text-sm"></p>
+                    </div>
+                    
+                    <div id="nr762Section" class="p-5 rounded-xl glass-card hidden">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="text-2xl font-bold" style="color: #4f46e5;">NR762</h3>
+                        </div>
+                        <p id="nr762Route" class="text-md font-medium mb-3"></p>
+                        <ul id="nr762Departures" class="space-y-2">
+                        </ul>
+                        <p id="nr762Message" class="mt-3 text-sm"></p>
+                    </div>
+
+                    <div id="nr762aSection" class="p-5 rounded-xl glass-card hidden">
+                         <div class="flex justify-between items-center mb-2">
+                            <h3 class="text-2xl font-bold" style="color: #0d9488;">NR762A</h3>
+                        </div>
+                        <p id="nr762aRoute" class="text-md font-medium mb-3"></p>
+                        <ul id="nr762aDepartures" class="space-y-2">
+                        </ul>
+                        <p id="nr762aMessage" class="mt-3 text-sm"></p>
+                    </div>
+
+                </section>
+            </div>
+
+            <div id="timetableView" class="view-section hidden p-5 rounded-xl glass-card">
+                <div id="timetableSubSwitcher" class="mb-6 flex justify-center space-x-2 sm:space-x-4 pill-button-group">
+                    <button id="nr762SubTabButton" class="px-4 py-2 rounded-full font-semibold text-sm">NR762</button>
+                    <button id="nr762aSubTabButton" class="px-4 py-2 rounded-full font-semibold text-sm">NR762A</button>
+                </div>
+
+                <div id="timetableContentNR762" class="timetable-route-section">
+                    <h3 class="text-xl font-semibold text-indigo-800 mb-3 text-center">NR762: 豫豐花園 ↔ 兆康站</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="text-lg font-medium text-gray-700 mb-2 text-center">由 豫豐花園 開出</h4>
+                            <div id="nr762_richwood_timetable_container"></div>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-medium text-gray-700 mb-2 text-center">由 兆康站 開出</h4>
+                            <div id="nr762_siuhong_timetable_container"></div>
+                        </div>
+                    </div>
                 </div>
                 
-                <div id="nr762Section" class="bg-white p-5 rounded-xl shadow-lg hidden">
-                    <div class="flex justify-between items-center mb-2">
-                        <h3 class="text-2xl font-bold text-indigo-600">NR762</h3>
-                        <button id="trafficBtnNR762" style="display: none;" class="traffic-status-button">
-                            <span id="trafficIndicatorNR762" class="traffic-indicator"></span>
-                            交通狀況
-                        </button>
+                <div id="timetableContentNR762A" class="timetable-route-section hidden">
+                    <h3 class="text-xl font-semibold text-teal-800 mb-3 text-center">NR762A: 豫豐花園 ↔ 屯門市中心</h3>
+                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="text-lg font-medium text-gray-700 mb-2 text-center">由 豫豐花園 開出</h4>
+                            <div id="nr762a_richwood_timetable_container"></div>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-medium text-gray-700 mb-2 text-center">由 屯門市中心 開出</h4>
+                            <div id="nr762a_tuenmun_timetable_container"></div>
+                        </div>
                     </div>
-                    <p id="nr762Route" class="text-md text-gray-700 font-medium mb-3"></p>
-                    <ul id="nr762Departures" class="space-y-2 text-gray-800">
-                    </ul>
-                    <p id="nr762Message" class="text-gray-600 mt-3 text-sm"></p>
                 </div>
+            </div>
 
-                <div id="nr762aSection" class="bg-white p-5 rounded-xl shadow-lg hidden">
-                     <div class="flex justify-between items-center mb-2">
-                        <h3 class="text-2xl font-bold text-teal-600">NR762A</h3>
-                        <button id="trafficBtnNR762A" style="display: none;" class="traffic-status-button">
-                            <span id="trafficIndicatorNR762A" class="traffic-indicator"></span>
-                            交通狀況
-                        </button>
-                    </div>
-                    <p id="nr762aRoute" class="text-md text-gray-700 font-medium mb-3"></p>
-                    <ul id="nr762aDepartures" class="space-y-2 text-gray-800">
-                    </ul>
-                    <p id="nr762aMessage" class="text-gray-600 mt-3 text-sm"></p>
-                </div>
-
-            </section>
+            <footer class="mt-8 text-center text-sm text-gray-500">
+                <button id="refreshButton" class="px-6 py-3 rounded-lg shadow-md">
+                    刷新班次
+                </button>
+                <p class="text-gray-600 mt-4">巴士班次資料僅供參考，以實際營運為準。</p>
+            </footer>
         </div>
-
-        <div id="timetableView" class="view-section hidden bg-white p-5 rounded-xl shadow-lg">
-            <div id="timetableSubSwitcher" class="mb-6 flex justify-center space-x-2 sm:space-x-4">
-                <button id="nr762SubTabButton" class="sub-tab-button selected-sub-tab">NR762</button>
-                <button id="nr762aSubTabButton" class="sub-tab-button">NR762A</button>
-            </div>
-
-            <div id="timetableContentNR762" class="timetable-route-section">
-                <h3 class="text-xl font-semibold text-indigo-600 mb-3 text-center">NR762: 豫豐花園 ↔ 兆康站</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <h4 class="text-lg font-medium text-gray-700 mb-2 text-center">由 豫豐花園 開出</h4>
-                        <div id="nr762_richwood_timetable_container"></div>
-                    </div>
-                    <div>
-                        <h4 class="text-lg font-medium text-gray-700 mb-2 text-center">由 兆康站 開出</h4>
-                        <div id="nr762_siuhong_timetable_container"></div>
-                    </div>
-                </div>
-            </div>
-            
-            <div id="timetableContentNR762A" class="timetable-route-section hidden">
-                <h3 class="text-xl font-semibold text-teal-600 mb-3 text-center">NR762A: 豫豐花園 ↔ 屯門市中心</h3>
-                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <h4 class="text-lg font-medium text-gray-700 mb-2 text-center">由 豫豐花園 開出</h4>
-                        <div id="nr762a_richwood_timetable_container"></div>
-                    </div>
-                    <div>
-                        <h4 class="text-lg font-medium text-gray-700 mb-2 text-center">由 屯門市中心 開出</h4>
-                        <div id="nr762a_tuenmun_timetable_container"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <footer class="mt-8 text-center text-sm text-gray-500">
-            <button id="refreshButton" class="mb-4 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75 shadow-md transition-colors">
-                刷新班次
-            </button>
-            <p>巴士班次資料僅供參考，以實際營運為準。</p>
-        </footer>
     </div>
     
     <script>
@@ -394,7 +376,11 @@
         const destinations = {
             "豫豐花園": { "NR762": "兆康站", "NR762A": "屯門市中心" },
             "兆康站": { "NR762": "豫豐花園", "NR762A": null }, 
-            "屯門市中心": { "NR762": null, "NR762A": "豫豐花園" } 
+            "屯門市中心": { "NR762": null, "NR762A": "豫豐花園" },
+            // BUG FIX: Added missing locations to prevent potential errors
+            "藍地站 (屯門方向)": { "NR762": null, "NR762A": null },
+            "藍地站 (元朗方向)": { "NR762": null, "NR762A": null },
+            "屯公轉車站 (屯門方向)": { "NR762": null, "NR762A": null }
         };
         
         const kmbConfigs = {
@@ -433,6 +419,12 @@
                 apiUrl: 'https://rt.data.gov.hk/v1/transport/mtr/lrt/getSchedule?station_id=350',
                 targetPlatform: 2,
                 subtitle: '往屯門碼頭/友愛'
+            },
+             "屯門市中心": {
+                apiUrl: 'https://rt.data.gov.hk/v1/transport/mtr/lrt/getSchedule?station_id=280',
+                targetPlatform: 1,
+                subtitle: '往元朗/天逸',
+                filterRoutes: ['614', '614P', '751'] 
             }
         };
 
@@ -454,94 +446,6 @@
             return `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
         }
         
-        // --- Traffic Map & Indicator Logic ---
-        function openTrafficMap(origin, destination) {
-            if (!origin || !destination) {
-                console.error("Could not determine origin/destination for map.");
-                return; 
-            }
-            const originEncoded = encodeURIComponent(origin + ", Hong Kong");
-            const destinationEncoded = encodeURIComponent(destination + ", Hong Kong");
-            
-            const mapUrl = `https://www.google.com/maps/dir/?api=1&origin=${originEncoded}&destination=${destinationEncoded}&travelmode=driving`;
-            window.open(mapUrl, '_blank');
-        }
-
-        function updateAllTrafficIndicators() {
-            const now = new Date();
-            
-            // Handle NR Routes
-            ['NR762', 'NR762A'].forEach(routeId => {
-                const section = document.getElementById(`${routeId.toLowerCase()}Section`);
-                if (section.classList.contains('hidden')) return;
-
-                const indicator = document.getElementById(`trafficIndicator${routeId}`);
-                const nextDepartureLi = section.querySelector('.next-departure-highlight');
-
-                if (!indicator || !nextDepartureLi || !nextDepartureLi.dataset.departureTime) {
-                    if(indicator) indicator.className = 'traffic-indicator bg-gray-400';
-                    return;
-                }
-
-                const departureTime = new Date(nextDepartureLi.dataset.departureTime);
-                const diffSeconds = (departureTime - now) / 1000;
-
-                if (diffSeconds < 0) {
-                     indicator.className = 'traffic-indicator bg-gray-400'; // Departed
-                     return;
-                }
-
-                const minutesRemaining = Math.floor(diffSeconds / 60);
-                let colorClass = 'bg-gray-400';
-
-                if (routeId === 'NR762') {
-                    if (minutesRemaining <= 7) colorClass = 'bg-green-500';
-                    else if (minutesRemaining >= 8 && minutesRemaining <= 11) colorClass = 'bg-orange-400';
-                    else if (minutesRemaining >= 12) colorClass = 'bg-red-500';
-                } else if (routeId === 'NR762A') {
-                    if (minutesRemaining <= 10) colorClass = 'bg-green-500';
-                    else if (minutesRemaining >= 11 && minutesRemaining <= 14) colorClass = 'bg-orange-400';
-                    else if (minutesRemaining >= 15) colorClass = 'bg-red-500';
-                }
-                indicator.className = `traffic-indicator ${colorClass}`;
-            });
-
-            // Handle KMB Route
-            const kmbSection = document.getElementById('kmbSection');
-            if (kmbSection.classList.contains('hidden')) return;
-
-            const kmbIndicator = document.getElementById('trafficIndicatorKMB');
-            const nextKmbDepartureLi = kmbSection.querySelector('.next-departure-highlight');
-            const locationName = document.querySelector('input[name="location"]:checked')?.value;
-
-            if (!kmbIndicator || !nextKmbDepartureLi || !nextKmbDepartureLi.dataset.departureTime || !locationName) {
-                if(kmbIndicator) kmbIndicator.className = 'traffic-indicator bg-gray-400';
-                return;
-            }
-
-            const departureTime = new Date(nextKmbDepartureLi.dataset.departureTime);
-            const diffSeconds = (departureTime - now) / 1000;
-
-            if (diffSeconds < 0) {
-                kmbIndicator.className = 'traffic-indicator bg-gray-400';
-                return;
-            }
-
-            const minutesRemaining = Math.floor(diffSeconds / 60);
-            let colorClass = 'bg-gray-400';
-
-            if (locationName === '屯門市中心') {
-                if (minutesRemaining <= 5) colorClass = 'bg-green-500';
-                else if (minutesRemaining >= 6 && minutesRemaining <= 9) colorClass = 'bg-orange-400';
-                else if (minutesRemaining >= 10) colorClass = 'bg-red-500';
-            } else if (locationName === '屯公轉車站 (屯門方向)') {
-                if (minutesRemaining <= 10) colorClass = 'bg-green-500';
-                else if (minutesRemaining >= 11 && minutesRemaining <= 16) colorClass = 'bg-orange-400';
-                else if (minutesRemaining >= 17) colorClass = 'bg-red-500';
-            }
-            kmbIndicator.className = `traffic-indicator ${colorClass}`;
-        }
-
         // --- Countdown Logic ---
         function updateAllCountdowns() {
             const now = new Date();
@@ -553,10 +457,15 @@
                 if (countdownSpan) { 
                     const totalSeconds = Math.floor(diff / 1000);
                     
-                    if (totalSeconds < 0) { 
+                    if (totalSeconds < -60) { // Keep "Departed" for 1 minute
                         countdownSpan.textContent = "已開出";
                         countdownSpan.classList.remove('countdown-text'); 
-                        countdownSpan.classList.add('departed-text'); 
+                        countdownSpan.classList.add('departed-text');
+                        li.style.opacity = '0.5';
+                    } else if (totalSeconds < 0) {
+                        countdownSpan.textContent = "即將開出";
+                         countdownSpan.classList.remove('departed-text');
+                        countdownSpan.classList.add('countdown-text');
                     } else { 
                         const displayMinutes = Math.floor(totalSeconds / 60);
                         const displaySeconds = totalSeconds % 60;
@@ -566,7 +475,6 @@
                     }
                 }
             });
-            updateAllTrafficIndicators(); // Update all traffic light colors every second
         }
         
         // --- Core Logic Functions (ETA View) ---
@@ -596,6 +504,21 @@
                     });
                 }
             }
+             // Get next day's first departure if no more today
+            if (upcoming.length < count) {
+                const firstHourNextDay = sortedHours[0];
+                if (firstHourNextDay !== undefined) {
+                    schedule[firstHourNextDay].forEach(minute => {
+                        if (upcoming.length < count) {
+                            const tomorrow = new Date(now);
+                            tomorrow.setDate(tomorrow.getDate() + 1);
+                            const depDate = new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate(), firstHourNextDay, minute, 0);
+                            upcoming.push({ hour: firstHourNextDay, minute, date: depDate });
+                        }
+                    });
+                }
+            }
+
             return upcoming;
         }
 
@@ -604,14 +527,11 @@
             const kmbDeparturesList = document.getElementById('kmbDepartures');
             const kmbMessageEl = document.getElementById('kmbMessage');
             const kmbSubtitleEl = document.getElementById('kmbSubtitle');
-            const trafficBtnKMB = document.getElementById('trafficBtnKMB');
             
-            // Reset and hide
             kmbDeparturesList.innerHTML = '<li class="text-gray-500">正在載入九巴班次...</li>';
             kmbMessageEl.textContent = '';
             kmbSubtitleEl.textContent = kmbConfig.subtitle;
             kmbSection.classList.remove('hidden');
-            trafficBtnKMB.style.display = 'none';
             
             const apiUrl = `https://data.etabus.gov.hk/v1/transport/kmb/stop-eta/${kmbConfig.stopId}`;
 
@@ -632,7 +552,7 @@
                     const limit = (locationName && locationName.includes("藍地站")) ? 10 : 5;
                     relevantDepartures.slice(0, limit).forEach((dep, index) => {
                         const li = document.createElement('li');
-                        li.className = 'p-3 bg-green-50 rounded-md shadow-sm flex justify-between items-center';
+                        li.className = 'p-3 bg-green-50 rounded-md shadow-sm flex justify-between items-center transition-opacity';
                         if (index === 0) li.classList.add('next-departure-highlight', 'next-departure-highlight-green');
                         li.dataset.departureTime = dep.eta;
                         const timeText = document.createElement('span');
@@ -643,14 +563,8 @@
                         li.appendChild(countdownSpan);
                         kmbDeparturesList.appendChild(li);
                     });
-                    
-                    // Show and configure KMB traffic button if applicable
-                    if (locationName === '屯門市中心' || locationName === '屯公轉車站 (屯門方向)') {
-                        trafficBtnKMB.style.display = 'inline-flex';
-                        trafficBtnKMB.onclick = () => openTrafficMap(locationName, '藍地輕鐵站');
-                    }
                 } else {
-                    kmbMessageEl.textContent = '暫無九巴班次資料。';
+                    kmbMessageEl.textContent = '暫無相關九巴班次資料。';
                 }
             } catch (error) {
                 console.error("KMB Fetch Error:", error);
@@ -676,49 +590,54 @@
                 const data = await response.json();
                 lrtDeparturesList.innerHTML = '';
 
-                const platform = data.platform_list.find(p => p.platform_id === lrtConfig.targetPlatform);
+                let platform = data.platform_list.find(p => p.platform_id === lrtConfig.targetPlatform);
                 
                 if (platform && platform.route_list && platform.route_list.length > 0) {
-                     const relevantDepartures = platform.route_list.filter(route => route.time_ch);
+                     let relevantDepartures = platform.route_list.filter(route => route.time_ch);
+
+                     if (lrtConfig.filterRoutes) {
+                         relevantDepartures = relevantDepartures.filter(route => lrtConfig.filterRoutes.includes(route.route_no));
+                     }
+
                      if (relevantDepartures.length > 0) {
-                        relevantDepartures.forEach((dep, index) => {
-                            const li = document.createElement('li');
-                            li.className = 'p-3 bg-yellow-50 rounded-md flex justify-between items-center';
-                            if (index === 0) {
-                                li.classList.add('next-departure-highlight', 'next-departure-highlight-yellow');
-                            }
-                            
-                            const leftDiv = document.createElement('div');
-                            leftDiv.className = 'flex-grow';
-                            leftDiv.innerHTML = `<span class="font-bold text-lg">${dep.route_no}</span> <span class="text-gray-600">往 ${dep.dest_ch}</span>`;
-                            
-                            const rightDiv = document.createElement('div');
-                            rightDiv.className = 'flex items-center flex-shrink-0 ml-4';
+                         relevantDepartures.forEach((dep, index) => {
+                             const li = document.createElement('li');
+                             li.className = 'p-3 bg-yellow-50 rounded-md flex justify-between items-center';
+                             if (index === 0) {
+                                 li.classList.add('next-departure-highlight', 'next-departure-highlight-yellow');
+                             }
+                             
+                             const leftDiv = document.createElement('div');
+                             leftDiv.className = 'flex-grow';
+                             leftDiv.innerHTML = `<span class="font-bold text-lg">${dep.route_no}</span> <span class="text-gray-600">往 ${dep.dest_ch}</span>`;
+                             
+                             const rightDiv = document.createElement('div');
+                             rightDiv.className = 'flex items-center flex-shrink-0 ml-4';
 
-                            const carCountSpan = document.createElement('span');
-                            carCountSpan.className = 'font-medium text-gray-600 w-14 text-center';
-                            carCountSpan.textContent = dep.train_length === 1 ? '🚃' : '🚃🚃';
+                             const carCountSpan = document.createElement('span');
+                             carCountSpan.className = 'font-medium text-gray-600 w-14 text-center';
+                             carCountSpan.textContent = dep.train_length === 1 ? '🚃' : '🚃🚃';
 
-                            const etaSpan = document.createElement('span');
-                            etaSpan.className = 'font-medium w-28 text-right';
-                            
-                            if (dep.time_ch === "-") {
-                                etaSpan.textContent = "即將到達/已開出";
-                                etaSpan.className += ' text-gray-500';
-                            } else {
-                                etaSpan.textContent = dep.time_ch;
-                                etaSpan.className += ' text-yellow-700';
-                            }
+                             const etaSpan = document.createElement('span');
+                             etaSpan.className = 'font-medium w-28 text-right';
+                             
+                             if (dep.time_ch === "-") {
+                                 etaSpan.textContent = "即將到達/已開出";
+                                 etaSpan.className += ' text-gray-500';
+                             } else {
+                                 etaSpan.textContent = dep.time_ch;
+                                 etaSpan.className += ' text-yellow-700';
+                             }
 
-                            rightDiv.appendChild(carCountSpan);
-                            rightDiv.appendChild(etaSpan);
-                            
-                            li.appendChild(leftDiv);
-                            li.appendChild(rightDiv);
-                            lrtDeparturesList.appendChild(li);
-                        });
+                             rightDiv.appendChild(carCountSpan);
+                             rightDiv.appendChild(etaSpan);
+                             
+                             li.appendChild(leftDiv);
+                             li.appendChild(rightDiv);
+                             lrtDeparturesList.appendChild(li);
+                         });
                      } else {
-                         lrtMessageEl.textContent = '暫無輕鐵班次資料。';
+                          lrtMessageEl.textContent = '暫無相關輕鐵班次資料。';
                      }
                 } else {
                     lrtMessageEl.textContent = '暫無輕鐵班次資料。';
@@ -732,19 +651,21 @@
 
 
         async function displayDepartures() {
-            const selectedLocationName = document.querySelector('input[name="location"]:checked')?.value;
-            if (!selectedLocationName) return;
+            const selectedButton = document.querySelector('.location-button-group button.selected');
+            if (!selectedButton) return;
+            const selectedLocationName = selectedButton.value;
 
             if (countdownIntervalId) {
                 clearInterval(countdownIntervalId);
                 countdownIntervalId = null;
             }
+            
+            const nr762Section = document.getElementById('nr762Section');
+            const nr762aSection = document.getElementById('nr762aSection');
+            const kmbSection = document.getElementById('kmbSection');
+            const lightRailSection = document.getElementById('lightRailSection');
 
-            // Hide all sections initially
-            document.getElementById('kmbSection').classList.add('hidden');
-            document.getElementById('nr762Section').classList.add('hidden');
-            document.getElementById('nr762aSection').classList.add('hidden');
-            document.getElementById('lightRailSection').classList.add('hidden');
+            [kmbSection, nr762Section, nr762aSection, lightRailSection].forEach(s => s.classList.add('hidden'));
 
             updateCurrentTimeForSchedules();
             const displayPromises = [];
@@ -755,7 +676,6 @@
                 const departuresEl = document.getElementById(`${routeId.toLowerCase()}Departures`);
                 const messageEl = document.getElementById(`${routeId.toLowerCase()}Message`);
                 const routeEl = document.getElementById(`${routeId.toLowerCase()}Route`);
-                const trafficBtn = document.getElementById(`trafficBtn${routeId}`);
                 
                 departuresEl.innerHTML = '';
                 messageEl.textContent = '';
@@ -764,9 +684,8 @@
                 const destName = mainTabIsOut ? destinations[selectedLocationName]?.[routeId] : '豫豐花園';
                 const scheduleKeyName = mainTabIsOut ? `${selectedLocationName}_to_${destName}` : `${selectedLocationName}_to_豫豐花園`;
 
-                if (destName && allSchedules[routeId][scheduleKeyName]) {
+                if (destName && allSchedules[routeId] && allSchedules[routeId][scheduleKeyName]) {
                     section.classList.remove('hidden');
-                    trafficBtn.style.display = 'inline-flex';
                     routeEl.textContent = `由 ${selectedLocationName} 開往 ${destName}`;
                     const schedule = allSchedules[routeId][scheduleKeyName];
                     let hasService = false;
@@ -777,7 +696,7 @@
                             departures.forEach((dep, index) => {
                                 const li = document.createElement('li');
                                 const styleClass = routeId === 'NR762' ? 'bg-indigo-50' : 'bg-teal-50';
-                                li.className = `p-3 ${styleClass} rounded-md shadow-sm flex justify-between items-center`;
+                                li.className = `p-3 ${styleClass} rounded-md shadow-sm flex justify-between items-center transition-opacity`;
                                 if (index === 0) li.classList.add('next-departure-highlight');
                                 li.dataset.departureTime = dep.date.toISOString();
                                 li.innerHTML = `<span>${formatDepartureTime(dep.hour, dep.minute)}</span><span class="countdown-text ml-2"></span>`;
@@ -787,14 +706,11 @@
                     }
                     if (!hasService) {
                         messageEl.textContent = '今日已無班次。';
-                        trafficBtn.style.display = 'none';
                     }
-                } else {
-                   trafficBtn.style.display = 'none';
                 }
             });
 
-            // Handle KMB, and LRT sections with promises
+            // Handle KMB and LRT sections
             const kmbConfig = kmbConfigs[selectedLocationName];
             if (kmbConfig) {
                 displayPromises.push(fetchAndDisplayKmbDepartures(kmbConfig, selectedLocationName));
@@ -804,7 +720,7 @@
             if (lrtConfig) {
                 displayPromises.push(fetchAndDisplayLightRailDepartures(lrtConfig));
             }
-            
+
             // Wait for all data fetching to complete
             await Promise.all(displayPromises);
             
@@ -839,6 +755,7 @@
 
                 navigator.geolocation.getCurrentPosition(
                     (position) => {
+                        geoMsgEl.classList.add('hidden');
                         userPosition = {
                             lat: position.coords.latitude,
                             lon: position.coords.longitude
@@ -849,13 +766,8 @@
                         
                         const activeGroup = (distanceToHome <= 0.5) ? 'out' : 'home';
                         
-                        if (activeGroup === 'out') {
-                            mainTabOut.click();
-                        } else {
-                            mainTabHome.click();
-                        }
+                        document.getElementById(activeGroup === 'out' ? 'mainTabOut' : 'mainTabHome').click();
 
-                        // Wait a tick for the UI to update with the new buttons
                         setTimeout(() => {
                             let nearestLocation = null;
                             let shortestDistance = Infinity;
@@ -868,59 +780,58 @@
                             });
 
                             if (nearestLocation) {
-                                const buttonToClick = document.querySelector(`#locationSelector button[value="${nearestLocation.name}"]`);
+                                const buttonToClick = document.querySelector(`.location-button-group button[value="${nearestLocation.name}"]`);
                                 if (buttonToClick) {
                                     buttonToClick.click(); 
                                 }
                             } else {
                                geoMsgEl.textContent = "無法確定最近的車站。";
+                               geoMsgEl.classList.remove('hidden');
                             }
-                        }, 0);
+                        }, 50);
                     },
                     (error) => {
                         console.warn("Could not get location:", error.message);
                         geoMsgEl.textContent = "無法獲取位置，請手動選擇。";
-                        mainTabHome.click();
-                        // Wait a tick for UI update before clicking button
+                        geoMsgEl.classList.remove('hidden');
+                        document.getElementById('mainTabHome').click();
                         setTimeout(() => {
                             const firstButton = document.querySelector('#locationSelector button');
-                            if (firstButton) {
-                                firstButton.click();
-                            }
-                        }, 0);
+                            if (firstButton) firstButton.click();
+                        }, 50);
                     },
                     { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
                 );
             } else {
                 geoMsgEl.textContent = "您的瀏覽器不支援地理位置。";
                 geoMsgEl.classList.remove('hidden');
-                mainTabHome.click();
+                document.getElementById('mainTabHome').click();
                 setTimeout(() => {
                     const firstButton = document.querySelector('#locationSelector button');
-                    if (firstButton) {
-                        firstButton.click();
-                    }
-                }, 0);
+                    if (firstButton) firstButton.click();
+                }, 50);
             }
         }
 
         // --- View Switching Logic ---
         function showView(viewId) {
-            document.getElementById('etaView').classList.add('hidden');
-            document.getElementById('timetableView').classList.add('hidden');
+            const sideNavEtaButton = document.getElementById('sideNavEtaButton');
+            const sideNavTimetableButton = document.getElementById('sideNavTimetableButton');
+            
+            document.querySelectorAll('.view-section').forEach(view => view.classList.add('hidden'));
             document.getElementById(viewId).classList.remove('hidden');
 
-            document.getElementById('etaTabButton').classList.remove('selected-tab');
-            document.getElementById('timetableTabButton').classList.remove('selected-tab');
-            document.getElementById('expandableMenu').classList.add('hidden'); 
-
+            sideNavEtaButton.classList.toggle('selected', viewId === 'etaView');
+            sideNavTimetableButton.classList.toggle('selected', viewId === 'timetableView');
+            
             if (viewId === 'etaView') {
-                document.getElementById('etaTabButton').classList.add('selected-tab');
-                const selectedLocationName = document.querySelector('input[name="location"]:checked')?.value;
-                if(selectedLocationName) displayDepartures(); else handleDetectLocation();
-
+                const selectedButton = document.querySelector('.location-button-group button.selected');
+                if(selectedButton) {
+                    displayDepartures();
+                } else {
+                    handleDetectLocation();
+                }
             } else if (viewId === 'timetableView') {
-                document.getElementById('timetableTabButton').classList.add('selected-tab');
                 if (countdownIntervalId) { 
                     clearInterval(countdownIntervalId);
                     countdownIntervalId = null;
@@ -932,40 +843,40 @@
         }
         
         function showTimetableSubView(subViewId) {
-            document.getElementById('timetableContentNR762').classList.add('hidden');
-            document.getElementById('timetableContentNR762A').classList.add('hidden');
+            document.querySelectorAll('.timetable-route-section').forEach(view => view.classList.add('hidden'));
             document.getElementById(subViewId).classList.remove('hidden');
 
-            document.getElementById('nr762SubTabButton').classList.remove('selected-sub-tab');
-            document.getElementById('nr762aSubTabButton').classList.remove('selected-sub-tab');
-
-            if (subViewId === 'timetableContentNR762') {
-                document.getElementById('nr762SubTabButton').classList.add('selected-sub-tab');
-            } else if (subViewId === 'timetableContentNR762A') {
-                document.getElementById('nr762aSubTabButton').classList.add('selected-sub-tab');
-            }
+            document.getElementById('nr762SubTabButton').classList.toggle('selected', subViewId === 'timetableContentNR762');
+            document.getElementById('nr762aSubTabButton').classList.toggle('selected', subViewId === 'timetableContentNR762A');
         }
 
         // --- Full Timetable Rendering Logic ---
         function findNextGlobalDeparture(scheduleData, currentHour, currentMinute) {
             let nextDep = null;
+            let sortedHours = Object.keys(scheduleData).map(Number).sort((a,b) => a - b);
+            
+            // Check for departures later in the current hour
             if (scheduleData[currentHour]) {
-                for (const minute of scheduleData[currentHour]) {
-                    if (minute >= currentMinute) {
-                        nextDep = { hour: currentHour, minute: minute };
-                        break;
-                    }
+                const minute = scheduleData[currentHour].find(m => m >= currentMinute);
+                if (minute !== undefined) {
+                    return { hour: currentHour, minute: minute };
                 }
             }
-            if (!nextDep) {
-                for (let h = currentHour + 1; h < 24; h++) {
-                    if (scheduleData[h] && scheduleData[h].length > 0) {
-                        nextDep = { hour: h, minute: scheduleData[h][0] };
-                        break;
-                    }
+            
+            // Check for departures in later hours of the same day
+            for (let h = currentHour + 1; h < 24; h++) {
+                if (scheduleData[h] && scheduleData[h].length > 0) {
+                    return { hour: h, minute: scheduleData[h][0] };
                 }
             }
-            return nextDep;
+
+            // If no more departures today, check from the beginning of the next day's schedule
+            const firstHourOfService = sortedHours[0];
+            if (firstHourOfService !== undefined) {
+                 return { hour: firstHourOfService, minute: scheduleData[firstHourOfService][0] };
+            }
+
+            return null; // No departures found at all
         }
 
         function formatMinutesArray(minutesArray, highlightMinute = -1) {
@@ -976,14 +887,16 @@
                     return `<span class="timetable-highlight-minute">${formattedMin}</span>`;
                 }
                 return formattedMin;
-            }).join(', ');
+            }).join(' ');
         }
 
         function generateTimetableTableHTML(scheduleData, currentHour, currentMinute) {
-            let tableHTML = '<table class="timetable-table"><thead><tr><th>小時</th><th>分鐘</th></tr></thead><tbody>';
+            let tableHTML = '<table class="timetable-table"><thead><tr><th class="w-1/4">小時</th><th>分鐘</th></tr></thead><tbody>';
             const nextGlobalDep = findNextGlobalDeparture(scheduleData, currentHour, currentMinute);
 
             for (let hour = 6; hour < 24; hour++) { 
+                if (!scheduleData[hour]) continue; // Skip hours with no service
+                
                 const minutes = scheduleData[hour]; 
                 const hourStr = String(hour).padStart(2, '0');
                 let hourClass = '';
@@ -1008,19 +921,48 @@
             document.getElementById('nr762a_tuenmun_timetable_container').innerHTML = generateTimetableTableHTML(allSchedules.NR762A["屯門市中心_to_豫豐花園"], currentHktHour, currentHktMinute);
         }
         
+        // --- Side Nav ---
+        function toggleSideNav(show) {
+            const overlay = document.getElementById('sideNavOverlay');
+            const panel = document.getElementById('sideNavPanel');
+            if (show) {
+                overlay.style.display = 'block';
+                setTimeout(() => {
+                    panel.style.transform = 'translateX(0)';
+                    overlay.style.opacity = '1';
+                }, 10);
+            } else {
+                panel.style.transform = 'translateX(-100%)';
+                overlay.style.opacity = '0';
+                setTimeout(() => {
+                    overlay.style.display = 'none';
+                }, 300);
+            }
+        }
+        
         // --- Pull to Refresh Logic ---
         const ptrIndicator = document.getElementById('pullToRefreshIndicator');
-        const ptrArrow = document.getElementById('pullRefreshArrow');
         const ptrSpinner = document.getElementById('pullRefreshSpinner');
         const ptrTextEl = document.getElementById('pullRefreshText'); 
         let ptrTouchStartY = 0;
         let ptrIsRefreshing = false;
-        const ptrThreshold = 80; 
+        const ptrThreshold = 80;
+
+        async function handleRefresh() {
+             if (ptrIsRefreshing) return;
+             ptrIsRefreshing = true;
+
+             await displayDepartures();
+
+             setTimeout(() => {
+                ptrIsRefreshing = false;
+            }, 500); // Cooldown to prevent rapid refreshes
+        }
 
         document.body.addEventListener('touchstart', (e) => {
             if (window.scrollY === 0 && !ptrIsRefreshing) {
                 ptrTouchStartY = e.touches[0].clientY;
-                ptrIndicator.style.transition = 'none'; 
+                if(ptrIndicator) ptrIndicator.style.transition = 'none'; 
             }
         }, { passive: true });
 
@@ -1030,194 +972,131 @@
             const currentY = e.touches[0].clientY;
             let deltaY = currentY - ptrTouchStartY;
 
-            if (deltaY > 0) { 
-                e.preventDefault();
+            if (deltaY > 0 && window.scrollY === 0) { 
+                // e.preventDefault(); // This can be overly aggressive, let's remove for now
                 ptrIndicator.style.opacity = '1';
                 ptrIndicator.style.height = Math.min(deltaY * 0.7, ptrThreshold + 20) + 'px'; 
                 
-                ptrArrow.classList.remove('hidden');
-                ptrSpinner.classList.add('hidden');
+                if (ptrSpinner) ptrSpinner.classList.add('hidden');
+                if (ptrTextEl) ptrTextEl.classList.remove('hidden');
 
                 if (deltaY > ptrThreshold) {
-                    ptrArrow.style.transform = 'rotate(180deg)'; 
                     if(ptrTextEl) ptrTextEl.textContent = "釋放以更新";
                 } else {
-                    ptrArrow.style.transform = 'rotate(0deg)'; 
-                     if(ptrTextEl) ptrTextEl.textContent = "下拉以更新";
+                    if(ptrTextEl) ptrTextEl.textContent = "下拉以更新";
                 }
             } else { 
-                 ptrIndicator.style.height = '0px';
-                 ptrIndicator.style.opacity = '0';
+                ptrTouchStartY = 0; // Reset if user scrolls up
             }
-        }, { passive: false }); 
+        }, { passive: true }); 
 
         document.body.addEventListener('touchend', (e) => { 
             if (ptrIsRefreshing || ptrTouchStartY === 0) return;
 
             const deltaY = e.changedTouches[0].clientY - ptrTouchStartY; 
-
-            ptrIndicator.style.transition = 'height 0.2s ease-out, opacity 0.2s ease-out'; 
-
+            ptrIndicator.style.transition = 'height 0.2s ease-out, opacity 0.2s ease-out';
+            
             if (deltaY > ptrThreshold) {
                 ptrIsRefreshing = true;
-                ptrIndicator.style.height = '60px'; 
-                ptrIndicator.style.opacity = '1';
-                ptrArrow.classList.add('hidden');
-                ptrSpinner.classList.remove('hidden');
-                if(ptrTextEl) ptrTextEl.textContent = "更新中...";
+                ptrIndicator.style.height = '60px';
+                if (ptrTextEl) ptrTextEl.textContent = '更新中...';
+                if (ptrSpinner) ptrSpinner.classList.remove('hidden');
 
-                if (!document.getElementById('etaView').classList.contains('hidden')) {
-                    const selectedButton = document.querySelector('#locationSelector button.selected');
-                    if (selectedButton) selectedButton.click();
-                }
-                if (!document.getElementById('timetableView').classList.contains('hidden')) {
-                    updateCurrentTimeForSchedules();
-                    renderFullTimetables(); 
-                }
-
-                setTimeout(() => {
+                setTimeout(async () => {
+                    await handleRefresh();
                     ptrIndicator.style.height = '0px';
                     ptrIndicator.style.opacity = '0';
-                    ptrArrow.classList.remove('hidden');
-                    ptrSpinner.classList.add('hidden');
-                    if(ptrTextEl) ptrTextEl.textContent = "";
                     ptrIsRefreshing = false;
-                }, 1500); 
+                }, 800);
             } else {
-                ptrIndicator.style.height = '0px';
-                ptrIndicator.style.opacity = '0';
+                 ptrIndicator.style.height = '0px';
+                 ptrIndicator.style.opacity = '0';
             }
-            ptrTouchStartY = 0; 
+            ptrTouchStartY = 0;
         });
 
-
-        // --- Initialization ---
-        function init() {
-            const locationSelector = document.getElementById('locationSelector');
+        // --- Event Listener Setup ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const menuIcon = document.getElementById('menuIcon');
+            const sideNavOverlay = document.getElementById('sideNavOverlay');
+            const sideNavEtaButton = document.getElementById('sideNavEtaButton');
+            const sideNavTimetableButton = document.getElementById('sideNavTimetableButton');
             const mainTabOut = document.getElementById('mainTabOut');
             const mainTabHome = document.getElementById('mainTabHome');
+            const locationSelector = document.getElementById('locationSelector');
+            const refreshButton = document.getElementById('refreshButton');
+            const nr762SubTabButton = document.getElementById('nr762SubTabButton');
+            const nr762aSubTabButton = document.getElementById('nr762aSubTabButton');
 
-            const createLocationButtons = (group) => {
-                locationSelector.innerHTML = ''; // Clear previous buttons
-                locations[group].forEach((loc) => { 
+            // Side Nav
+            menuIcon.addEventListener('click', () => toggleSideNav(true));
+            sideNavOverlay.addEventListener('click', () => toggleSideNav(false));
+            
+            // Main View Switch
+            sideNavEtaButton.addEventListener('click', () => {
+                showView('etaView');
+                toggleSideNav(false);
+            });
+            sideNavTimetableButton.addEventListener('click', () => {
+                showView('timetableView');
+                toggleSideNav(false);
+            });
+            
+            // Timetable Sub-view Switch
+            nr762SubTabButton.addEventListener('click', () => showTimetableSubView('timetableContentNR762'));
+            nr762aSubTabButton.addEventListener('click', () => showTimetableSubView('timetableContentNR762A'));
+
+            // Direction Tabs
+            function switchDirectionTab(direction) {
+                const isOut = direction === 'out';
+                mainTabOut.classList.toggle('selected', isOut);
+                mainTabHome.classList.toggle('selected', !isOut);
+                
+                locationSelector.innerHTML = '';
+                const locationsForGroup = locations[direction] || [];
+                
+                locationsForGroup.forEach(loc => {
                     const button = document.createElement('button');
-                    button.type = 'button';
-                    button.value = loc.name;
+                    button.className = 'px-3 py-1.5 rounded-full font-medium text-sm';
                     button.textContent = loc.name;
-                    button.className = 'location-button rounded-md';
-                    
-                    button.addEventListener('click', () => {
-                        document.querySelectorAll('.location-button').forEach(btn => btn.classList.remove('selected'));
-                        button.classList.add('selected');
-                        
-                        let radioInput = document.querySelector('input[name="location"][value="' + loc.name + '"]');
-                        if (!radioInput) {
-                            radioInput = document.createElement('input');
-                            radioInput.type = 'radio';
-                            radioInput.name = 'location';
-                            radioInput.className = 'hidden';
-                            locationSelector.appendChild(radioInput);
-                        }
-                        radioInput.value = loc.name;
-                        radioInput.checked = true;
-
-                        const geoMsgEl = document.getElementById('geolocationMessage');
-                        if (userPosition) {
-                            const distance = calculateDistance(userPosition.lat, userPosition.lon, loc.lat, loc.lon);
-                            geoMsgEl.textContent = `相距約 ${distance.toFixed(2)} km`;
-                            geoMsgEl.classList.remove('hidden');
-                        } else {
-                           if (!geoMsgEl.textContent) {
-                                geoMsgEl.textContent = "請手動選擇您的位置。";
-                                geoMsgEl.classList.remove('hidden');
-                           }
-                        }
-                        
-                        if (!document.getElementById('etaView').classList.contains('hidden')) {
-                            displayDepartures(); 
-                        }
-                    });
+                    button.value = loc.name;
                     locationSelector.appendChild(button);
                 });
-            };
-            
-            mainTabOut.addEventListener('click', () => {
-                if (mainTabOut.classList.contains('selected')) return;
-                mainTabOut.classList.add('selected');
-                mainTabHome.classList.remove('selected');
-                createLocationButtons('out');
-            });
-
-            mainTabHome.addEventListener('click', () => {
-                if (mainTabHome.classList.contains('selected')) return;
-                mainTabHome.classList.add('selected');
-                mainTabOut.classList.remove('selected');
-                createLocationButtons('home');
-            });
-
-            document.getElementById('refreshButton').addEventListener('click', () => {
-                if (!document.getElementById('etaView').classList.contains('hidden')) {
-                    const selectedButton = document.querySelector('#locationSelector button.selected');
-                    if (selectedButton) {
-                        displayDepartures();
-                    } else {
-                        handleDetectLocation();
-                    }
+                
+                // Automatically select the first location in the new list
+                const firstButton = locationSelector.querySelector('button');
+                if (firstButton) {
+                   firstButton.click();
+                } else {
+                    // if no buttons, clear the display
+                    document.getElementById('departuresDisplay').innerHTML = '';
                 }
-                if (!document.getElementById('timetableView').classList.contains('hidden')) {
-                    updateCurrentTimeForSchedules();
-                    renderFullTimetables(); 
+            }
+
+            mainTabOut.addEventListener('click', () => switchDirectionTab('out'));
+            mainTabHome.addEventListener('click', () => switchDirectionTab('home'));
+
+            // Location Selection (using event delegation)
+            locationSelector.addEventListener('click', (e) => {
+                if (e.target && e.target.nodeName === "BUTTON") {
+                    // Remove 'selected' from all other buttons in the group
+                    const buttons = locationSelector.querySelectorAll('button');
+                    buttons.forEach(btn => btn.classList.remove('selected'));
+                    
+                    // Add 'selected' to the clicked button
+                    e.target.classList.add('selected');
+                    
+                    // Display departures for the newly selected location
+                    displayDepartures();
                 }
             });
+
+            // Manual Refresh Button
+            refreshButton.addEventListener('click', handleRefresh);
             
-            const menuIcon = document.getElementById('menuIcon');
-            const expandableMenu = document.getElementById('expandableMenu');
-            menuIcon.addEventListener('click', (event) => {
-                expandableMenu.classList.toggle('hidden');
-                event.stopPropagation(); 
-            });
-
-            document.addEventListener('click', (event) => {
-                if (!expandableMenu.classList.contains('hidden') && !expandableMenu.contains(event.target) && !menuIcon.contains(event.target)) {
-                    expandableMenu.classList.add('hidden');
-                }
-            });
-            
-            // --- Event Listeners for Traffic and Map ---
-            document.getElementById('trafficBtnNR762').addEventListener('click', () => {
-                const origin = document.querySelector('input[name="location"]:checked')?.value;
-                if (!origin) return;
-                const isOutbound = document.getElementById('mainTabOut').classList.contains('selected');
-                const destination = isOutbound ? destinations[origin]?.['NR762'] : '豫豐花園';
-                openTrafficMap(origin, destination);
-            });
-            document.getElementById('trafficBtnNR762A').addEventListener('click', () => {
-                 const origin = document.querySelector('input[name="location"]:checked')?.value;
-                if (!origin) return;
-                const isOutbound = document.getElementById('mainTabOut').classList.contains('selected');
-                const destination = isOutbound ? destinations[origin]?.['NR762A'] : '豫豐花園';
-                openTrafficMap(origin, destination);
-            });
-            document.getElementById('trafficBtnKMB').addEventListener('click', () => {
-                 const locationName = document.querySelector('input[name="location"]:checked')?.value;
-                 if (locationName) openTrafficMap(locationName, '藍地輕鐵站');
-            });
-
-
-            // --- View and Tab Switching ---
-            document.getElementById('etaTabButton').addEventListener('click', () => showView('etaView'));
-            document.getElementById('timetableTabButton').addEventListener('click', () => showView('timetableView'));
-            document.getElementById('nr762SubTabButton').addEventListener('click', () => showTimetableSubView('timetableContentNR762'));
-            document.getElementById('nr762aSubTabButton').addEventListener('click', () => showTimetableSubView('timetableContentNR762A'));
-
             // --- Initial Load ---
-            updateCurrentTimeForSchedules();
-            setInterval(updateCurrentTimeForSchedules, 60000); 
-            handleDetectLocation(); 
-        }
-
-        // --- Start the App ---
-        document.addEventListener('DOMContentLoaded', init);
+            showView('etaView');
+        });
     </script>
 </body>
 </html>
