@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sherwood Bus 10.8</title>
+    <title>Sherwood Bus 10.9</title>
     
     <meta name="application-name" content="Sherwood Bus">
     <meta name="apple-mobile-web-app-title" content="Sherwood Bus">
@@ -26,10 +26,19 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
             position: relative;
             overflow-x: hidden;
+            /* Background properties moved to the new container */
+        }
+        /* BUG FIX: Added a dedicated container for a more reliable fixed background effect */
+        #background-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: -1; /* Place it behind all other content */
             background-image: linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.85)), url('https://bennywu2024.github.io/bw/background.jpeg');
             background-size: cover;
             background-position: center;
-            background-attachment: fixed; 
         }
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
@@ -61,7 +70,6 @@
         
         .main-content-container {
             padding-top: 72px;
-            /* Added padding-bottom to prevent content from being hidden by the bottom nav */
             padding-bottom: 120px;
         }
 
@@ -175,8 +183,8 @@
     </style>
 </head>
 <body>
+    <div id="background-container"></div>
     <header class="fixed-header flex justify-between items-center">
-        <!-- Removed Menu Icon -->
         <div class="w-10 h-10"></div> 
         <div class="flex-grow flex justify-center items-center">
             <div class="p-2 rounded-full glass-card">
@@ -213,8 +221,7 @@
                     <p id="geolocationMessage" class="text-center mt-2 hidden"></p>
                 </section>
 
-                <!-- BUG FIX: Increased spacing between cards with space-y-8 -->
-                <section id="departuresDisplay" class="space-y-8">
+                <section id="departuresDisplay" class="space-y-10">
                     
                     <div id="lightRailSection" class="p-5 rounded-xl glass-card hidden">
                         <div class="flex justify-between items-center mb-2">
@@ -301,7 +308,6 @@
         </div>
     </div>
 
-    <!-- BUG FIX: Added new bottom navigation bar -->
     <div id="bottomNav" class="fixed bottom-0 left-0 right-0 z-50 px-4 pb-4 pt-2">
         <div class="glass-card rounded-2xl flex justify-around items-center max-w-sm mx-auto p-1 shadow-lg">
             <button id="bottomNavEtaButton" class="main-tab-button flex-1 flex flex-col items-center space-y-1 p-2 rounded-lg">
@@ -924,13 +930,13 @@
         }
 
         async function handleTouchEnd(e) {
-            if (ptrTouchStartY === 0) return; // Removed isRefreshing check to allow reset
+            if (ptrTouchStartY === 0) return;
             
             const deltaY = e.changedTouches[0].clientY - ptrTouchStartY;
-            ptrTouchStartY = 0; // Reset start Y immediately
+            ptrTouchStartY = 0;
             ptrIndicator.style.transition = 'height 0.3s ease-out, opacity 0.3s ease-out';
 
-            if (deltaY > ptrThreshold && !isRefreshing) { // Check isRefreshing here
+            if (deltaY > ptrThreshold && !isRefreshing) {
                 ptrIndicator.style.height = '60px';
                 ptrTextEl.textContent = '更新中...';
                 ptrSpinner.classList.remove('hidden');
