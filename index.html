@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sherwood Bus 11.4</title>
+    <title>Sherwood Bus 11.5</title>
     
     <meta name="application-name" content="Sherwood Bus">
     <meta name="apple-mobile-web-app-title" content="Sherwood Bus">
@@ -203,9 +203,10 @@
                     <p id="geolocationMessage" class="text-center mt-2 hidden"></p>
                 </section>
 
-                <section id="departuresDisplay" class="flex flex-col">
+                <!-- BUG FIX: Replaced individual margins with 'gap' for consistent spacing -->
+                <section id="departuresDisplay" class="flex flex-col gap-10">
                     
-                    <div id="lightRailSection" class="p-5 rounded-xl glass-card hidden mb-10">
+                    <div id="lightRailSection" class="p-5 rounded-xl glass-card hidden">
                         <div class="flex justify-between items-center mb-2">
                             <h3 class="text-2xl font-bold" style="color: #ca8a04;">輕鐵</h3>
                         </div>
@@ -214,7 +215,7 @@
                         <p id="lightRailMessage" class="mt-3 text-sm"></p>
                     </div>
                     
-                    <div id="kmbSection" class="p-5 rounded-xl glass-card hidden mb-10">
+                    <div id="kmbSection" class="p-5 rounded-xl glass-card hidden">
                         <div class="flex justify-between items-center mb-2">
                             <h3 class="text-2xl font-bold" style="color: #16a34a;">九巴路線</h3>
                         </div>
@@ -223,7 +224,7 @@
                         <p id="kmbMessage" class="mt-3 text-sm"></p>
                     </div>
                     
-                    <div id="nr762Section" class="p-5 rounded-xl glass-card hidden mb-10">
+                    <div id="nr762Section" class="p-5 rounded-xl glass-card hidden">
                         <div class="flex justify-between items-center mb-2">
                             <h3 class="text-2xl font-bold" style="color: #4f46e5;">NR762</h3>
                         </div>
@@ -233,7 +234,7 @@
                         <p id="nr762Message" class="mt-3 text-sm"></p>
                     </div>
 
-                    <div id="nr762aSection" class="p-5 rounded-xl glass-card hidden mb-10">
+                    <div id="nr762aSection" class="p-5 rounded-xl glass-card hidden">
                          <div class="flex justify-between items-center mb-2">
                             <h3 class="text-2xl font-bold" style="color: #0d9488;">NR762A</h3>
                         </div>
@@ -575,8 +576,7 @@
 
                              const carCountSpan = document.createElement('span');
                              carCountSpan.className = 'font-medium text-gray-600 w-14 text-center';
-                             // BUG FIX: Added space between emojis to fix rendering issue on mobile
-                             carCountSpan.textContent = dep.train_length === 1 ? '🚃' : '🚃 �';
+                             carCountSpan.textContent = dep.train_length === 1 ? '🚃' : '🚃 🚃';
 
                              const etaSpan = document.createElement('span');
                              etaSpan.className = 'font-medium w-28 text-right';
