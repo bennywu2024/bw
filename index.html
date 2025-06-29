@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sherwood Bus 11.3</title>
+    <title>Sherwood Bus 11.4</title>
     
     <meta name="application-name" content="Sherwood Bus">
     <meta name="apple-mobile-web-app-title" content="Sherwood Bus">
@@ -575,7 +575,8 @@
 
                              const carCountSpan = document.createElement('span');
                              carCountSpan.className = 'font-medium text-gray-600 w-14 text-center';
-                             carCountSpan.textContent = dep.train_length === 1 ? '🚃' : '🚃�';
+                             // BUG FIX: Added space between emojis to fix rendering issue on mobile
+                             carCountSpan.textContent = dep.train_length === 1 ? '🚃' : '🚃 �';
 
                              const etaSpan = document.createElement('span');
                              etaSpan.className = 'font-medium w-28 text-right';
