@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sherwood Bus 11.5</title>
+    <title>Sherwood Bus 11.6</title>
     
     <meta name="application-name" content="Sherwood Bus">
     <meta name="apple-mobile-web-app-title" content="Sherwood Bus">
@@ -203,7 +203,6 @@
                     <p id="geolocationMessage" class="text-center mt-2 hidden"></p>
                 </section>
 
-                <!-- BUG FIX: Replaced individual margins with 'gap' for consistent spacing -->
                 <section id="departuresDisplay" class="flex flex-col gap-10">
                     
                     <div id="lightRailSection" class="p-5 rounded-xl glass-card hidden">
@@ -732,13 +731,27 @@
                             lon: position.coords.longitude
                         };
                         
-                        const homeLocation = locations.out.find(l => l.name === '豫豐花園');
-                        const distanceToHome = calculateDistance(userPosition.lat, userPosition.lon, homeLocation.lat, homeLocation.lon);
+                        const allLocations = [
+                            ...locations.out.map(loc => ({ ...loc, group: 'out' })),
+                            ...locations.home.map(loc => ({ ...loc, group: 'home' }))
+                        ];
                         
-                        const activeGroup = (distanceToHome <= 0.5) ? 'out' : 'home';
-                        
-                        document.getElementById(activeGroup === 'out' ? 'bottomNavOutButton' : 'bottomNavHomeButton').click();
+                        let nearestLocation = null;
+                        let shortestDistance = Infinity;
 
+                        allLocations.forEach(loc => {
+                            const distance = calculateDistance(userPosition.lat, userPosition.lon, loc.lat, loc.lon);
+                            if (distance < shortestDistance) {
+                                shortestDistance = distance;
+                                nearestLocation = loc;
+                            }
+                        });
+
+                        if (nearestLocation) {
+                            showView('etaView', nearestLocation.group, nearestLocation.name);
+                        } else {
+                             document.getElementById('bottomNavHomeButton').click();
+                        }
                     },
                     (error) => {
                         console.warn("Could not get location:", error.message);
@@ -756,7 +769,7 @@
         }
 
         // --- View Switching Logic ---
-        function showView(viewId, direction) {
+        function showView(viewId, direction, selectedLocationName) {
             document.querySelectorAll('.view-section').forEach(view => view.classList.add('hidden'));
             document.getElementById(viewId).classList.remove('hidden');
 
@@ -773,21 +786,26 @@
                 const currentLocations = locations[direction] || [];
                 const locationSelector = document.getElementById('locationSelector');
                 locationSelector.innerHTML = '';
+                let buttonToSelect = null;
+
                 currentLocations.forEach(loc => {
                     const button = document.createElement('button');
                     button.className = 'px-3 py-1.5 rounded-full font-medium text-sm';
                     button.textContent = loc.name;
                     button.value = loc.name;
                     locationSelector.appendChild(button);
+                    if (loc.name === selectedLocationName) {
+                        buttonToSelect = button;
+                    }
                 });
                 
-                const firstButton = locationSelector.querySelector('button');
-                if (firstButton) {
-                   firstButton.classList.add('selected');
-                   displayDepartures();
+                if (buttonToSelect) {
+                    buttonToSelect.classList.add('selected');
                 } else {
-                    document.getElementById('departuresDisplay').innerHTML = '';
+                    const firstButton = locationSelector.querySelector('button');
+                    if (firstButton) firstButton.classList.add('selected');
                 }
+                displayDepartures();
 
             } else if (viewId === 'timetableView') {
                 bottomNavOutButton.classList.remove('selected');
