@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sherwood Bus 11.6</title>
+    <title>Sherwood Bus 11.8</title>
     
     <meta name="application-name" content="Sherwood Bus">
     <meta name="apple-mobile-web-app-title" content="Sherwood Bus">
@@ -43,12 +43,12 @@
         ::-webkit-scrollbar-thumb { background: #888; border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: #555; }
 
-        /* --- Liquid Glass Effect --- */
+        /* --- Liquid Glass Effect (Enhanced) --- */
         .glass-card {
-            background: rgba(255, 255, 255, 0.5);
-            -webkit-backdrop-filter: blur(8px);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.4);
+            background: rgba(255, 255, 255, 0.2); /* Increased transparency */
+            -webkit-backdrop-filter: blur(4px); /* Reduced blur */
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.05);
         }
 
@@ -58,10 +58,10 @@
             left: 0;
             right: 0;
             z-index: 100;
-            background: rgba(255, 255, 255, 0.4) !important;
-            backdrop-filter: blur(10px) !important;
-            -webkit-backdrop-filter: blur(10px) !important;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.2) !important;
+            backdrop-filter: blur(5px) !important;
+            -webkit-backdrop-filter: blur(5px) !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
             box-shadow: 0 4px 30px rgba(0,0,0,0.1) !important;
             padding: 0.75rem 1rem !important;
         }
@@ -461,19 +461,6 @@
                         if (upcoming.length < count) {
                              const depDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hour, minute, 0);
                             upcoming.push({ hour, minute, date: depDate });
-                        }
-                    });
-                }
-            }
-            if (upcoming.length < count) {
-                const firstHourNextDay = sortedHours[0];
-                if (firstHourNextDay !== undefined) {
-                    schedule[firstHourNextDay].forEach(minute => {
-                        if (upcoming.length < count) {
-                            const tomorrow = new Date(now);
-                            tomorrow.setDate(tomorrow.getDate() + 1);
-                            const depDate = new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate(), firstHourNextDay, minute, 0);
-                            upcoming.push({ hour: firstHourNextDay, minute, date: depDate });
                         }
                     });
                 }
