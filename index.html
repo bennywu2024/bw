@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sherwood Bus 11.8</title>
+    <title>Sherwood Bus 11.9</title>
     
     <meta name="application-name" content="Sherwood Bus">
     <meta name="apple-mobile-web-app-title" content="Sherwood Bus">
@@ -43,10 +43,10 @@
         ::-webkit-scrollbar-thumb { background: #888; border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: #555; }
 
-        /* --- Liquid Glass Effect (Enhanced) --- */
+        /* --- Liquid Glass Effect --- */
         .glass-card {
-            background: rgba(255, 255, 255, 0.2); /* Increased transparency */
-            -webkit-backdrop-filter: blur(4px); /* Reduced blur */
+            background: rgba(255, 255, 255, 0.2);
+            -webkit-backdrop-filter: blur(4px);
             backdrop-filter: blur(4px);
             border: 1px solid rgba(255, 255, 255, 0.2);
             box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.05);
@@ -121,6 +121,7 @@
         #departuresDisplay {
             display: flex;
             flex-direction: column;
+            gap: 2.5rem; /* Consistent spacing between cards */
         }
 
         /* --- Highlights & Icons --- */
@@ -180,7 +181,8 @@
         <div class="w-10 h-10"></div> 
         <div class="flex-grow flex justify-center items-center">
             <div class="p-2 rounded-full glass-card">
-                <img src="https://bennywu2024.github.io/bw/icon.png" class="h-6 w-6">
+                <!-- BUG FIX: Changed to topicon.png -->
+                <img src="https://bennywu2024.github.io/bw/topicon.png" class="h-6 w-6">
             </div>
         </div>
         <div class="w-10 h-10"></div> </header>
