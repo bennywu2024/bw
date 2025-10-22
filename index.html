@@ -137,6 +137,7 @@
         .next-departure-highlight-blue { background-color: rgba(219, 234, 254, 0.7) !important; border: 2px solid #2563eb !important; }
         .next-departure-highlight-orange { background-color: rgba(255, 247, 237, 0.7) !important; border: 2px solid #f97316 !important; }
         .next-departure-highlight-purple { background-color: rgba(237, 233, 254, 0.7) !important; border: 2px solid #6d28d9 !important; } 
+        .next-departure-highlight-lime { background-color: rgba(247, 254, 231, 0.7) !important; border: 2px solid #65a30d !important; } 
 
 
         /* --- Timetable --- */
@@ -245,6 +246,16 @@
                         <p id="kmbSubtitle" class="text-md font-medium mb-3"></p>
                         <ul id="kmbDepartures" class="space-y-2"></ul>
                         <p id="kmbMessage" class="mt-3 text-sm"></p>
+                    </div>
+
+                    <!-- KMB Other Section -->
+                    <div id="kmbOtherSection" class="p-5 rounded-xl glass-card hidden">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="text-2xl font-bold text-left" style="color: #4d7c0f;">其他九巴路線</h3>
+                        </div>
+                        <p id="kmbOtherSubtitle" class="text-md font-medium mb-3"></p>
+                        <ul id="kmbOtherDepartures" class="space-y-2"></ul>
+                        <p id="kmbOtherMessage" class="mt-3 text-sm"></p>
                     </div>
 
                     <!-- LWB Section -->
@@ -408,9 +419,7 @@
                             { name: "藍地站 (北行)", lat: 22.4184, lon: 113.9822 },
                             { name: "富泰邨", lat: 22.412973, lon: 113.982399 },
                             { name: "紅橋", lat: 22.401816, lon: 113.977423 },
-                            // --- RENAMED ---
                             { name: "富泰邨 (北行)", lat: 22.412973, lon: 113.982399 },
-                            // --- END ---
                             { name: "屯門公路轉車站", lat: 22.362689, lon: 114.015770 } 
                         ],
                         "home": [
@@ -436,14 +445,12 @@
                         "新墟街市": { "NR762": null, "NR762A": null },
                         "紅橋 (回家)": { "NR762": null, "NR762A": null },
                         "深圳灣口岸": { "NR762": null, "NR762A": null },
-                        // --- RENAMED ---
                         "富泰邨 (北行)": { "NR762": null, "NR762A": null },
-                        // --- END ---
                         "屯門公路轉車站": { "NR762": null, "NR762A": null } 
                     },
                     kmbConfigs: { /* ... KMB configs ... */ 
                         "屯門市中心": { stopId: 'F26CC0CB9587F2F9', subtitle: '由 屯門大會堂', targetRoutes: ['63X', '68A', '960P'] },
-                        "屯公轉車站 (屯門方向)": { stopId: '872110C8ADA14DA1', subtitle: '由 屯公轉車站 (屯門方向)', targetRoutes: ['63X', '68A', '960P'] },
+                        "屯公轉車站 (屯門方向)": { stopId: '872110C8ADA14DA1', subtitle: '由 屯公轉車站 (屯門方向)', targetRoutes: ['63X', '68A', '960P'] }, // Main routes
                         "藍地站 (北行)": { stopId: '7FE552E3792C9047', subtitle: '由 藍地站 (北行)' },
                         "藍地站 (南行)": { stopId: '46D1A9FD1F84CA5C', subtitle: '由 藍地站 (南行)' },
                         "妙法寺": { stopId: 'B64EEA7F564C7853', subtitle: '由 妙法寺' },
@@ -462,9 +469,14 @@
                         "新墟街市": { stopId: '7AC6625D894BA101', subtitle: '由 新墟街市', targetRoutes: ['63X', '68A', '960P'] },
                         "紅橋 (回家)": { stopId: 'CBE54DB551C24A02', subtitle: '由 紅橋 (回家)', targetRoutes: ['63X', '68A', '960P'] },
                         "屯門公路轉車站": { stopId: '376C4835851621D4', subtitle: '由 屯門公路轉車站' },
-                        // --- RENAMED & Subtitle Updated ---
                         "富泰邨 (北行)": { stopId: 'B954B8082D1AA9B0', subtitle: '由 富泰邨 (北行)', targetRoutes: ['261'] } 
-                        // --- END ---
+                    },
+                    kmbOtherConfigs: {
+                         "屯公轉車站 (屯門方向)": { 
+                            stopId: '0269A1F9D98C737E', 
+                            subtitle: '由 屯公轉車站 (屯門方向)', 
+                            excludeRoutes: ['63X', '68A', '960P'] 
+                        }
                     },
                     lwbConfigs: {
                         "富泰邨": { apiUrl: 'https://data.etabus.gov.hk/v1/transport/kmb/stop-eta/CBCE32D56C5263A9', subtitle: '由 富泰邨 (龍運)' },
@@ -499,14 +511,12 @@
                             destination: '山景邨',
                             subtitle: '由 深圳灣口岸'
                         },
-                         // --- RENAMED & Subtitle Updated ---
                          "富泰邨 (北行)": {
                             apiUrl: 'https://rt.data.gov.hk/v2/transport/citybus/eta/ctb/003261/b3a',
                             routeNo: 'B3A',
                             destination: '深圳灣口岸', 
                             subtitle: '由 富泰邨 (北行)'
                         }
-                         // --- END ---
                     },
                 },
 
@@ -531,6 +541,10 @@
                         kmbSubtitle: document.getElementById('kmbSubtitle'),
                         kmbDepartures: document.getElementById('kmbDepartures'),
                         kmbMessage: document.getElementById('kmbMessage'),
+                        kmbOtherSection: document.getElementById('kmbOtherSection'),
+                        kmbOtherSubtitle: document.getElementById('kmbOtherSubtitle'),
+                        kmbOtherDepartures: document.getElementById('kmbOtherDepartures'),
+                        kmbOtherMessage: document.getElementById('kmbOtherMessage'),
                         lwbSection: document.getElementById('lwbSection'),
                         lwbSubtitle: document.getElementById('lwbSubtitle'),
                         lwbDepartures: document.getElementById('lwbDepartures'),
@@ -647,9 +661,7 @@
                             { 
                                 title: "元朗方向: (北行)", 
                                 rows: [
-                                     // --- RENAMED ---
                                     ["藍地站 (北行)", "富泰邨 (北行)"] 
-                                     // --- END ---
                                 ]
                             }
                         ];
@@ -745,7 +757,7 @@
                     
                     this.setCardOrder(locationName);
                     
-                    [this.elements.kmbSection, this.elements.lwbSection, this.elements.lightRailSection, this.elements.nlbSection, this.elements.ctbSection, this.elements.nr762Section, this.elements.nr762aSection].forEach(s => s.classList.add('hidden'));
+                    [this.elements.kmbSection, this.elements.kmbOtherSection, this.elements.lwbSection, this.elements.lightRailSection, this.elements.nlbSection, this.elements.ctbSection, this.elements.nr762Section, this.elements.nr762aSection].forEach(s => s.classList.add('hidden'));
 
                     const now = this.utils.getCurrentHktTime();
 
@@ -757,6 +769,9 @@
                     const kmbConfig = this.config.kmbConfigs[locationName];
                     if (kmbConfig) displayPromises.push(this.updateKmbSection(kmbConfig, locationName));
                     
+                    const kmbOtherConfig = this.config.kmbOtherConfigs[locationName];
+                    if (kmbOtherConfig) displayPromises.push(this.updateKmbOtherSection(kmbOtherConfig, locationName)); 
+
                     const lwbConfig = this.config.lwbConfigs[locationName];
                     if (lwbConfig) displayPromises.push(this.updateLwbSection(lwbConfig, locationName)); 
 
@@ -773,13 +788,11 @@
                     
                     this.updateAllCountdowns(); 
 
-                    // --- FIX: Remove setTimeout for pull-to-refresh ---
                     this.state.isRefreshing = false;
                     if (this.elements.refreshButton) {
                         this.elements.refreshButton.disabled = false;
                         this.elements.refreshButton.textContent = '刷新班次';
                     }
-                    // --- END FIX ---
 
                     if (document.querySelector('#etaView li[data-departure-time]')) {
                         this.state.countdownIntervalId = setInterval(this.updateAllCountdowns.bind(this), 1000);
@@ -787,28 +800,29 @@
                 },
 
                 setCardOrder(locationName) {
-                    const { nr762Section, nr762aSection, kmbSection, lwbSection, lightRailSection, nlbSection, ctbSection } = this.elements;
-                    let order = { nr762: 1, nr762a: 2, kmb: 3, lwb: 4, lrt: 5, nlb: 6, ctb: 7 }; 
+                    const { nr762Section, nr762aSection, kmbSection, kmbOtherSection, lwbSection, lightRailSection, nlbSection, ctbSection } = this.elements;
+                    let order = { nr762: 1, nr762a: 2, kmb: 3, kmbOther: 4, lwb: 5, lrt: 6, nlb: 7, ctb: 8 }; 
 
                     if (locationName === '屯門市中心') {
-                        order = { nr762a: 1, kmb: 2, lrt: 3, nr762: 4, lwb: 5, nlb: 6, ctb: 7 };
+                        order = { nr762a: 1, kmb: 2, kmbOther: 3, lrt: 4, nr762: 5, lwb: 6, nlb: 7, ctb: 8 };
                     } else if (locationName === '藍地站 (南行)') {
-                        order = { nr762: 1, nr762a: 2, kmb: 3, lwb: 4, lrt: 5, nlb: 6, ctb: 7 }; 
+                        order = { nr762: 1, nr762a: 2, kmb: 3, kmbOther: 4, lwb: 5, lrt: 6, nlb: 7, ctb: 8 }; 
                     } else if (locationName === '深圳灣口岸') { 
-                         order = { nlb: 1, ctb: 2, nr762: 3, nr762a: 4, kmb: 5, lwb: 6, lrt: 7 }; 
-                    // --- RENAMED ---
+                         order = { nlb: 1, ctb: 2, nr762: 3, nr762a: 4, kmb: 5, kmbOther: 6, lwb: 7, lrt: 8 }; 
                     } else if (locationName === '富泰邨 (北行)') { 
-                    // --- END ---
-                         order = { ctb: 1, kmb: 2, nr762: 3, nr762a: 4, lwb: 5, lrt: 6, nlb: 7 }; 
+                         order = { ctb: 1, kmb: 2, kmbOther: 3, nr762: 4, nr762a: 5, lwb: 6, lrt: 7, nlb: 8 }; 
                     } else if (locationName === '屯門公路轉車站') {
-                         order = { kmb: 1, nr762: 2, nr762a: 3, lwb: 4, lrt: 5, nlb: 6, ctb: 7 }; 
+                         order = { kmb: 1, kmbOther: 2, nr762: 3, nr762a: 4, lwb: 5, lrt: 6, nlb: 7, ctb: 8 }; 
+                    } else if (locationName === '屯公轉車站 (屯門方向)') { 
+                        order = { kmb: 1, kmbOther: 2, nr762: 3, nr762a: 4, lwb: 5, lrt: 6, nlb: 7, ctb: 8 }; 
                     } else if (locationName === '富泰邨' || locationName === '福亨村' || locationName === '妙法寺') {
-                        order = { nr762: 1, nr762a: 2, kmb: 3, lwb: 4, lrt: 5, nlb: 6, ctb: 7 }; 
+                        order = { nr762: 1, nr762a: 2, kmb: 3, kmbOther: 4, lwb: 5, lrt: 6, nlb: 7, ctb: 8 }; 
                     }
                     
                     nr762Section.style.order = order.nr762;
                     nr762aSection.style.order = order.nr762a;
                     kmbSection.style.order = order.kmb;
+                    kmbOtherSection.style.order = order.kmbOther; 
                     lwbSection.style.order = order.lwb; 
                     lightRailSection.style.order = order.lrt;
                     nlbSection.style.order = order.nlb;
@@ -1001,6 +1015,71 @@
                         messageElement.textContent = '暫無相關九巴班次資料。';
                     }
                 },
+
+                // --- KMB Other Functions ---
+                async updateKmbOtherSection(kmbOtherConfig, locationName) { 
+                    const { kmbOtherSection, kmbOtherDepartures, kmbOtherMessage, kmbOtherSubtitle } = this.elements;
+                    
+                    kmbOtherDepartures.innerHTML = '';
+                    kmbOtherMessage.textContent = '';
+                    kmbOtherSection.classList.remove('hidden');
+                    kmbOtherSubtitle.textContent = kmbOtherConfig.subtitle; 
+                    kmbOtherDepartures.innerHTML = '<li class="text-gray-500">正在載入其他九巴班次...</li>';
+
+                    try {
+                        const data = await this.fetchKmbData(kmbOtherConfig.stopId); 
+                        this.renderKmbOtherDepartures(data, kmbOtherConfig, kmbOtherDepartures, kmbOtherMessage, locationName); 
+                    } catch (error) {
+                        console.error("KMB Other Fetch Error:", error);
+                        kmbOtherDepartures.innerHTML = '';
+                        kmbOtherMessage.textContent = '無法載入其他九巴班次，請稍後再試。';
+                    }
+                },
+
+                renderKmbOtherDepartures(data, kmbOtherConfig, listElement, messageElement, locationName) { 
+                    listElement.innerHTML = ''; 
+                    
+                    let relevantDepartures = (data && data.data) ? data.data : []; 
+                    relevantDepartures = relevantDepartures
+                        .filter(bus => bus.eta)
+                        .filter(bus => !kmbOtherConfig.excludeRoutes.includes(bus.route)) 
+                        .sort((a, b) => new Date(a.eta) - new Date(b.eta));
+                    
+                    const uniqueDepartures = [];
+                    const seenDepartures = new Set();
+                    
+                    for (const dep of relevantDepartures) {
+                        const key = `${dep.route}|${dep.dest_tc}|${dep.eta}`;
+                        if (!seenDepartures.has(key)) {
+                            seenDepartures.add(key);
+                            uniqueDepartures.push(dep);
+                        }
+                    }
+
+                    if (uniqueDepartures.length > 0) {
+                        const limit = 30; 
+                        
+                        uniqueDepartures.slice(0, limit).forEach((dep, index) => {
+                            const li = document.createElement('li');
+                            li.className = 'p-3 bg-lime-50 rounded-md shadow-sm flex justify-between items-center transition-opacity';
+                            if (index === 0) li.classList.add('next-departure-highlight', 'next-departure-highlight-lime');
+                            li.dataset.departureTime = dep.eta;
+                            
+                            const timeText = document.createElement('span');
+                            timeText.innerHTML = `<span class="font-bold text-lg">${dep.route}</span> <span class="text-gray-600">往 ${dep.dest_tc}</span>`;
+                            
+                            const countdownSpan = document.createElement('span');
+                            countdownSpan.className = 'countdown-text ml-2';
+                            
+                            li.appendChild(timeText);
+                            li.appendChild(countdownSpan);
+                            listElement.appendChild(li);
+                        });
+                    } else {
+                        messageElement.textContent = '暫無其他九巴班次資料。';
+                    }
+                },
+                // --- END KMB Other Functions ---
 
                 // --- LWB Functions ---
                 async updateLwbSection(lwbConfig, locationName) { 
