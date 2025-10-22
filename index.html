@@ -393,11 +393,15 @@
                             { name: "豫豐花園", lat: 22.4193, lon: 113.9855 },
                             { name: "福亨村", lat: 22.422574, lon: 113.985749 },
                             { name: "妙法寺", lat: 22.420492, lon: 113.983893 },
-                            { name: "藍地站 (屯門方向)", lat: 22.4184, lon: 113.9822 },
-                            { name: "藍地站 (元朗方向)", lat: 22.4184, lon: 113.9822 },
+                            // --- RENAMED ---
+                            { name: "藍地站 (南行)", lat: 22.4184, lon: 113.9822 },
+                            { name: "藍地站 (北行)", lat: 22.4184, lon: 113.9822 },
+                            // --- END ---
                             { name: "富泰邨", lat: 22.412973, lon: 113.982399 },
                             { name: "紅橋", lat: 22.401816, lon: 113.977423 },
-                            { name: "富泰邨 (深圳灣方向)", lat: 22.412973, lon: 113.982399 } 
+                            // --- RENAMED ---
+                            { name: "富泰邨 (B3A 往深圳灣)", lat: 22.412973, lon: 113.982399 }
+                            // --- END ---
                         ],
                         "home": [
                             { name: "兆康站", lat: 22.4131, lon: 113.9793 },
@@ -412,8 +416,10 @@
                         "豫豐花園": { "NR762": "兆康站", "NR762A": "屯門市中心" },
                         "兆康站": { "NR762": "豫豐花園", "NR762A": null }, 
                         "屯門市中心": { "NR762": null, "NR762A": "豫豐花園" },
-                        "藍地站 (屯門方向)": { "NR762": null, "NR762A": null },
-                        "藍地站 (元朗方向)": { "NR762": null, "NR762A": null },
+                        // --- RENAMED ---
+                        "藍地站 (南行)": { "NR762": null, "NR762A": null },
+                        "藍地站 (北行)": { "NR762": null, "NR762A": null },
+                        // --- END ---
                         "屯公轉車站 (屯門方向)": { "NR762": null, "NR762A": null },
                         "妙法寺": { "NR762": null, "NR762A": null },
                         "福亨村": { "NR762": null, "NR762A": null },
@@ -422,15 +428,19 @@
                         "新墟街市": { "NR762": null, "NR762A": null },
                         "紅橋 (回家)": { "NR762": null, "NR762A": null },
                         "深圳灣口岸": { "NR762": null, "NR762A": null },
-                        "富泰邨 (深圳灣方向)": { "NR762": null, "NR762A": null }
+                        // --- RENAMED ---
+                        "富泰邨 (B3A 往深圳灣)": { "NR762": null, "NR762A": null }
+                        // --- END ---
                     },
                     kmbConfigs: { /* ... KMB configs ... */ 
                         "屯門市中心": { stopId: 'F26CC0CB9587F2F9', subtitle: '由 屯門大會堂', targetRoutes: ['63X', '68A', '960P'] },
                         "屯公轉車站 (屯門方向)": { stopId: '872110C8ADA14DA1', subtitle: '由 屯公轉車站 (屯門方向)', targetRoutes: ['63X', '68A', '960P'] },
-                        "藍地站 (元朗方向)": { stopId: '7FE552E3792C9047', subtitle: '由 藍地站 (元朗方向)' },
-                        "藍地站 (屯門方向)": { stopId: '46D1A9FD1F84CA5C', subtitle: '由 藍地站 (屯門方向)' },
-                        "妙法寺": { stopId: 'B64EEA7F564C7853', subtitle: '由 妙法寺 (屯門方向)' },
-                        "福亨村": { stopId: 'D073CC71A1B4F79C', subtitle: '由 福亨村 (屯門方向)' },
+                        // --- RENAMED & Subtitle Updated ---
+                        "藍地站 (北行)": { stopId: '7FE552E3792C9047', subtitle: '由 藍地站 (北行)' },
+                        "藍地站 (南行)": { stopId: '46D1A9FD1F84CA5C', subtitle: '由 藍地站 (南行)' },
+                        "妙法寺": { stopId: 'B64EEA7F564C7853', subtitle: '由 妙法寺' },
+                        "福亨村": { stopId: 'D073CC71A1B4F79C', subtitle: '由 福亨村' },
+                        // --- END ---
                         "紅橋": [
                             { stopId: '210978D525EEDF4F', subtitle: '由 紅橋 (TM710)' },
                             { stopId: '8C32D9DDB85891A6', subtitle: '由 紅橋 (TM711)' },
@@ -447,17 +457,21 @@
                     },
                     lightRailConfig: { /* ... LRT configs ... */ 
                         "兆康站": { apiUrl: 'https://rt.data.gov.hk/v1/transport/mtr/lrt/getSchedule?station_id=100', targetPlatform: 1, subtitle: '往元朗/天逸' },
-                        "藍地站 (元朗方向)": { apiUrl: 'https://rt.data.gov.hk/v1/transport/mtr/lrt/getSchedule?station_id=350', targetPlatform: 1, subtitle: '往元朗/天逸' },
-                        "藍地站 (屯門方向)": { apiUrl: 'https://rt.data.gov.hk/v1/transport/mtr/lrt/getSchedule?station_id=350', targetPlatform: 2, subtitle: '往屯門碼頭/友愛' },
+                        // --- RENAMED ---
+                        "藍地站 (北行)": { apiUrl: 'https://rt.data.gov.hk/v1/transport/mtr/lrt/getSchedule?station_id=350', targetPlatform: 1, subtitle: '往元朗/天逸' },
+                        "藍地站 (南行)": { apiUrl: 'https://rt.data.gov.hk/v1/transport/mtr/lrt/getSchedule?station_id=350', targetPlatform: 2, subtitle: '往屯門碼頭/友愛' },
+                        // --- END ---
                         "屯門市中心": { apiUrl: 'https://rt.data.gov.hk/v1/transport/mtr/lrt/getSchedule?station_id=280', targetPlatform: 1, subtitle: '往元朗/天逸', filterRoutes: ['614', '614P', '751'] }
                     },
                     nlbConfig: { /* ... NLB configs ... */ 
-                         "藍地站 (屯門方向)": { 
+                        // --- RENAMED & Subtitle Updated ---
+                         "藍地站 (南行)": { 
                             apiUrl: 'https://rt.data.gov.hk/v2/transport/nlb/stop.php?action=estimatedArrivals&routeId=37&stopId=151&language=zh',
                             routeNo: 'B2',
                             destination: '深圳灣口岸',
-                            subtitle: '由 藍地站 (屯門方向)'
+                            subtitle: '由 藍地站 (南行)'
                         },
+                        // --- END ---
                         "深圳灣口岸": {
                             apiUrl: 'https://rt.data.gov.hk/v2/transport/nlb/stop.php?action=estimatedArrivals&routeId=38&stopId=152&language=zh',
                             routeNo: 'B2',
@@ -472,15 +486,17 @@
                             destination: '山景邨',
                             subtitle: '由 深圳灣口岸'
                         },
-                         "富泰邨 (深圳灣方向)": {
+                        // --- RENAMED & Subtitle Updated ---
+                         "富泰邨 (B3A 往深圳灣)": {
                             apiUrl: 'https://rt.data.gov.hk/v2/transport/citybus/eta/ctb/003261/b3a',
                             routeNo: 'B3A',
-                            destination: '深圳灣口岸', // Destination for this stop
-                            subtitle: '由 富泰邨 (深圳灣方向)'
+                            destination: '深圳灣口岸', 
+                            subtitle: '由 富泰邨 (B3A 往深圳灣)'
                         }
+                        // --- END ---
                     },
-                    // --- Define CORS Proxy URL ---
-                    corsProxyUrl: 'https://thingproxy.freeboard.io/fetch/' // Use this proxy for KMB, NLB, CTB
+                    // --- Define CORS Proxy URL (used only for NLB, CTB) ---
+                    corsProxyUrl: 'https://thingproxy.freeboard.io/fetch/' 
                 },
 
                 // 3. ELEMENTS
@@ -606,19 +622,21 @@
 
                     if (this.state.currentDirection === 'out') {
                         const groupConfigs = [
+                             // --- UPDATED Titles and Location Names ---
                             { 
-                                title: "屯門方向:", 
+                                title: "市區方向: (南行)", 
                                 rows: [
-                                    ["豫豐花園", "藍地站 (屯門方向)", "紅橋"],
+                                    ["豫豐花園", "藍地站 (南行)", "紅橋"],
                                     ["福亨村", "妙法寺", "富泰邨"]
                                 ] 
                             },
                             { 
-                                title: "元朗方向:", 
+                                title: "元朗方向: (北行)", 
                                 rows: [
-                                    ["藍地站 (元朗方向)", "富泰邨 (深圳灣方向)"] 
+                                    ["藍地站 (北行)", "富泰邨 (B3A 往深圳灣)"] 
                                 ]
                             }
+                            // --- END ---
                         ];
                         const allOutLocations = this.config.locations.out.reduce((acc, loc) => {
                             acc[loc.name] = loc;
@@ -756,12 +774,15 @@
                     // --- UPDATED Order logic ---
                     if (locationName === '屯門市中心') {
                         order = { nr762a: 1, kmb: 2, lrt: 3, nr762: 4, nlb: 5, ctb: 6 };
-                    } else if (locationName === '藍地站 (屯門方向)') {
+                    // --- RENAMED ---
+                    } else if (locationName === '藍地站 (南行)') {
+                    // --- END ---
                         order = { nr762: 1, nr762a: 2, kmb: 3, lrt: 4, nlb: 5, ctb: 6 };
                     } else if (locationName === '深圳灣口岸') { 
                          order = { nlb: 1, ctb: 2, nr762: 3, nr762a: 4, kmb: 5, lrt: 6 }; 
-                    } else if (locationName === '富泰邨 (深圳灣方向)') { // New location order
-                         order = { ctb: 1, nr762: 2, nr762a: 3, kmb: 4, lrt: 5, nlb: 6 }; // CTB first
+                    // --- RENAMED ---
+                    } else if (locationName === '富泰邨 (B3A 往深圳灣)') { 
+                         order = { ctb: 1, nr762: 2, nr762a: 3, kmb: 4, lrt: 5, nlb: 6 }; 
                     }
                     // --- END ---
                     
@@ -818,7 +839,7 @@
                     }
                 },
                 
-                async updateKmbSection(kmbConfig, locationName) { /* ... same as before ... */ 
+                async updateKmbSection(kmbConfig, locationName) { 
                     const { kmbSection, kmbDepartures, kmbMessage, kmbSubtitle } = this.elements;
                     
                     kmbDepartures.innerHTML = '';
@@ -830,13 +851,15 @@
                         let combined = false;
                         let subtitleText = `${displayLocationName} 巴士站`; 
 
+                        // --- UPDATED Subtitle logic ---
                         if (locationName === "富泰邨") {
-                            subtitleText = "由 富泰邨 / 嶺南大學"; 
+                            subtitleText = "由 富泰邨"; // Changed subtitle
                             combined = true;
                         } else if (locationName === "紅橋") {
-                             subtitleText = `由 ${displayLocationName} (所有分站)`;
+                             subtitleText = `由 ${displayLocationName}`; // Changed subtitle
                              combined = true;
                         } 
+                        // --- END ---
                         
                         kmbSubtitle.textContent = subtitleText;
                         kmbDepartures.innerHTML = combined ? '<li class="text-gray-500">正在載入九巴班次...</li>' : ''; 
@@ -855,6 +878,7 @@
                                 const dummyConfig = { targetRoutes: null }; 
                                 this.renderKmbDepartures(combinedData, dummyConfig, kmbDepartures, kmbMessage, locationName); 
                             } else {
+                                // This block remains for potential future non-merged multi-stops
                                 results.forEach((data, index) => {
                                     const stopConfig = kmbConfig[index];
                                     const subSectionEl = document.createElement('div');
@@ -883,7 +907,8 @@
                             kmbMessage.textContent = '無法載入九巴班次，請稍後再試。';
                         }
                     } else {
-                        kmbSubtitle.textContent = kmbConfig.subtitle;
+                        // Logic for single stops (妙法寺, 福亨村, 藍地站 (北行), etc.)
+                        kmbSubtitle.textContent = kmbConfig.subtitle; // Use subtitle from config directly
                         kmbDepartures.innerHTML = '<li class="text-gray-500">正在載入九巴班次...</li>';
                         try {
                             const data = await this.fetchKmbData(kmbConfig.stopId);
@@ -1030,7 +1055,7 @@
                     }
                 },
 
-                async updateNlbSection(nlbConfig) { /* ... NO PROXY ... */ 
+                async updateNlbSection(nlbConfig) { 
                     const { nlbSection, nlbDepartures, nlbMessage, nlbSubtitle } = this.elements;
 
                     nlbDepartures.innerHTML = '<li class="text-gray-500">正在載入嶼巴班次...</li>';
@@ -1082,7 +1107,7 @@
                     }
                 },
 
-                async updateCtbSection(ctbConfig) { /* ... NO PROXY ... */ 
+                async updateCtbSection(ctbConfig) { 
                     const { ctbSection, ctbDepartures, ctbMessage, ctbSubtitle } = this.elements;
 
                     ctbDepartures.innerHTML = '<li class="text-gray-500">正在載入城巴班次...</li>';
