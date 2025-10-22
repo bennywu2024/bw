@@ -847,67 +847,72 @@
 
                     if (Array.isArray(kmbConfig)) {
 
-                        // --- NEW: Special handling for "富泰邨" to merge lists ---
+                        // --- Special handling for "富泰邨" to merge lists ---
                         if (locationName === "富泰邨") {
                             kmbSubtitle.textContent = "由 富泰邨 / 嶺南大學"; // New merged subtitle
                             kmbDepartures.innerHTML = '<li class="text-gray-500">正在載入九巴班次...</li>'; // Loading...
 
                             try {
-                                // Fetch data from BOTH stops
                                 const fetchPromises = kmbConfig.map(stop => this.fetchKmbData(stop.stopId));
                                 const results = await Promise.all(fetchPromises);
-
-                                // Combine all 'data.data' arrays into one
                                 const combinedData = { data: [] };
                                 results.forEach(result => {
                                     if (result && result.data) {
                                         combinedData.data.push(...result.data);
                                     }
                                 });
-
-                                // We pass a dummy config. targetRoutes is null so all routes will be shown,
-                                // which is the desired behavior for this merged stop.
                                 const dummyConfig = { targetRoutes: null }; 
-
-                                // Render the combined data as a single list
                                 this.renderKmbDepartures(combinedData, dummyConfig, kmbDepartures, kmbMessage, locationName);
-
                             } catch (error) {
                                 console.error("KMB Fetch Error for 富泰邨:", error);
                                 kmbDepartures.innerHTML = '';
                                 kmbMessage.textContent = '無法載入九巴班次，請稍後再試。';
                             }
-                        
+                        // --- NEW: Special handling for "紅橋" to merge lists with increased limit ---
+                        } else if (locationName === "紅橋") {
+                             kmbSubtitle.textContent = "由 紅橋 (所有分站)"; // New merged subtitle
+                            kmbDepartures.innerHTML = '<li class="text-gray-500">正在載入九巴班次...</li>'; // Loading...
+
+                            try {
+                                const fetchPromises = kmbConfig.map(stop => this.fetchKmbData(stop.stopId));
+                                const results = await Promise.all(fetchPromises);
+                                const combinedData = { data: [] };
+                                results.forEach(result => {
+                                    if (result && result.data) {
+                                        combinedData.data.push(...result.data);
+                                    }
+                                });
+                                // Pass a dummy config, as filtering isn't needed for the combined view
+                                const dummyConfig = { targetRoutes: null }; 
+                                // Render the combined data as a single list
+                                this.renderKmbDepartures(combinedData, dummyConfig, kmbDepartures, kmbMessage, locationName);
+                            } catch (error) {
+                                console.error("KMB Fetch Error for 紅橋:", error);
+                                kmbDepartures.innerHTML = '';
+                                kmbMessage.textContent = '無法載入九巴班次，請稍後再試。';
+                            }
                         } else {
-                            // --- Original logic for multiple stops (e.g., "紅橋") ---
-                            kmbSubtitle.textContent = `${locationName} 巴士站`; // Main title for the group
-                            
-                            // --- FIX: Define fetchPromises for this block ---
+                            // --- Logic for other potential future multi-stop arrays (currently none) ---
+                            kmbSubtitle.textContent = `${locationName} 巴士站`; 
                             const fetchPromises = kmbConfig.map(async (stopConfig, index) => {
+                                // ... (rest of the sub-section creation logic remains the same) ...
                                 const subSectionEl = document.createElement('div');
-                                // Add some space and a separator line for sub-stops
                                 subSectionEl.className = 'mt-4';
                                 if (index > 0) {
                                     subSectionEl.className += ' pt-4 border-t border-gray-300 border-opacity-50';
                                 }
-
                                 const subTitle = document.createElement('h4');
                                 subTitle.className = 'text-lg font-semibold text-gray-800 mb-2';
                                 subTitle.textContent = stopConfig.subtitle;
-                                
                                 const subListEl = document.createElement('ul');
                                 subListEl.className = 'space-y-2';
-                                
                                 const subMessageEl = document.createElement('p');
                                 subMessageEl.className = 'mt-3 text-sm';
-                                
                                 subSectionEl.appendChild(subTitle);
                                 subSectionEl.appendChild(subListEl);
                                 subSectionEl.appendChild(subMessageEl);
-                                
                                 try {
                                     const data = await this.fetchKmbData(stopConfig.stopId);
-                                    // Pass the specific stopConfig, not the whole kmbConfig array
                                     this.renderKmbDepartures(data, stopConfig, subListEl, subMessageEl, locationName);
                                 } catch (error) {
                                     console.error(`KMB Fetch Error for ${stopConfig.stopId}:`, error);
@@ -915,9 +920,6 @@
                                 }
                                 return subSectionEl;
                             });
-                            // --- END OF FIX ---
-                            
-                            // Concurrently fetch all stop ETAs
                             const subSections = await Promise.all(fetchPromises);
                             subSections.forEach(section => kmbDepartures.appendChild(section));
                         }
@@ -983,8 +985,17 @@
                     // --- End of FIX ---
 
                     if (uniqueDepartures.length > 0) {
-                        // --- UPDATED limit logic to include "富泰邨" ---
-                        const limit = (locationName && (locationName.includes("藍地站") || locationName.includes("紅橋") || locationName === "富泰邨")) ? 10 : 5;
+                        // --- UPDATED limit logic to specifically handle merged "紅橋" ---
+                        let limit = 5; // Default limit for single stops
+                        if (locationName === "紅橋") { // Merged "紅橋" (外出 tab)
+                           limit = 30; 
+                        } else if (locationName && (locationName.includes("藍地站") || locationName === "富泰邨")) { // Merged "富泰邨" or "藍地站"
+                           limit = 10; 
+                        } else if (kmbConfig && Array.isArray(this.config.kmbConfigs[locationName]) && locationName !== "富泰邨" && locationName !== "紅橋") {
+                           // For individual sub-stops within an array that aren't merged (like original 紅橋)
+                           limit = 10; 
+                        }
+                        
                         uniqueDepartures.slice(0, limit).forEach((dep, index) => {
                             const li = document.createElement('li');
                             li.className = 'p-3 bg-green-50 rounded-md shadow-sm flex justify-between items-center transition-opacity';
@@ -1411,4 +1422,5 @@
     </script>
 </body>
 </html>
+
 
