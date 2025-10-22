@@ -397,8 +397,7 @@
                             { name: "藍地站 (元朗方向)", lat: 22.4184, lon: 113.9822 },
                             { name: "富泰邨", lat: 22.412973, lon: 113.982399 },
                             { name: "紅橋", lat: 22.401816, lon: 113.977423 },
-                            // --- NEW Location ---
-                            { name: "富泰邨 (深圳灣方向)", lat: 22.412973, lon: 113.982399 } // Use same coords as 富泰邨 for now
+                            { name: "富泰邨 (深圳灣方向)", lat: 22.412973, lon: 113.982399 } 
                         ],
                         "home": [
                             { name: "兆康站", lat: 22.4131, lon: 113.9793 },
@@ -423,7 +422,6 @@
                         "新墟街市": { "NR762": null, "NR762A": null },
                         "紅橋 (回家)": { "NR762": null, "NR762A": null },
                         "深圳灣口岸": { "NR762": null, "NR762A": null },
-                        // --- NEW ---
                         "富泰邨 (深圳灣方向)": { "NR762": null, "NR762A": null }
                     },
                     kmbConfigs: { /* ... KMB configs ... */ 
@@ -474,14 +472,15 @@
                             destination: '山景邨',
                             subtitle: '由 深圳灣口岸'
                         },
-                         // --- NEW ---
                          "富泰邨 (深圳灣方向)": {
                             apiUrl: 'https://rt.data.gov.hk/v2/transport/citybus/eta/ctb/003261/b3a',
                             routeNo: 'B3A',
                             destination: '深圳灣口岸', // Destination for this stop
                             subtitle: '由 富泰邨 (深圳灣方向)'
                         }
-                    }
+                    },
+                    // --- Define CORS Proxy URL ---
+                    corsProxyUrl: 'https://thingproxy.freeboard.io/fetch/' // Use this proxy for KMB, NLB, CTB
                 },
 
                 // 3. ELEMENTS
@@ -606,7 +605,6 @@
                     this.elements.locationSelector.innerHTML = ''; 
 
                     if (this.state.currentDirection === 'out') {
-                        // --- UPDATED Row definition ---
                         const groupConfigs = [
                             { 
                                 title: "屯門方向:", 
@@ -618,11 +616,10 @@
                             { 
                                 title: "元朗方向:", 
                                 rows: [
-                                    ["藍地站 (元朗方向)", "富泰邨 (深圳灣方向)"] // Added new button here
+                                    ["藍地站 (元朗方向)", "富泰邨 (深圳灣方向)"] 
                                 ]
                             }
                         ];
-                        // --- END ---
                         const allOutLocations = this.config.locations.out.reduce((acc, loc) => {
                             acc[loc.name] = loc;
                             return acc;
@@ -899,9 +896,11 @@
                     }
                 },
                 
-                async fetchKmbData(stopId) { /* ... same as before ... */ 
+                async fetchKmbData(stopId) { 
                     const apiUrl = `https://data.etabus.gov.hk/v1/transport/kmb/stop-eta/${stopId}`;
+                    // --- REMOVED PROXY ---
                     const response = await fetch(apiUrl);
+                    // ---
                     if (!response.ok) throw new Error(`API error: ${response.status}`);
                     return await response.json();
                 },
@@ -960,7 +959,7 @@
                     }
                 },
 
-                async updateLightRailSection(lrtConfig) { /* ... same as before ... */ 
+                async updateLightRailSection(lrtConfig) { /* ... NO PROXY ... */ 
                     const { lightRailSection, lightRailDepartures, lightRailMessage, lightRailSubtitle } = this.elements;
 
                     lightRailDepartures.innerHTML = '<li class="text-gray-500">正在載入輕鐵班次...</li>';
@@ -969,7 +968,7 @@
                     lightRailSection.classList.remove('hidden');
 
                     try {
-                        const response = await fetch(lrtConfig.apiUrl);
+                        const response = await fetch(lrtConfig.apiUrl); 
                         if (!response.ok) throw new Error(`API error: ${response.status}`);
                         const data = await response.json();
                         lightRailDepartures.innerHTML = '';
@@ -1031,7 +1030,7 @@
                     }
                 },
 
-                async updateNlbSection(nlbConfig) { /* ... same as before (with departed fix) ... */ 
+                async updateNlbSection(nlbConfig) { /* ... NO PROXY ... */ 
                     const { nlbSection, nlbDepartures, nlbMessage, nlbSubtitle } = this.elements;
 
                     nlbDepartures.innerHTML = '<li class="text-gray-500">正在載入嶼巴班次...</li>';
@@ -1040,7 +1039,9 @@
                     nlbSection.classList.remove('hidden');
 
                     try {
+                        // --- REMOVED PROXY ---
                         const response = await fetch(nlbConfig.apiUrl);
+                        // ---
                         if (!response.ok) throw new Error(`API error: ${response.status}`);
                         const data = await response.json();
                         nlbDepartures.innerHTML = '';
@@ -1081,7 +1082,7 @@
                     }
                 },
 
-                async updateCtbSection(ctbConfig) { /* ... same as before ... */ 
+                async updateCtbSection(ctbConfig) { /* ... NO PROXY ... */ 
                     const { ctbSection, ctbDepartures, ctbMessage, ctbSubtitle } = this.elements;
 
                     ctbDepartures.innerHTML = '<li class="text-gray-500">正在載入城巴班次...</li>';
@@ -1090,14 +1091,16 @@
                     ctbSection.classList.remove('hidden');
 
                     try {
+                        // --- REMOVED PROXY ---
                         const response = await fetch(ctbConfig.apiUrl);
+                        // ---
                         if (!response.ok) throw new Error(`API error: ${response.status}`);
                         const data = await response.json();
                         ctbDepartures.innerHTML = '';
 
                         if (data.data && data.data.length > 0) {
                             const upcomingArrivals = data.data
-                                .filter(arrival => arrival.dest_tc === ctbConfig.destination) 
+                                .filter(arrival => !ctbConfig.destination || arrival.dest_tc === ctbConfig.destination) 
                                 .sort((a, b) => new Date(a.eta) - new Date(b.eta));
 
                             if (upcomingArrivals.length > 0) {
@@ -1109,7 +1112,8 @@
                                     li.dataset.departureTime = dep.eta; 
 
                                     const timeText = document.createElement('span');
-                                    timeText.innerHTML = `<span class="font-bold text-lg">${ctbConfig.routeNo}</span> <span class="text-gray-600">往 ${ctbConfig.destination}</span>`;
+                                    const destinationText = dep.dest_tc || ctbConfig.destination; 
+                                    timeText.innerHTML = `<span class="font-bold text-lg">${ctbConfig.routeNo}</span> <span class="text-gray-600">往 ${destinationText}</span>`;
 
                                     const countdownSpan = document.createElement('span');
                                     countdownSpan.className = 'countdown-text ml-2';
