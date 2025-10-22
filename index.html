@@ -18,7 +18,7 @@
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Custom Styles (Unchanged) -->
+    <!-- Custom Styles -->
     <style>
         /* --- Base and Scrollbar --- */
         html, body {
@@ -134,7 +134,10 @@
         .next-departure-highlight { background-color: rgba(239, 246, 255, 0.7) !important; border: 2px solid #3b82f6; font-weight: 700; }
         .next-departure-highlight-green { background-color: rgba(220, 252, 231, 0.7) !important; border: 2px solid #16a34a !important; }
         .next-departure-highlight-yellow { background-color: rgba(254, 252, 232, 0.7) !important; border: 2px solid #ca8a04 !important; }
-        
+        /* --- NEW: NLB Highlight --- */
+        .next-departure-highlight-blue { background-color: rgba(219, 234, 254, 0.7) !important; border: 2px solid #2563eb !important; }
+
+
         /* --- Timetable --- */
         .timetable-table {
             width: 100%;
@@ -243,7 +246,17 @@
                         <ul id="kmbDepartures" class="space-y-2"></ul>
                         <p id="kmbMessage" class="mt-3 text-sm"></p>
                     </div>
-                    
+
+                    <!-- NEW: NLB Section -->
+                    <div id="nlbSection" class="p-5 rounded-xl glass-card hidden">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="text-2xl font-bold" style="color: #1d4ed8;">嶼巴路線</h3> 
+                        </div>
+                        <p id="nlbSubtitle" class="text-md font-medium mb-3"></p>
+                        <ul id="nlbDepartures" class="space-y-2"></ul>
+                        <p id="nlbMessage" class="mt-3 text-sm"></p>
+                    </div>
+
                     <!-- NR762 -->
                     <div id="nr762Section" class="p-5 rounded-xl glass-card hidden">
                         <div class="flex justify-between items-center mb-2">
@@ -367,7 +380,6 @@
                             "屯門市中心_to_豫豐花園": { 7: [40], 8: [10, 40], 9: [10, 25, 40, 55], 10: [10, 40], 11: [10, 40], 12: [10, 25, 40, 55], 13: [10, 25, 40, 55], 14: [10, 40], 15: [10, 40], 16: [10, 25, 40, 55], 17: [10, 25, 40, 55], 18: [10], 19: [40], 20: [10, 25, 40, 55], 21: [10, 40], 22: [10, 25, 40, 55], 23: [10, 30] }
                         }
                     },
-                    // --- UPDATED LOCATIONS ---
                     locations: {
                         "out": [
                             { name: "豫豐花園", lat: 22.4193, lon: 113.9855 },
@@ -382,13 +394,10 @@
                             { name: "兆康站", lat: 22.4131, lon: 113.9793 },
                             { name: "屯門市中心", lat: 22.3957, lon: 113.9753 },
                             { name: "屯公轉車站 (屯門方向)", lat: 22.3585, lon: 114.0185 },
-                            // --- NEW LOCATIONS FOR HOME TAB ---
                             { name: "新墟街市", lat: 22.398858, lon: 113.976525 },
-                            // --- UPDATED to use "name" as internal ID and "displayName" for UI ---
                             { name: "紅橋 (回家)", lat: 22.402437, lon: 113.977155, displayName: "紅橋" }
                         ]
                     },
-                    // --- UPDATED DESTINATIONS ---
                     destinations: {
                         "豫豐花園": { "NR762": "兆康站", "NR762A": "屯門市中心" },
                         "兆康站": { "NR762": "豫豐花園", "NR762A": null }, 
@@ -400,11 +409,9 @@
                         "福亨村": { "NR762": null, "NR762A": null },
                         "紅橋": { "NR762": null, "NR762A": null },
                         "富泰邨": { "NR762": null, "NR762A": null },
-                        // --- NEW DESTINATIONS FOR HOME TAB ---
                         "新墟街市": { "NR762": null, "NR762A": null },
                         "紅橋 (回家)": { "NR762": null, "NR762A": null }
                     },
-                    // --- UPDATED KMB CONFIGS ---
                     kmbConfigs: {
                         "屯門市中心": { stopId: 'F26CC0CB9587F2F9', subtitle: '由 屯門大會堂', targetRoutes: ['63X', '68A', '960P'] },
                         "屯公轉車站 (屯門方向)": { stopId: '872110C8ADA14DA1', subtitle: '由 屯公轉車站 (屯門方向)', targetRoutes: ['63X', '68A', '960P'] },
@@ -419,12 +426,10 @@
                             { stopId: '2FD7EBBD4AF78A93', subtitle: '由 紅橋 (TM713)' },
                             { stopId: 'DD56DC2336C878C1', subtitle: '由 紅橋 (TM714)' }
                         ],
-                        // --- UPDATED to be an array ---
                         "富泰邨": [
                             { stopId: 'F1D1F84A466543BE', subtitle: '由 富泰邨' },
                             { stopId: '2B354AE312900DF1', subtitle: '由 嶺南大學' }
                         ],
-                        // --- NEW KMB CONFIGS FOR HOME TAB ---
                         "新墟街市": { stopId: '7AC6625D894BA101', subtitle: '由 新墟街市', targetRoutes: ['63X', '68A', '960P'] },
                         "紅橋 (回家)": { stopId: 'CBE54DB551C24A02', subtitle: '由 紅橋 (回家)', targetRoutes: ['63X', '68A', '960P'] }
                     },
@@ -433,6 +438,15 @@
                         "藍地站 (元朗方向)": { apiUrl: 'https://rt.data.gov.hk/v1/transport/mtr/lrt/getSchedule?station_id=350', targetPlatform: 1, subtitle: '往元朗/天逸' },
                         "藍地站 (屯門方向)": { apiUrl: 'https://rt.data.gov.hk/v1/transport/mtr/lrt/getSchedule?station_id=350', targetPlatform: 2, subtitle: '往屯門碼頭/友愛' },
                         "屯門市中心": { apiUrl: 'https://rt.data.gov.hk/v1/transport/mtr/lrt/getSchedule?station_id=280', targetPlatform: 1, subtitle: '往元朗/天逸', filterRoutes: ['614', '614P', '751'] }
+                    },
+                    // --- NEW: NLB Config ---
+                    nlbConfig: {
+                         "藍地站 (屯門方向)": { 
+                            apiUrl: 'https://rt.data.gov.hk/v2/transport/nlb/stop.php?action=estimatedArrivals&routeId=37&stopId=151&language=zh',
+                            routeNo: 'B2',
+                            destination: '深圳灣口岸',
+                            subtitle: '由 藍地站 (屯門方向)'
+                        }
                     }
                 },
 
@@ -461,6 +475,12 @@
                         kmbSubtitle: document.getElementById('kmbSubtitle'),
                         kmbDepartures: document.getElementById('kmbDepartures'),
                         kmbMessage: document.getElementById('kmbMessage'),
+                        // --- NEW: NLB Elements ---
+                        nlbSection: document.getElementById('nlbSection'),
+                        nlbSubtitle: document.getElementById('nlbSubtitle'),
+                        nlbDepartures: document.getElementById('nlbDepartures'),
+                        nlbMessage: document.getElementById('nlbMessage'),
+                        // --- End NLB Elements ---
                         nr762Section: document.getElementById('nr762Section'),
                         nr762Route: document.getElementById('nr762Route'),
                         nr762Departures: document.getElementById('nr762Departures'),
@@ -653,7 +673,6 @@
                     }
                 },
 
-                // --- ADDED MISSING FUNCTION ---
                 /**
                  * Toggles visibility of timetable sub-views (NR762 vs NR762A).
                  * @param {string} subViewId - The ID of the timetable content to show
@@ -723,7 +742,8 @@
                     this.setCardOrder(locationName);
                     
                     // Hide all sections before showing relevant ones
-                    [this.elements.kmbSection, this.elements.lightRailSection, this.elements.nr762Section, this.elements.nr762aSection].forEach(s => s.classList.add('hidden'));
+                    // --- UPDATED to include NLB section ---
+                    [this.elements.kmbSection, this.elements.lightRailSection, this.elements.nlbSection, this.elements.nr762Section, this.elements.nr762aSection].forEach(s => s.classList.add('hidden'));
 
                     // Get current HKT time once
                     const now = this.utils.getCurrentHktTime();
@@ -743,6 +763,13 @@
                     if (lrtConfig) {
                         displayPromises.push(this.updateLightRailSection(lrtConfig));
                     }
+                    
+                    // --- NEW: Check for and fetch NLB data ---
+                    const nlbConfig = this.config.nlbConfig[locationName];
+                    if (nlbConfig) {
+                        displayPromises.push(this.updateNlbSection(nlbConfig));
+                    }
+                    // --- END ---
 
                     await Promise.all(displayPromises);
                     
@@ -767,21 +794,29 @@
                  * @param {string} locationName - The currently selected location
                  */
                 setCardOrder(locationName) {
-                    const { nr762Section, nr762aSection, kmbSection, lightRailSection } = this.elements;
+                    // --- UPDATED to include NLB section ---
+                    const { nr762Section, nr762aSection, kmbSection, lightRailSection, nlbSection } = this.elements;
                     if (locationName === '屯門市中心') {
                         nr762aSection.style.order = '1';
                         kmbSection.style.order = '2';
                         lightRailSection.style.order = '3';
                         nr762Section.style.order = '4';
-                    } else {
+                        nlbSection.style.order = '5'; // Place NLB last for this specific location
+                    } else if (locationName === '藍地站 (屯門方向)') {
+                        // Place NLB after KMB and LRT
                         nr762Section.style.order = '1';
                         nr762aSection.style.order = '2';
                         kmbSection.style.order = '3';
                         lightRailSection.style.order = '4';
+                        nlbSection.style.order = '5'; 
+                    } else { // Default order for other locations
+                        nr762Section.style.order = '1';
+                        nr762aSection.style.order = '2';
+                        kmbSection.style.order = '3';
+                        lightRailSection.style.order = '4';
+                        nlbSection.style.order = '5'; // NLB is generally last
                     }
                 },
-
-                // --- END OF ADDED FUNCTIONS ---
 
 
                 /**
@@ -804,15 +839,21 @@
                         ? this.config.destinations[locationName]?.[routeId] 
                         : '豫豐花園';
                     
+                    // --- FIX: Ensure internal name is used for schedule lookup even if displayName exists ---
+                    const internalLocationName = Object.values(this.config.locations).flat().find(loc => (loc.displayName || loc.name) === locationName)?.name || locationName;
                     const scheduleKeyName = (this.state.currentDirection === 'out')
-                        ? `${locationName}_to_${destName}`
-                        : `${locationName}_to_豫豐花園`;
+                        ? `${internalLocationName}_to_${destName}`
+                        : `${internalLocationName}_to_豫豐花園`;
+                    // --- END FIX ---
                     
                     const schedule = this.config.allSchedules[routeId]?.[scheduleKeyName];
 
                     if (destName && schedule) {
                         section.classList.remove('hidden');
-                        routeEl.textContent = `由 ${locationName} 開往 ${destName}`;
+                        // --- Use displayName if available for UI ---
+                        const displayLocationName = this.config.locations[this.state.currentDirection].find(loc => loc.name === locationName)?.displayName || locationName;
+                        routeEl.textContent = `由 ${displayLocationName} 開往 ${destName}`;
+                        // --- END ---
                         const departures = this.utils.getUpcomingDepartures(schedule, now.hour, now.minute, 5);
                         
                         if (departures.length > 0) {
@@ -836,7 +877,7 @@
                 /**
                  * Fetches and renders the KMB departure information.
                  * @param {object|Array} kmbConfig - The configuration (or array of configs) for the selected KMB stop
-                 * @param {string} locationName - The currently selected location
+                 * @param {string} locationName - The currently selected location (internal name)
                  */
                 async updateKmbSection(kmbConfig, locationName) {
                     const { kmbSection, kmbDepartures, kmbMessage, kmbSubtitle } = this.elements;
@@ -844,13 +885,14 @@
                     kmbDepartures.innerHTML = '';
                     kmbMessage.textContent = '';
                     kmbSection.classList.remove('hidden');
+                    // --- Use displayName if available for UI ---
+                    const displayLocationName = this.config.locations[this.state.currentDirection].find(loc => loc.name === locationName)?.displayName || locationName;
 
                     if (Array.isArray(kmbConfig)) {
 
-                        // --- Special handling for "富泰邨" to merge lists ---
                         if (locationName === "富泰邨") {
-                            kmbSubtitle.textContent = "由 富泰邨 / 嶺南大學"; // New merged subtitle
-                            kmbDepartures.innerHTML = '<li class="text-gray-500">正在載入九巴班次...</li>'; // Loading...
+                            kmbSubtitle.textContent = "由 富泰邨 / 嶺南大學"; 
+                            kmbDepartures.innerHTML = '<li class="text-gray-500">正在載入九巴班次...</li>'; 
 
                             try {
                                 const fetchPromises = kmbConfig.map(stop => this.fetchKmbData(stop.stopId));
@@ -862,16 +904,15 @@
                                     }
                                 });
                                 const dummyConfig = { targetRoutes: null }; 
-                                this.renderKmbDepartures(combinedData, dummyConfig, kmbDepartures, kmbMessage, locationName);
+                                this.renderKmbDepartures(combinedData, dummyConfig, kmbDepartures, kmbMessage, locationName); // Pass internal name
                             } catch (error) {
                                 console.error("KMB Fetch Error for 富泰邨:", error);
                                 kmbDepartures.innerHTML = '';
                                 kmbMessage.textContent = '無法載入九巴班次，請稍後再試。';
                             }
-                        // --- NEW: Special handling for "紅橋" to merge lists with increased limit ---
                         } else if (locationName === "紅橋") {
-                             kmbSubtitle.textContent = "由 紅橋 (所有分站)"; // New merged subtitle
-                            kmbDepartures.innerHTML = '<li class="text-gray-500">正在載入九巴班次...</li>'; // Loading...
+                             kmbSubtitle.textContent = `由 ${displayLocationName} (所有分站)`; // Use displayName
+                            kmbDepartures.innerHTML = '<li class="text-gray-500">正在載入九巴班次...</li>'; 
 
                             try {
                                 const fetchPromises = kmbConfig.map(stop => this.fetchKmbData(stop.stopId));
@@ -882,20 +923,16 @@
                                         combinedData.data.push(...result.data);
                                     }
                                 });
-                                // Pass a dummy config, as filtering isn't needed for the combined view
                                 const dummyConfig = { targetRoutes: null }; 
-                                // Render the combined data as a single list
-                                this.renderKmbDepartures(combinedData, dummyConfig, kmbDepartures, kmbMessage, locationName);
+                                this.renderKmbDepartures(combinedData, dummyConfig, kmbDepartures, kmbMessage, locationName); // Pass internal name
                             } catch (error) {
                                 console.error("KMB Fetch Error for 紅橋:", error);
                                 kmbDepartures.innerHTML = '';
                                 kmbMessage.textContent = '無法載入九巴班次，請稍後再試。';
                             }
                         } else {
-                            // --- Logic for other potential future multi-stop arrays (currently none) ---
-                            kmbSubtitle.textContent = `${locationName} 巴士站`; 
+                            kmbSubtitle.textContent = `${displayLocationName} 巴士站`; // Use displayName
                             const fetchPromises = kmbConfig.map(async (stopConfig, index) => {
-                                // ... (rest of the sub-section creation logic remains the same) ...
                                 const subSectionEl = document.createElement('div');
                                 subSectionEl.className = 'mt-4';
                                 if (index > 0) {
@@ -913,7 +950,7 @@
                                 subSectionEl.appendChild(subMessageEl);
                                 try {
                                     const data = await this.fetchKmbData(stopConfig.stopId);
-                                    this.renderKmbDepartures(data, stopConfig, subListEl, subMessageEl, locationName);
+                                    this.renderKmbDepartures(data, stopConfig, subListEl, subMessageEl, locationName); // Pass internal name
                                 } catch (error) {
                                     console.error(`KMB Fetch Error for ${stopConfig.stopId}:`, error);
                                     subMessageEl.textContent = '無法載入此站班次。';
@@ -923,7 +960,6 @@
                             const subSections = await Promise.all(fetchPromises);
                             subSections.forEach(section => kmbDepartures.appendChild(section));
                         }
-                        // --- END of Array logic ---
 
                     } else {
                         // --- Original logic for single stops ---
@@ -931,7 +967,7 @@
                         kmbDepartures.innerHTML = '<li class="text-gray-500">正在載入九巴班次...</li>';
                         try {
                             const data = await this.fetchKmbData(kmbConfig.stopId);
-                            this.renderKmbDepartures(data, kmbConfig, kmbDepartures, kmbMessage, locationName);
+                            this.renderKmbDepartures(data, kmbConfig, kmbDepartures, kmbMessage, locationName); // Pass internal name
                         } catch (error) {
                             console.error("KMB Fetch Error:", error);
                             kmbDepartures.innerHTML = '';
@@ -958,7 +994,7 @@
                  * @param {object} kmbConfig - The stop's configuration
                  * @param {HTMLElement} listElement - The <ul> element to populate
                  * @param {HTMLElement} messageElement - The <p> element for messages
-                 * @param {string} locationName - The name of the currently selected location
+                 * @param {string} locationName - The name of the currently selected location (internal name)
                  */
                 renderKmbDepartures(data, kmbConfig, listElement, messageElement, locationName) {
                     listElement.innerHTML = ''; // Clear loading message
@@ -971,7 +1007,6 @@
                         relevantDepartures = relevantDepartures.filter(bus => kmbConfig.targetRoutes.includes(bus.route));
                     }
 
-                    // --- FIX: De-duplicate departures based on route, destination, and exact ETA ---
                     const uniqueDepartures = [];
                     const seenDepartures = new Set();
                     
@@ -982,17 +1017,15 @@
                             uniqueDepartures.push(dep);
                         }
                     }
-                    // --- End of FIX ---
 
                     if (uniqueDepartures.length > 0) {
-                        // --- UPDATED limit logic to specifically handle merged "紅橋" ---
-                        let limit = 5; // Default limit for single stops
-                        if (locationName === "紅橋") { // Merged "紅橋" (外出 tab)
+                        let limit = 5; 
+                        // --- Use internal locationName for limit logic ---
+                        if (locationName === "紅橋") { 
                            limit = 30; 
-                        } else if (locationName && (locationName.includes("藍地站") || locationName === "富泰邨")) { // Merged "富泰邨" or "藍地站"
+                        } else if (locationName && (locationName.includes("藍地站") || locationName === "富泰邨")) { 
                            limit = 10; 
                         } else if (kmbConfig && Array.isArray(this.config.kmbConfigs[locationName]) && locationName !== "富泰邨" && locationName !== "紅橋") {
-                           // For individual sub-stops within an array that aren't merged (like original 紅橋)
                            limit = 10; 
                         }
                         
@@ -1094,13 +1127,92 @@
                     }
                 },
 
+                // --- NEW: Function to fetch and render NLB data ---
+                /**
+                 * Fetches and renders the NLB departure information.
+                 * @param {object} nlbConfig - The configuration for the selected NLB stop
+                 */
+                async updateNlbSection(nlbConfig) {
+                    const { nlbSection, nlbDepartures, nlbMessage, nlbSubtitle } = this.elements;
+
+                    nlbDepartures.innerHTML = '<li class="text-gray-500">正在載入嶼巴班次...</li>';
+                    nlbMessage.textContent = '';
+                    nlbSubtitle.textContent = nlbConfig.subtitle;
+                    nlbSection.classList.remove('hidden');
+
+                    try {
+                        const response = await fetch(nlbConfig.apiUrl);
+                        if (!response.ok) throw new Error(`API error: ${response.status}`);
+                        const data = await response.json();
+                        nlbDepartures.innerHTML = '';
+
+                        if (data.estimatedArrivals && data.estimatedArrivals.length > 0) {
+                            // Filter out departed buses and sort by time
+                            const upcomingArrivals = data.estimatedArrivals
+                                .filter(arrival => arrival.departed === "0")
+                                .sort((a, b) => new Date(a.estimatedArrivalTime) - new Date(b.estimatedArrivalTime));
+
+                            if (upcomingArrivals.length > 0) {
+                                upcomingArrivals.forEach((dep, index) => {
+                                    const li = document.createElement('li');
+                                    // Use a blue-ish style for NLB
+                                    li.className = 'p-3 bg-blue-50 rounded-md shadow-sm flex justify-between items-center transition-opacity'; 
+                                    if (index === 0) li.classList.add('next-departure-highlight', 'next-departure-highlight-blue');
+                                    
+                                    // --- FIX: Correctly parse NLB time as HKT ---
+                                    // Construct ISO 8601 string with HKT offset (+08:00)
+                                    const hktDepartureString = dep.estimatedArrivalTime.replace(' ', 'T') + '+08:00'; 
+                                    li.dataset.departureTime = hktDepartureString; 
+                                    // --- END FIX ---
+
+                                    const timeText = document.createElement('span');
+                                    timeText.innerHTML = `<span class="font-bold text-lg">${nlbConfig.routeNo}</span> <span class="text-gray-600">往 ${nlbConfig.destination}</span>`;
+
+                                    const countdownSpan = document.createElement('span');
+                                    countdownSpan.className = 'countdown-text ml-2';
+
+                                    li.appendChild(timeText);
+                                    li.appendChild(countdownSpan);
+                                    nlbDepartures.appendChild(li);
+                                });
+                            } else {
+                                nlbMessage.textContent = '暫無相關嶼巴班次資料。';
+                            }
+                        } else {
+                            nlbMessage.textContent = '暫無嶼巴班次資料。';
+                        }
+                    } catch (error) {
+                        console.error("NLB Fetch Error:", error);
+                        nlbDepartures.innerHTML = '';
+                        nlbMessage.textContent = '無法載入嶼巴班次，請稍後再試。';
+                    }
+                },
+                // --- END ---
+
                 /**
                  * Called every second to update all visible countdown timers.
                  */
                 updateAllCountdowns() {
                     const now = new Date();
                     document.querySelectorAll('li[data-departure-time]').forEach(li => {
-                        const departureTime = new Date(li.dataset.departureTime);
+                        const departureTimeString = li.dataset.departureTime;
+                        // --- Robust Date Parsing ---
+                        let departureTime;
+                        try {
+                           // Attempt direct parsing (should work for ISO formats like KMB, NR, and adjusted NLB)
+                           departureTime = new Date(departureTimeString); 
+                           // Check if parsing was successful
+                           if (isNaN(departureTime.getTime())) { 
+                               throw new Error("Invalid date format");
+                           }
+                        } catch (e) {
+                           console.warn("Could not parse date:", departureTimeString, e);
+                           const countdownSpan = li.querySelector('.countdown-text, .departed-text');
+                           if(countdownSpan) countdownSpan.textContent = "時間錯誤";
+                           return; // Skip this list item if date is invalid
+                        }
+                        // --- End Robust Date Parsing ---
+
                         const diff = departureTime - now; 
                         const countdownSpan = li.querySelector('.countdown-text, .departed-text'); 
 
@@ -1116,25 +1228,25 @@
                                 countdownSpan.textContent = "即將開出";
                                  countdownSpan.classList.remove('departed-text');
                                 countdownSpan.classList.add('countdown-text');
+                                li.style.opacity = '1'; // Ensure opacity is reset
                             } else { 
                                 const displayMinutes = Math.floor(totalSeconds / 60);
                                 const displaySeconds = totalSeconds % 60;
                                 countdownSpan.textContent = `${String(displayMinutes).padStart(2, '0')} 分 ${String(displaySeconds).padStart(2, '0')} 秒`;
                                 countdownSpan.classList.remove('departed-text'); 
                                 countdownSpan.classList.add('countdown-text'); 
+                                li.style.opacity = '1'; // Ensure opacity is reset
                             }
                         }
                     });
                 },
                 
-                // --- ADDED MISSING TIMETABLE FUNCTIONS ---
                 /**
                  * Renders all full timetables into their respective containers.
                  */
                 renderFullTimetables() {
                     const now = this.utils.getCurrentHktTime();
                     this.elements.nr762RichwoodContainer.innerHTML = this.generateTimetableTableHTML(this.config.allSchedules.NR762["豫豐花園_to_兆康站"], now);
-                    // --- FIX: Corrected broken line ---
                     this.elements.nr762SiuhongContainer.innerHTML = this.generateTimetableTableHTML(this.config.allSchedules.NR762["兆康站_to_豫豐花園"], now);
                     this.elements.nr762aRichwoodContainer.innerHTML = this.generateTimetableTableHTML(this.config.allSchedules.NR762A["豫豐花園_to_屯門市中心"], now);
                     this.elements.nr762aTuenmunContainer.innerHTML = this.generateTimetableTableHTML(this.config.allSchedules.NR762A["屯門市中心_to_豫豐花園"], now);
@@ -1148,11 +1260,10 @@
                  */
                 generateTimetableTableHTML(scheduleData, now) {
                     const nextGlobalDep = this.utils.findNextGlobalDeparture(scheduleData, now.hour, now.minute);
-                    // --- FIX: Corrected broken class name 'w-1Vindemiatrix/4' ---
                     let tableHTML = '<table class="timetable-table"><thead><tr><th class="w-1/4">小時</th><th>分鐘</th></tr></thead><tbody>';
 
                     for (let hour = 6; hour < 24; hour++) { 
-                        if (!scheduleData[hour]) continue;
+                        if (!scheduleData || !scheduleData[hour]) continue; // Add check for scheduleData
                         const minutes = scheduleData[hour]; 
                         const hourStr = String(hour).padStart(2, '0');
                         const hourClass = (nextGlobalDep && hour === nextGlobalDep.hour) ? 'timetable-highlight-hour' : '';
@@ -1202,7 +1313,7 @@
                                     this.handleMainTabClick(nearestLocation.group);
                                     // Find and select the specific location button
                                     const buttonToSelect = Array.from(this.elements.locationSelector.querySelectorAll('button'))
-                                                                .find(btn => btn.value === nearestLocation.name);
+                                                                .find(btn => btn.value === nearestLocation.name); // Match by internal name
                                     if (buttonToSelect) {
                                         this.selectLocationButton(buttonToSelect);
                                     }
@@ -1234,25 +1345,9 @@
                  * Triggers a manual refresh of the ETA data.
                  */
                 async handleRefresh() {
-                    // if (this.state.isRefreshing) return; // This guard is now in displayDepartures()
-                    
-                    // Only refresh if the ETA view is visible
                     const etaViewVisible = !this.elements.etaView.classList.contains('hidden');
                     if (!etaViewVisible) return;
-
-                    // this.state.isRefreshing = true; // Handled by displayDepartures
-                    // this.elements.refreshButton.disabled = true; // Handled by displayDepartures
-                    // this.elements.refreshButton.textContent = '更新中...'; // Handled by displayDepartures
-
-                    await this.displayDepartures(); // This now handles the isRefreshing state
-
-                    // setTimeout(() => { // Handled by displayDepartures
-                    //     this.state.isRefreshing = false;
-                    //     if (this.elements.refreshButton) {
-                    //         this.elements.refreshButton.disabled = false;
-                    //         this.elements.refreshButton.textContent = '刷新班次';
-                    //     }
-                    // }, 800); 
+                    await this.displayDepartures(); 
                 },
 
                 // --- Pull to Refresh Handlers ---
@@ -1270,7 +1365,7 @@
                     const deltaY = currentY - this.state.ptrTouchStartY;
 
                     if (deltaY > 0 && window.scrollY === 0) {
-                        e.preventDefault(); // Prevent page scroll
+                        e.preventDefault(); 
                         this.elements.ptrIndicator.style.opacity = '1';
                         this.elements.ptrIndicator.style.height = Math.min(deltaY * 0.6, this.state.ptrThreshold + 20) + 'px';
                         this.elements.ptrSpinner.classList.add('hidden');
@@ -1288,19 +1383,17 @@
                     this.elements.ptrIndicator.style.transition = 'height 0.3s ease-out, opacity 0.3s ease-out';
 
                     if (deltaY > this.state.ptrThreshold && !this.state.isRefreshing) {
-                        // Trigger refresh
                         this.elements.ptrIndicator.style.height = '60px';
                         this.elements.ptrTextEl.textContent = '更新中...';
                         this.elements.ptrSpinner.classList.remove('hidden');
                         
-                        await this.handleRefresh(); // Call the main refresh function
+                        await this.handleRefresh(); 
                         
                         setTimeout(() => {
                             this.elements.ptrIndicator.style.height = '0px';
                             this.elements.ptrIndicator.style.opacity = '0';
-                        }, 500); // Hide indicator after refresh is done
+                        }, 500); 
                     } else {
-                        // Reset
                         this.elements.ptrIndicator.style.height = '0px';
                         this.elements.ptrIndicator.style.opacity = '0';
                     }
@@ -1309,10 +1402,6 @@
 
                 // 10. UTILITIES
                 utils: {
-                    /**
-                     * Gets the current hour and minute in Hong Kong time.
-                     * @returns {object} { hour: number, minute: number }
-                     */
                     getCurrentHktTime() {
                         const now = new Date();
                         const hktTimeString = now.toLocaleTimeString('en-GB', { timeZone: 'Asia/Hong_Kong' });
@@ -1323,18 +1412,10 @@
                         };
                     },
 
-                    /**
-                     * Formats an hour and minute into HH:MM string.
-                     * @returns {string} Formatted time
-                     */
                     formatDepartureTime(hour, minute) {
                         return `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
                     },
                     
-                    /**
-                     * Finds the next 'count' departures from a schedule.
-                     * @returns {Array} Array of departure objects { hour, minute, date }
-                     */
                     getUpcomingDepartures(schedule, currentHour, currentMinute, count = 5) {
                         if (!schedule) return [];
                         const upcoming = [];
@@ -1364,11 +1445,8 @@
                         return upcoming;
                     },
 
-                    /**
-                     * Finds the very next departure from a schedule for timetable highlighting.
-                     * @returns {object} { hour, minute } or null
-                     */
                     findNextGlobalDeparture(scheduleData, currentHour, currentMinute) {
+                         if (!scheduleData) return null; // Add check for scheduleData
                         let sortedHours = Object.keys(scheduleData).map(Number).sort((a,b) => a - b);
                         if (scheduleData[currentHour]) {
                             const minute = scheduleData[currentHour].find(m => m >= currentMinute);
@@ -1379,16 +1457,13 @@
                                 if (scheduleData[h] && scheduleData[h].length > 0) return { hour: h, minute: scheduleData[h][0] };
                             }
                         }
-                        // If no more buses today, find first bus for tomorrow (which is first in schedule)
                         const firstHourOfService = sortedHours[0];
-                        if (firstHourOfService !== undefined) return { hour: firstHourOfService, minute: scheduleData[firstHourOfService][0] };
+                        if (firstHourOfService !== undefined && scheduleData[firstHourOfService] && scheduleData[firstHourOfService].length > 0) { // Add checks
+                           return { hour: firstHourOfService, minute: scheduleData[firstHourOfService][0] };
+                        }
                         return null;
                     },
 
-                    /**
-                     * Formats an array of minutes into a space-separated string.
-                     * @returns {string} e.g., "05 <span class='highlight'>25</span> 55"
-                     */
                     formatMinutesArray(minutesArray, highlightMinute = -1) {
                         if (!minutesArray || minutesArray.length === 0) return '-';
                         return minutesArray.map(min => {
@@ -1397,7 +1472,6 @@
                         }).join(' ');
                     },
 
-                    // --- Geolocation Math Utilities ---
                     deg2rad(deg) {
                         return deg * (Math.PI/180);
                     },
@@ -1422,5 +1496,4 @@
     </script>
 </body>
 </html>
-
 
