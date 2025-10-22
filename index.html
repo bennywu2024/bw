@@ -381,7 +381,11 @@
                         "home": [
                             { name: "兆康站", lat: 22.4131, lon: 113.9793 },
                             { name: "屯門市中心", lat: 22.3957, lon: 113.9753 },
-                            { name: "屯公轉車站 (屯門方向)", lat: 22.3585, lon: 114.0185 }
+                            { name: "屯公轉車站 (屯門方向)", lat: 22.3585, lon: 114.0185 },
+                            // --- NEW LOCATIONS FOR HOME TAB ---
+                            { name: "新墟街市", lat: 22.398858, lon: 113.976525 },
+                            // --- UPDATED to use "name" as internal ID and "displayName" for UI ---
+                            { name: "紅橋 (回家)", lat: 22.402437, lon: 113.977155, displayName: "紅橋" }
                         ]
                     },
                     // --- UPDATED DESTINATIONS ---
@@ -395,7 +399,10 @@
                         "妙法寺": { "NR762": null, "NR762A": null },
                         "福亨村": { "NR762": null, "NR762A": null },
                         "紅橋": { "NR762": null, "NR762A": null },
-                        "富泰邨": { "NR762": null, "NR762A": null }
+                        "富泰邨": { "NR762": null, "NR762A": null },
+                        // --- NEW DESTINATIONS FOR HOME TAB ---
+                        "新墟街市": { "NR762": null, "NR762A": null },
+                        "紅橋 (回家)": { "NR762": null, "NR762A": null }
                     },
                     // --- UPDATED KMB CONFIGS ---
                     kmbConfigs: {
@@ -416,7 +423,10 @@
                         "富泰邨": [
                             { stopId: 'F1D1F84A466543BE', subtitle: '由 富泰邨' },
                             { stopId: '2B354AE312900DF1', subtitle: '由 嶺南大學' }
-                        ]
+                        ],
+                        // --- NEW KMB CONFIGS FOR HOME TAB ---
+                        "新墟街市": { stopId: '7AC6625D894BA101', subtitle: '由 新墟街市', targetRoutes: ['63X', '68A', '960P'] },
+                        "紅橋 (回家)": { stopId: 'CBE54DB551C24A02', subtitle: '由 紅橋 (回家)', targetRoutes: ['63X', '68A', '960P'] }
                     },
                     lightRailConfig: {
                         "兆康站": { apiUrl: 'https://rt.data.gov.hk/v1/transport/mtr/lrt/getSchedule?station_id=100', targetPlatform: 1, subtitle: '往元朗/天逸' },
@@ -616,8 +626,9 @@
                                     if (loc) {
                                         const button = document.createElement('button');
                                         button.className = 'px-3 py-1.5 rounded-full font-medium text-sm';
-                                        button.textContent = loc.name;
-                                        button.value = loc.name;
+                                        // --- UPDATED to use displayName if it exists ---
+                                        button.textContent = loc.displayName || loc.name;
+                                        button.value = loc.name; // Value is always the internal name
                                         buttonRowDiv.appendChild(button);
                                     }
                                 });
@@ -633,8 +644,9 @@
                         currentLocations.forEach(loc => {
                             const button = document.createElement('button');
                             button.className = 'px-3 py-1.5 rounded-full font-medium text-sm';
-                            button.textContent = loc.name;
-                            button.value = loc.name;
+                            // --- UPDATED to use displayName if it exists ---
+                            button.textContent = loc.displayName || loc.name;
+                            button.value = loc.name; // Value is always the internal name
                             rowDiv.appendChild(button);
                         });
                         this.elements.locationSelector.appendChild(rowDiv);
@@ -1111,6 +1123,7 @@
                 renderFullTimetables() {
                     const now = this.utils.getCurrentHktTime();
                     this.elements.nr762RichwoodContainer.innerHTML = this.generateTimetableTableHTML(this.config.allSchedules.NR762["豫豐花園_to_兆康站"], now);
+                    // --- FIX: Corrected broken line ---
                     this.elements.nr762SiuhongContainer.innerHTML = this.generateTimetableTableHTML(this.config.allSchedules.NR762["兆康站_to_豫豐花園"], now);
                     this.elements.nr762aRichwoodContainer.innerHTML = this.generateTimetableTableHTML(this.config.allSchedules.NR762A["豫豐花園_to_屯門市中心"], now);
                     this.elements.nr762aTuenmunContainer.innerHTML = this.generateTimetableTableHTML(this.config.allSchedules.NR762A["屯門市中心_to_豫豐花園"], now);
@@ -1124,6 +1137,7 @@
                  */
                 generateTimetableTableHTML(scheduleData, now) {
                     const nextGlobalDep = this.utils.findNextGlobalDeparture(scheduleData, now.hour, now.minute);
+                    // --- FIX: Corrected broken class name 'w-1Vindemiatrix/4' ---
                     let tableHTML = '<table class="timetable-table"><thead><tr><th class="w-1/4">小時</th><th>分鐘</th></tr></thead><tbody>';
 
                     for (let hour = 6; hour < 24; hour++) { 
