@@ -254,6 +254,11 @@
                             <h3 class="text-2xl font-bold text-left" style="color: #4d7c0f;">其他九巴路線</h3>
                         </div>
                         <p id="kmbOtherSubtitle" class="text-md font-medium mb-3"></p>
+                        <!-- Filter Input is here -->
+                        <div id="kmbFilterContainer" class="mt-4 mb-2 hidden">
+                            <label for="kmbRouteFilter" class="block text-sm font-medium text-gray-700 mb-1">篩選路線:</label>
+                            <input type="text" id="kmbRouteFilter" name="kmbRouteFilter" placeholder="輸入路線號碼 (e.g., 960)" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                        </div>
                         <ul id="kmbOtherDepartures" class="space-y-2"></ul>
                         <p id="kmbOtherMessage" class="mt-3 text-sm"></p>
                     </div>
@@ -395,7 +400,8 @@
                     userPosition: null,          
                     isRefreshing: false,         
                     ptrTouchStartY: 0,         
-                    ptrThreshold: 80,          
+                    ptrThreshold: 80, 
+                    filterDebounceTimeout: null, 
                 },
 
                 // 2. CONFIG
@@ -580,6 +586,8 @@
                         ptrIndicator: document.getElementById('pullToRefreshIndicator'),
                         ptrSpinner: document.getElementById('pullRefreshSpinner'),
                         ptrTextEl: document.getElementById('pullRefreshText'),
+                        kmbFilterContainer: document.getElementById('kmbFilterContainer'),
+                        kmbRouteFilter: document.getElementById('kmbRouteFilter'),
                     };
 
                     this.setupEventListeners();
@@ -600,6 +608,7 @@
                     document.body.addEventListener('touchstart', this.handleTouchStart.bind(this), { passive: true });
                     document.body.addEventListener('touchmove', this.handleTouchMove.bind(this), { passive: false });
                     document.body.addEventListener('touchend', this.handleTouchEnd.bind(this));
+                    this.elements.kmbRouteFilter.addEventListener('input', this.handleKmbFilterChange.bind(this));
                 },
 
                 // 6. VIEW/UI LOGIC
@@ -734,6 +743,23 @@
                     this.displayDepartures();
                 },
 
+                handleKmbFilterChange() {
+                    if ((this.state.currentLocationName === '屯公轉車站 (屯門方向)' && this.state.currentDirection === 'home') ||
+                        (this.state.currentLocationName === '屯門公路轉車站' && this.state.currentDirection === 'out'))
+                    {
+                         clearTimeout(this.state.filterDebounceTimeout); 
+                         this.state.filterDebounceTimeout = setTimeout(() => {
+                            if(this.state.currentLocationName === '屯公轉車站 (屯門方向)') {
+                                const kmbOtherConfig = this.config.kmbOtherConfigs[this.state.currentLocationName];
+                                if(kmbOtherConfig) this.updateKmbOtherSection(kmbOtherConfig, this.state.currentLocationName); 
+                            } else {
+                                const kmbConfig = this.config.kmbConfigs[this.state.currentLocationName];
+                                if(kmbConfig) this.updateKmbSection(kmbConfig, this.state.currentLocationName); 
+                            }
+                         }, 300); 
+                    }
+                },
+
                 // 7. DATA FETCHING & RENDERING
 
                 async displayDepartures() { 
@@ -757,6 +783,21 @@
                     
                     this.setCardOrder(locationName);
                     
+                    const showFilterKmbOut = (locationName === '屯門公路轉車站' && this.state.currentDirection === 'out');
+                    const showFilterKmbOtherHome = (locationName === '屯公轉車站 (屯門方向)' && this.state.currentDirection === 'home');
+                    
+                    this.elements.kmbFilterContainer.classList.toggle('hidden', !(showFilterKmbOut || showFilterKmbOtherHome)); 
+                    
+                    if (showFilterKmbOtherHome && this.elements.kmbOtherSection && this.elements.kmbFilterContainer.parentNode !== this.elements.kmbOtherSection) {
+                       this.elements.kmbOtherSection.insertBefore(this.elements.kmbFilterContainer, this.elements.kmbOtherDepartures); 
+                    } else if (showFilterKmbOut && this.elements.kmbSection && this.elements.kmbFilterContainer.parentNode !== this.elements.kmbSection) {
+                       this.elements.kmbSection.insertBefore(this.elements.kmbFilterContainer, this.elements.kmbDepartures);
+                    }
+
+                    if (!showFilterKmbOut && !showFilterKmbOtherHome) { 
+                       this.elements.kmbRouteFilter.value = ''; 
+                    }
+
                     [this.elements.kmbSection, this.elements.kmbOtherSection, this.elements.lwbSection, this.elements.lightRailSection, this.elements.nlbSection, this.elements.ctbSection, this.elements.nr762Section, this.elements.nr762aSection].forEach(s => s.classList.add('hidden'));
 
                     const now = this.utils.getCurrentHktTime();
@@ -944,7 +985,11 @@
                         kmbDepartures.innerHTML = '<li class="text-gray-500">正在載入九巴班次...</li>';
                         try {
                             const data = await this.fetchKmbData(kmbConfig.stopId);
-                            this.renderKmbDepartures(data, kmbConfig, kmbDepartures, kmbMessage, locationName); 
+                            const filterValue = 
+                                (locationName === '屯門公路轉車站' && this.state.currentDirection === 'out')
+                                ? this.elements.kmbRouteFilter.value.trim().toUpperCase() 
+                                : '';
+                            this.renderKmbDepartures(data, kmbConfig, kmbDepartures, kmbMessage, locationName, filterValue); 
                         } catch (error) {
                             console.error("KMB Fetch Error:", error);
                             kmbDepartures.innerHTML = '';
@@ -960,7 +1005,7 @@
                     return await response.json();
                 },
 
-                renderKmbDepartures(data, kmbConfig, listElement, messageElement, locationName) { 
+                renderKmbDepartures(data, kmbConfig, listElement, messageElement, locationName, filterValue = '') { 
                     listElement.innerHTML = ''; 
                     
                     let relevantDepartures = (data && data.data) ? data.data : []; 
@@ -968,7 +1013,10 @@
                         .filter(bus => bus.eta)
                         .sort((a, b) => new Date(a.eta) - new Date(b.eta));
                     
-                    if (kmbConfig.targetRoutes) {
+                    if (filterValue) {
+                       relevantDepartures = relevantDepartures.filter(bus => bus.route.toUpperCase().includes(filterValue));
+                    }
+                    else if (kmbConfig.targetRoutes) { 
                         relevantDepartures = relevantDepartures.filter(bus => kmbConfig.targetRoutes.includes(bus.route));
                     }
 
@@ -989,7 +1037,7 @@
                            limit = 30; 
                         } else if (locationName === "屯門公路轉車站") {
                            limit = 40; 
-                        } else if (locationName && (locationName.includes("藍地站") || locationName === "富泰邨" || locationName === "紅橋 (回家)" || locationName === "新墟街市")) { 
+                        } else if (locationName && (locationName.includes("藍地站") || locationName === "富泰邨" || locationName === "紅橋 (回家)" || locationName === "新墟街市" || locationName === "屯公轉車站 (屯門方向)")) { 
                            limit = 10; 
                         } else if (kmbConfig && Array.isArray(this.config.kmbConfigs[locationName]) && locationName !== "富泰邨" && locationName !== "紅橋") {
                            limit = 10; 
@@ -1012,7 +1060,7 @@
                             listElement.appendChild(li);
                         });
                     } else {
-                        messageElement.textContent = '暫無相關九巴班次資料。';
+                        messageElement.textContent = filterValue ? `路線 "${filterValue}" 暫無班次資料。` : '暫無相關九巴班次資料。';
                     }
                 },
 
@@ -1028,7 +1076,11 @@
 
                     try {
                         const data = await this.fetchKmbData(kmbOtherConfig.stopId); 
-                        this.renderKmbOtherDepartures(data, kmbOtherConfig, kmbOtherDepartures, kmbOtherMessage, locationName); 
+                        const filterValue = 
+                             (locationName === '屯公轉車站 (屯門方向)' && this.state.currentDirection === 'home')
+                            ? this.elements.kmbRouteFilter.value.trim().toUpperCase() 
+                            : '';
+                        this.renderKmbOtherDepartures(data, kmbOtherConfig, kmbOtherDepartures, kmbOtherMessage, locationName, filterValue); 
                     } catch (error) {
                         console.error("KMB Other Fetch Error:", error);
                         kmbOtherDepartures.innerHTML = '';
@@ -1036,7 +1088,7 @@
                     }
                 },
 
-                renderKmbOtherDepartures(data, kmbOtherConfig, listElement, messageElement, locationName) { 
+                renderKmbOtherDepartures(data, kmbOtherConfig, listElement, messageElement, locationName, filterValue = '') { 
                     listElement.innerHTML = ''; 
                     
                     let relevantDepartures = (data && data.data) ? data.data : []; 
@@ -1044,6 +1096,10 @@
                         .filter(bus => bus.eta)
                         .filter(bus => !kmbOtherConfig.excludeRoutes.includes(bus.route)) 
                         .sort((a, b) => new Date(a.eta) - new Date(b.eta));
+                    
+                    if (filterValue) {
+                       relevantDepartures = relevantDepartures.filter(bus => bus.route.toUpperCase().includes(filterValue));
+                    }
                     
                     const uniqueDepartures = [];
                     const seenDepartures = new Set();
@@ -1076,7 +1132,7 @@
                             listElement.appendChild(li);
                         });
                     } else {
-                        messageElement.textContent = '暫無其他九巴班次資料。';
+                        messageElement.textContent = filterValue ? `路線 "${filterValue}" 暫無班次資料。` : '暫無其他九巴班次資料。';
                     }
                 },
                 // --- END KMB Other Functions ---
