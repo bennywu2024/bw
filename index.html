@@ -136,7 +136,6 @@
         .next-departure-highlight-yellow { background-color: rgba(254, 252, 232, 0.7) !important; border: 2px solid #ca8a04 !important; }
         .next-departure-highlight-blue { background-color: rgba(219, 234, 254, 0.7) !important; border: 2px solid #2563eb !important; }
         .next-departure-highlight-orange { background-color: rgba(255, 247, 237, 0.7) !important; border: 2px solid #f97316 !important; }
-        /* --- NEW LWB Highlight --- */
         .next-departure-highlight-purple { background-color: rgba(237, 233, 254, 0.7) !important; border: 2px solid #6d28d9 !important; } 
 
 
@@ -509,9 +508,6 @@
                         }
                          // --- END ---
                     },
-                    // --- Define CORS Proxy URL (used only for NLB, CTB if direct fails) ---
-                    // corsProxyUrl: 'https://thingproxy.freeboard.io/fetch/' 
-                    // No proxy seems to work best for now. Add back if needed.
                 },
 
                 // 3. ELEMENTS
@@ -776,17 +772,18 @@
                     await Promise.all(displayPromises);
                     
                     this.updateAllCountdowns(); 
+
+                    // --- FIX: Remove setTimeout for pull-to-refresh ---
+                    this.state.isRefreshing = false;
+                    if (this.elements.refreshButton) {
+                        this.elements.refreshButton.disabled = false;
+                        this.elements.refreshButton.textContent = '刷新班次';
+                    }
+                    // --- END FIX ---
+
                     if (document.querySelector('#etaView li[data-departure-time]')) {
                         this.state.countdownIntervalId = setInterval(this.updateAllCountdowns.bind(this), 1000);
                     }
-
-                    setTimeout(() => {
-                        this.state.isRefreshing = false;
-                        if (this.elements.refreshButton) {
-                            this.elements.refreshButton.disabled = false;
-                            this.elements.refreshButton.textContent = '刷新班次';
-                        }
-                    }, 800); 
                 },
 
                 setCardOrder(locationName) {
@@ -1005,7 +1002,7 @@
                     }
                 },
 
-                // --- NEW LWB Functions ---
+                // --- LWB Functions ---
                 async updateLwbSection(lwbConfig, locationName) { 
                     const { lwbSection, lwbDepartures, lwbMessage, lwbSubtitle } = this.elements;
                     
